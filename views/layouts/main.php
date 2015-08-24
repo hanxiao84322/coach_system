@@ -9,6 +9,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
+
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -33,23 +34,51 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+    $menuItems = [
+        [
+            'label' => '用户管理', 'url' => ['/Admin/users'],
+            'items' => [
+                ['label' => '基本信息',
+                    'url' => ['/Admin/users']
+                ],
+                ['label' => '培训信息',
+                    'url' => ['/Admin/usersTrain']
+                ],
+                ['label' => '活动信息',
+                    'url' => ['/Admin/usersActivity']
+                ],
+                ['label' => '晋升信息',
+                    'url' => ['/Admin/usersLevel']
+                ]
+            ]
+        ],
+        ['label' => '级别管理', 'url' => ['/Admin/level']],
+        ['label' => '培训课程管理', 'url' => ['/Admin/train']],
+        ['label' => '活动管理', 'url' => ['/Admin/activity']],
+        ['label' => '内容管理', 'url' => ['/Admin/pages']],
+        [
+            'label' => '新闻管理', 'url' => ['/Admin/news'],
+            'items' => [
+                ['label' => '分类',
+                    'url' => ['/Admin/newscategory']
+                ],
+                ['label' => '新闻',
+                    'url' => ['/Admin/news']
+                ]
+            ]
+        ],
+        Yii::$app->user->isGuest ?
+            ['label' => '登陆', 'url' => ['/Admin/login']] :
+            [
+                'label' => '登出 (' . Yii::$app->user->identity->username . ')',
+                'url' => ['/Admin/logout'],
+                'linkOptions' => ['data-method' => 'post']
+            ],
+
+    ];
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => '用户管理', 'url' => ['/Admin/users']],
-            ['label' => '培训课程管理', 'url' => ['/Admin/train']],
-            ['label' => '活动管理', 'url' => ['/Admin/activity']],
-            ['label' => '内容管理', 'url' => ['/Admin/pages']],
-            ['label' => '新闻管理', 'url' => ['/Admin/news']],
-            Yii::$app->user->isGuest ?
-                ['label' => '登陆', 'url' => ['/Admin/login']] :
-                [
-                    'label' => '登出 (' . Yii::$app->user->identity->username . ')',
-                    'url' => ['/Admin/logout'],
-                    'linkOptions' => ['data-method' => 'post']
-                ],
-        ],
-    ]);
+        'items' => $menuItems]);
     NavBar::end();
     ?>
 

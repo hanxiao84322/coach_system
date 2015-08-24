@@ -21,12 +21,13 @@ use yii\jui\DatePicker;
 
     <?= $form->field($model, 'password')->passwordInput(['style'=>'width:300px']) ?>
 
+    <?= $form->field($model, 'password_repeat')->passwordInput(['style'=>'width:300px']) ?>
 
     <?= $form->field($model, 'sex')->dropDownList(\app\models\Users::$sexList,['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'birthday')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
 
-    <?= $form->field($model, 'status')->dropDownList(\app\models\Users::$status,['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'status')->dropDownList(\app\models\Users::$statusList,['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'credentials_type')->dropDownList(\app\models\Users::$credentialsType,['style'=>'width:100px']) ?>
 

@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Users */
+/* @var $model app\models\NewsCategory */
 
-$this->title = '更新用户: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => '用户管理', 'url' => ['index']];
+$this->title = '更新分类: ' . ' ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => '新建分类', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = '更新用户';
+$this->params['breadcrumbs'][] = '更新分类';
 ?>
-<div class="users-update">
+<div class="news-category-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

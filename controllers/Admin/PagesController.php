@@ -3,19 +3,18 @@
 namespace app\controllers\Admin;
 
 use Yii;
-use app\models\Users;
-use app\models\UsersSearch;
+use app\models\Pages;
+use app\models\PagesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 use yii\filters\VerbFilter;
-use yii\data\ActiveDataProvider;
+use pjkui\kindeditor\KindEditor;
 
 
 /**
- * UsersController implements the CRUD actions for Users model.
+ * PagesController implements the CRUD actions for Pages model.
  */
-class UsersController extends Controller
+class PagesController extends Controller
 {
     public function behaviors()
     {
@@ -29,13 +28,22 @@ class UsersController extends Controller
         ];
     }
 
+    public function actions()
+    {
+        return [
+            'Kupload' => [
+                'class' => 'pjkui\kindeditor\KindEditorAction',
+            ]
+        ];
+    }
+
     /**
-     * Lists all Users models.
+     * Lists all Pages models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UsersSearch();
+        $searchModel = new PagesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,40 +53,28 @@ class UsersController extends Controller
     }
 
     /**
-     * Displays a single Users model.
+     * Displays a single Pages model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => $this->findModel($id),
-        ]);
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'dataProvider' => $dataProvider
         ]);
     }
 
     /**
-     * Creates a new Users model.
+     * Creates a new Pages model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-//        $userInfo = Yii::$app->user;
-//        print_r($userInfo);exit;
-        $model = new Users();
-        $postInfo = Yii::$app->request->post();
-        if (!empty($postInfo)) {
-            if ($model->load($postInfo) && $model->save()) {
-                Yii::$app->getSession()->setFlash('success', '添加成功！');
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                throw new ServerErrorHttpException('添加用户失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
-                return $this->redirect(['create']);
-            }
+        $model = new Pages();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -87,7 +83,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Updates an existing Users model.
+     * Updates an existing Pages model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -95,9 +91,8 @@ class UsersController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $postInfo = Yii::$app->request->post();
 
-        if ($model->load($postInfo) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
@@ -107,7 +102,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Deletes an existing Users model.
+     * Deletes an existing Pages model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -120,19 +115,18 @@ class UsersController extends Controller
     }
 
     /**
-     * Finds the Users model based on its primary key value.
+     * Finds the Pages model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Users the loaded model
+     * @return Pages the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Users::findOne($id)) !== null) {
+        if (($model = Pages::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
 }

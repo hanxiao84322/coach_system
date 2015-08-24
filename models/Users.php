@@ -64,13 +64,22 @@ class Users extends \yii\db\ActiveRecord
         self::WOMAN => '女',
     ];
 
+    const TEACHER = 1; // 一般用户
+    const STUDENT = 2; //讲师
+    //性别
+    public static $titleList = [
+        self::TEACHER => '一般用户',
+        self::STUDENT => '讲师',
+    ];
+
+
     const NEW_ADD = 0; // 待审核
     const APPROVED = 1; // 已审核
     const NOT_APPROVED = 2; // 驳回
     const CLOSE = 3; // 关闭
 
     // 状态
-    static public $status = [
+    static public $statusList = [
         self::NEW_ADD => '待审核',
         self::APPROVED => '已审核',
         self::NOT_APPROVED => '驳回',
@@ -131,6 +140,7 @@ class Users extends \yii\db\ActiveRecord
 
     ];
 
+    public $password_repeat;
 
     /**
      * @inheritdoc
@@ -146,16 +156,16 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'password','sex', 'title', 'status', 'credentials_type', 'credentials_number', 'account_location','telephone', 'mobile_phone', 'email', 'height', 'weight', 'disease_history', 'contact_address','company_name', 'company_address', 'company_contact_phone', 'clothes_size', 't_shirt_size', 'shorts_size', 'language', 'spoken_language', 'write_language'], 'required'],
+            [['name', 'password','sex', 'status', 'credentials_type', 'credentials_number', 'account_location','telephone', 'mobile_phone', 'email', 'height', 'weight', 'disease_history', 'contact_address','company_name', 'company_address', 'company_contact_phone', 'clothes_size', 't_shirt_size', 'shorts_size', 'language', 'spoken_language', 'write_language', 'birthday'], 'required'],
             [['height', 'weight','telephone', 'mobile_phone'], 'integer'],
-            [['birthday', 'create_time', 'update_time'], 'safe'],
             ['email', 'email'],
-            [['name', 'company_name'], 'string', 'max' => 50],
-            [['password', 'update_user'], 'string', 'max' => 45],
-            [['credentials_number'], 'string', 'max' => 25],
-            [['account_location', 'telephone', 'mobile_phone', 'company_contact_phone'], 'string', 'max' => 20],
-            [['email', 'contact_address', 'company_address'], 'string', 'max' => 100],
-            [['contact_postcode', 'company_postcode'], 'string', 'max' => 10]
+            ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message'=> '两次输入的密码不一致！'],
+            [['name', 'company_name'], 'string', 'max' => 20,'min' => 2],
+            [['password'], 'string', 'max' => 18,'min' => 6],
+            [['credentials_number'], 'string', 'max' => 19,'min' => 18],
+            [['telephone', 'mobile_phone', 'company_contact_phone'], 'string', 'max' => 20,'min' => 8],
+            [['email', 'contact_address', 'company_address'], 'string', 'max' => 100,'min' => 2],
+            [['contact_postcode', 'company_postcode'], 'string', 'max' => 7, 'min' => 6]
         ];
     }
 
@@ -168,6 +178,7 @@ class Users extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => '姓名',
             'password' => '密码',
+            'password_repeat' => '重复密码',
             'sex' => '性别',
             'birthday' => '生日',
             'title' => '类型',
@@ -280,5 +291,73 @@ class Users extends \yii\db\ActiveRecord
     public function getUsersVocationals()
     {
         return $this->hasMany(UsersVocational::className(), ['user_id' => 'id']);
+    }
+
+    /*
+     * get sex name
+     */
+    public function getSexName($sex)
+    {
+        return isset(self::$sexList[$sex]) ? self::$sexList[$sex] : $sex;
+    }
+
+    /*
+     * get sex name
+     */
+    public function getTitleName($title)
+    {
+        return isset(self::$sexList[$title]) ? self::$titleList[$title] : $title;
+    }
+
+    public function getStatusName($status)
+    {
+        return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
+    }
+
+    public function getCredentialsName($credentialsType)
+    {
+        return isset(self::$credentialsType[$credentialsType]) ? self::$credentialsType[$credentialsType] : $credentialsType;
+    }
+
+    public function getDiseaseHistoryName($diseaseHistory)
+    {
+        return isset(self::$diseaseHistory[$diseaseHistory]) ? self::$diseaseHistory[$diseaseHistory] : $diseaseHistory;
+    }
+
+    public function getSizeName($size)
+    {
+        return isset(self::$sizeList[$size]) ? self::$sizeList[$size] : $size;
+    }
+
+    public function getLanguageName($language)
+    {
+        return isset(self::$languageList[$language]) ? self::$languageList[$language] : $language;
+    }
+
+    public function getAbilityName($ability)
+    {
+        return isset(self::$abilityList[$ability]) ? self::$abilityList[$ability] : $ability;
+    }
+
+
+    public function beforeSave()
+    {
+        if (parent::beforeSave(true)) {
+            if (isset($this->password)) {
+                $this->password = md5($this->password);
+            }
+            if ($this->isNewRecord) {
+                $this->title = 1;
+                $this->create_time = date('Y-m-d H:i:s', time());
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            } else {
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }
