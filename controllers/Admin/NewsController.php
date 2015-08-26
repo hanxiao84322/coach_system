@@ -17,13 +17,21 @@ use yii\web\ServerErrorHttpException;
  */
 class NewsController extends Controller
 {
+    public $layout = 'admin';
+
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'user' => 'admin',
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'roles' => ['@'],
+                    ]
                 ],
             ],
         ];
@@ -75,11 +83,6 @@ class NewsController extends Controller
             }
 
             $newsInfo = Yii::$app->request->post();
-            if(empty($newsInfo['News']['is_recommend'][0])) {
-                $newsInfo['News']['is_recommend'] = 0;
-            } else {
-                $newsInfo['News']['is_recommend'] = $newsInfo['News']['is_recommend'][0];
-            }
             $newsInfo['News']['status'] = 1;
             $newsInfo['News']['thumb'] = $fileName;
             if ($model->load($newsInfo) && $model->save()) {
@@ -119,7 +122,6 @@ class NewsController extends Controller
                     $newsInfo['News']['thumb'] = $fileName;
                 }
             }
-
             if ($model->load($newsInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {

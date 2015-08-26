@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             [
-                'attribute' => 'category',
+                'attribute' => 'category_id',
                 'value' => function($searchModel){
                     return app\models\NewsCategory::getOneCategoryNameById($searchModel->category_id);
                 }

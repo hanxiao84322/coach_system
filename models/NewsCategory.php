@@ -60,7 +60,7 @@ class NewsCategory extends \yii\db\ActiveRecord
         return $this->hasMany(News::className(), ['category_id' => 'id']);
     }
 
-    public function getAll()
+    public static function getAll()
     {
         $rows = (new \yii\db\Query())
             ->select(['id', 'name'])
@@ -69,7 +69,7 @@ class NewsCategory extends \yii\db\ActiveRecord
         return $rows;
     }
 
-    public function getOneCategoryNameById($categoryId)
+    public static function getOneCategoryNameById($categoryId)
     {
         $row = (new \yii\db\Query())
             ->select(['name'])
@@ -82,14 +82,14 @@ class NewsCategory extends \yii\db\ActiveRecord
     /*
  * get sex name
  */
-    public function getIsRecommendName($isRecommend)
+    public static function getIsRecommendName($isRecommend)
     {
         return ($isRecommend == 1) ? '是' : '否';
     }
 
-    public function beforeSave()
+    public function beforeSave($insert = '')
     {
-        if (parent::beforeSave(true)) {
+        if (parent::beforeSave($this->isNewRecord)) {
             if ($this->isNewRecord) {
                 $this->create_time = date('Y-m-d H:i:s', time());
                 $this->create_user = 'admin';

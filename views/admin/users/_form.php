@@ -17,7 +17,7 @@ use yii\jui\DatePicker;
         'options'=>['enctype'=>'multipart/form-data']
     ]); ?>
 
-    <?= $form->field($model, 'name')->textInput(['style'=>'width:300px']) ?>
+    <?= $form->field($model, 'username')->textInput(['style'=>'width:300px']) ?>
 
     <?= $form->field($model, 'password')->passwordInput(['style'=>'width:300px']) ?>
 

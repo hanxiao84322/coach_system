@@ -13,6 +13,7 @@ class LoginForm extends Model
     public $username;
     public $password;
     public $rememberMe = true;
+    public $verifyCode;
 
     private $_user = false;
 
@@ -29,8 +30,26 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            ['verifyCode', 'required'],
+            ['verifyCode', 'captcha'],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'username' => '用户名',
+            'password' => '密码',
+            'rememberMe' => '记住我',
+            'verifyCode' => '验证码',
+            'accessToken' => 'AccessToken',
+        ];
+    }
+
 
     /**
      * Validates the password.
@@ -43,9 +62,8 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+            if (!$user || !$user->validatePassword(md5($this->password))) {
+                $this->addError($attribute, '错误的用户名和密码！');
             }
         }
     }

@@ -296,7 +296,7 @@ class Users extends \yii\db\ActiveRecord
     /*
      * get sex name
      */
-    public function getSexName($sex)
+    public static function getSexName($sex)
     {
         return isset(self::$sexList[$sex]) ? self::$sexList[$sex] : $sex;
     }
@@ -304,45 +304,45 @@ class Users extends \yii\db\ActiveRecord
     /*
      * get sex name
      */
-    public function getTitleName($title)
+    public static function getTitleName($title)
     {
         return isset(self::$sexList[$title]) ? self::$titleList[$title] : $title;
     }
 
-    public function getStatusName($status)
+    public static function getStatusName($status)
     {
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
 
-    public function getCredentialsName($credentialsType)
+    public static  function getCredentialsName($credentialsType)
     {
         return isset(self::$credentialsType[$credentialsType]) ? self::$credentialsType[$credentialsType] : $credentialsType;
     }
 
-    public function getDiseaseHistoryName($diseaseHistory)
+    public static  function getDiseaseHistoryName($diseaseHistory)
     {
         return isset(self::$diseaseHistory[$diseaseHistory]) ? self::$diseaseHistory[$diseaseHistory] : $diseaseHistory;
     }
 
-    public function getSizeName($size)
+    public static  function getSizeName($size)
     {
         return isset(self::$sizeList[$size]) ? self::$sizeList[$size] : $size;
     }
 
-    public function getLanguageName($language)
+    public static  function getLanguageName($language)
     {
         return isset(self::$languageList[$language]) ? self::$languageList[$language] : $language;
     }
 
-    public function getAbilityName($ability)
+    public static  function getAbilityName($ability)
     {
         return isset(self::$abilityList[$ability]) ? self::$abilityList[$ability] : $ability;
     }
 
 
-    public function beforeSave()
+    public function beforeSave($insert = '')
     {
-        if (parent::beforeSave(true)) {
+        if (parent::beforeSave($this->isNewRecord)) {
             if (isset($this->password)) {
                 $this->password = md5($this->password);
             }

@@ -52,9 +52,9 @@ class Pages extends \yii\db\ActiveRecord
         ];
     }
 
-    public function beforeSave()
+    public function beforeSave($insert = '')
     {
-        if (parent::beforeSave(true)) {
+        if (parent::beforeSave($this->isNewRecord)) {
             if ($this->isNewRecord) {
                 $this->create_time = date('Y-m-d H:i:s', time());
                 $this->create_user = 'admin';

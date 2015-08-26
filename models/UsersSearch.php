@@ -19,7 +19,7 @@ class UsersSearch extends Users
     {
         return [
             [['id', 'sex', 'title', 'status', 'credentials_type', 'height', 'weight', 'disease_history', 'clothes_size', 't_shirt_size', 'shorts_size', 'language', 'spoken_language', 'write_language', 'lesson', 'credit', 'score'], 'integer'],
-            [['name', 'password', 'birthday', 'credentials_number', 'account_location', 'telephone', 'mobile_phone', 'email', 'contact_address', 'contact_postcode', 'company_name', 'company_address', 'company_postcode', 'company_contact_phone', 'create_time', 'update_time', 'update_user'], 'safe'],
+            [['username', 'password', 'birthday', 'credentials_number', 'account_location', 'telephone', 'mobile_phone', 'email', 'contact_address', 'contact_postcode', 'company_name', 'company_address', 'company_postcode', 'company_contact_phone', 'create_time', 'update_time', 'update_user'], 'safe'],
         ];
     }
 
@@ -78,7 +78,7 @@ class UsersSearch extends Users
             'update_time' => $this->update_time,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
+        $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'password', $this->password])
             ->andFilterWhere(['like', 'credentials_number', $this->credentials_number])
             ->andFilterWhere(['like', 'account_location', $this->account_location])

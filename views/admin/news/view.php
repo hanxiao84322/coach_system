@@ -35,15 +35,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'html',
                 'value' => $model->content
             ],
-            'user_id',
-            'category_id',
-            'status',
+            [
+                'attribute' => 'category_id',
+                'format' => 'html',
+                'value' => app\models\NewsCategory::getOneCategoryNameById($model->category_id)
+            ],
+            [
+                'attribute' => 'status',
+                'value' => app\models\News::getStatusName($model->status)
+            ],
             [
                 'attribute' => 'thumb',
                 'format' => 'html',
-                'value' => '<img src="upload/images/news/thumb/'. $model->thumb . '">'
+                'value' => $model->thumb ? '<img src="upload/images/news/thumb/'. $model->thumb . '">' : '无'
             ],
-            'is_recommend',
+            [
+                'attribute' => 'is_recommend',
+                'value' => $model->is_recommend ? '是' : '否'
+            ],
             'create_time',
             'create_user',
             'update_time',

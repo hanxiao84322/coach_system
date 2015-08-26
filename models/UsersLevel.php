@@ -54,16 +54,16 @@ class UsersLevel extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'level_id' => 'Level ID',
-            'certificate_number' => 'Certificate Number',
-            'district' => 'District',
-            'receive_address' => 'Receive Address',
-            'postcode' => 'Postcode',
-            'is_pay' => 'Is Pay',
-            'create_time' => 'Create Time',
-            'update_time' => 'Update Time',
-            'update_user' => 'Update User',
+            'user_id' => '用户名',
+            'level_id' => '级别',
+            'certificate_number' => '证件号码哦',
+            'district' => '所属区域',
+            'receive_address' => '收货地址',
+            'postcode' => '邮编',
+            'is_pay' => '是否支付',
+            'create_time' => '创建时间',
+            'update_time' => '更新时间',
+            'update_user' => '更新人',
         ];
     }
 

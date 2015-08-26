@@ -133,25 +133,25 @@ class Activity extends \yii\db\ActiveRecord
     }
 
 
-    public function getCategoryName($category)
+    public static function getCategoryName($category)
     {
         return isset(self::$categoryList[$category]) ? self::$categoryList[$category] : $category;
     }
 
-    public function getSignUpStatusName($signUpStatus)
+    public static function getSignUpStatusName($signUpStatus)
     {
         return isset(self::$signUpStatusList[$signUpStatus]) ? self::$signUpStatusList[$signUpStatus] : $signUpStatus;
     }
 
-    public function getStatusName($status)
+    public static function getStatusName($status)
     {
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
 
 
-    public function beforeSave()
+    public function beforeSave($insert = '')
     {
-        if (parent::beforeSave(true)) {
+        if (parent::beforeSave($this->isNewRecord)) {
             if ($this->isNewRecord) {
                 $this->create_time = date('Y-m-d H:i:s', time());
                 $this->create_user = 'admin';

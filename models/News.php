@@ -52,7 +52,7 @@ class News extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'category_id', 'status'], 'integer'],
+            [['user_id', 'category_id', 'status', 'is_recommend'], 'integer'],
             [['title', 'content'], 'required'],
             [['thumb'], 'file', 'extensions' => 'png, jpg, gif'],
             [['title', 'create_user', 'update_user'], 'string', 'max' => 45],
@@ -100,10 +100,14 @@ class News extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 
-
-    public function beforeSave()
+    public function getStatusName($status)
     {
-        if (parent::beforeSave(true)) {
+        return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
+    }
+
+    public function beforeSave($insert = '')
+    {
+        if (parent::beforeSave($this->isNewRecord)) {
             if ($this->isNewRecord) {
                 $this->create_time = date('Y-m-d H:i:s', time());
                 $this->create_user = 'admin';

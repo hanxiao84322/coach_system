@@ -15,13 +15,21 @@ use yii\filters\VerbFilter;
  */
 class NewscategoryController extends Controller
 {
+    public $layout = 'admin';
+
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'user' => 'admin',
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'roles' => ['@'],
+                    ]
                 ],
             ],
         ];

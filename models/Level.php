@@ -102,7 +102,7 @@ class Level extends \yii\db\ActiveRecord
         return $this->hasMany(UsersLevel::className(), ['level_id' => 'id']);
     }
 
-    public function getAll()
+    public static function getAll()
     {
         $rows = (new \yii\db\Query())
             ->select(['id', 'name'])
@@ -112,7 +112,7 @@ class Level extends \yii\db\ActiveRecord
     }
 
 
-    public function getOneLevelNameById($levelId)
+    public static function getOneLevelNameById($levelId)
     {
         $row = (new \yii\db\Query())
             ->select(['name'])
@@ -122,9 +122,9 @@ class Level extends \yii\db\ActiveRecord
         return $row['name'];
     }
 
-    public function beforeSave()
+    public function beforeSave($insert = '')
     {
-        if (parent::beforeSave(true)) {
+        if (parent::beforeSave($this->isNewRecord)) {
             if ($this->isNewRecord) {
                 $this->create_time = date('Y-m-d H:i:s', time());
                 $this->create_user = 'admin';

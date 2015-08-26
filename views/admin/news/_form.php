@@ -20,18 +20,17 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'content')->widget('pjkui\kindeditor\Kindeditor',['clientOptions'=>['allowFileManager'=>'true','allowUpload'=>'true']])  ?>
 
-    <?= $form->field($model, 'user_id')->textInput(['style'=>'width:100px']) ?>
-
     <?= $form->field($model, 'status')->dropDownList(\app\models\News::$statusList,['style'=>'width:100px']) ?>
-    <?php if ($model->isNewRecord) {?>
+    <?php if (!$model->isNewRecord && !empty($model->thumb)) {?>
+        <a href="#"><img src="upload/images/news/thumb/<?= $model->thumb ?>"></a>
+
         <?= $form->field($model, 'thumb')->fileInput(['style'=>'width:500px']) ?>
     <?php } else {?>
-        <a href="#"><img src="upload/images/news/thumb/<?= $model->thumb ?>"></a>
         <?= $form->field($model, 'thumb')->fileInput(['style'=>'width:500px']) ?>
     <?php } ?>
 
 
-    <?= $form->field($model, 'is_recommend')->checkboxList(['1' => '是']) ?>
+    <?= $form->field($model, 'is_recommend')->radioList([ '0' => '否', '1' => '是']) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '创建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
