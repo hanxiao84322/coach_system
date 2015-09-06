@@ -8,7 +8,7 @@ use yii\helpers\Html;
 $this->title = '更新培训课程: ' . ' ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => '管理培训课程', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = '更新培训课程';
 ?>
 <div class="train-update">
 

@@ -41,8 +41,10 @@ class Level extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'lesson', 'credit', 'score', 'login_duration'], 'integer'],
-            [['lesson', 'credit', 'score', 'login_duration'], 'required'],
+            [['lesson', 'credit', 'score', 'login_duration','order'], 'integer'],
+            [['lesson', 'credit', 'score', 'login_duration'], 'default', 'value' => 0],
+            ['register_fee', 'default', 'value' => 0.00],
+
             [['register_fee'], 'number'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 45],
@@ -58,6 +60,7 @@ class Level extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => '名称',
+            'order' => '类别排序（越大级别越高）',
             'lesson' => '升级所需课时',
             'credit' => '升级所需学分',
             'score' => '升级所学评分',
@@ -102,12 +105,15 @@ class Level extends \yii\db\ActiveRecord
         return $this->hasMany(UsersLevel::className(), ['level_id' => 'id']);
     }
 
+    //获取级别
     public static function getAll()
     {
         $rows = (new \yii\db\Query())
             ->select(['id', 'name'])
             ->from(self::tableName())
             ->all();
+        //删除注册学员的级别
+        unset($rows[0]);
         return $rows;
     }
 

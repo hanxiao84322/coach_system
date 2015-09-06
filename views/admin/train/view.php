@@ -37,21 +37,25 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'level_id',
-                'label'=>'分类',
+                'label'=>'级别',
                 'value'=> app\models\Level::getOneLevelNameById($model->level_id)
             ],
             'recruit_count',
             'sign_up_begin_time',
             'sign_up_end_time',
-            'sign_up_status',
+            [
+                'attribute' => 'sign_up_status',
+                'label'=>'状态',
+                'value'=> app\models\Train::getSignUpStatusName($model->sign_up_status)
+            ],
             'begin_time',
             'end_time',
             [
-                    'attribute' => 'status',
+                'attribute' => 'status',
                 'label'=>'状态',
                 'value'=> app\models\Train::getStatusName($model->status)
             ],
-            'lesson',
+            'district',
             'address',
             'content:ntext',
             'create_time',

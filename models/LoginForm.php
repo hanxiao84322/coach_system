@@ -11,6 +11,8 @@ use yii\base\Model;
 class LoginForm extends Model
 {
     public $username;
+    public $mobilePhone;
+    public $email;
     public $password;
     public $rememberMe = true;
     public $verifyCode;
@@ -25,13 +27,15 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required'],
+            [['password'], 'required'],
+            [['mobilePhone'], 'integer'],
+            [['email'], 'email'],
+            [['password'], 'required'],
+
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
-            ['verifyCode', 'required'],
-            ['verifyCode', 'captcha'],
         ];
     }
 
@@ -60,8 +64,13 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
+
         if (!$this->hasErrors()) {
-            $user = $this->getUser();
+            if (isset($this->email)) {
+                $user = $this->getEmail();
+            } else {
+                $user = $this->getMobilePhone();
+            }
             if (!$user || !$user->validatePassword(md5($this->password))) {
                 $this->addError($attribute, '错误的用户名和密码！');
             }
@@ -75,20 +84,39 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            if (isset($this->email)) {
+                return Yii::$app->user->login($this->getEmail(), $this->rememberMe ? 3600*24*30 : 0);
+            } else {
+                return Yii::$app->user->login($this->getMobilePhone(), $this->rememberMe ? 3600*24*30 : 0);
+            }
         }
         return false;
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[email]]
      *
      * @return User|null
      */
-    public function getUser()
+    public function getEmail()
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByEmail($this->email);
+        }
+
+        return $this->_user;
+    }
+
+
+    /**
+     * Finds user by [[mobilePhone]]
+     *
+     * @return User|null
+     */
+    public function getMobilePhone()
+    {
+        if ($this->_user === false) {
+            $this->_user = User::findByMobilePhone($this->mobilePhone);
         }
 
         return $this->_user;

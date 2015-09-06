@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\NewsCategory */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => '新建分类', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '分类管理', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="news-category-view">

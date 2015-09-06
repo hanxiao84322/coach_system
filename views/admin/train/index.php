@@ -39,11 +39,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
+                'attribute' => 'status',
+                'value'=> function ($searchModel) {
+                    return app\models\Train::getStatusName($searchModel->status);
+                }
+            ],
+            [
                 'label' => '管理',
                 'format' => 'html',
                 'value' => function($searchModel) {
-                    $url = Html::a('讲师', ['Admin/TrainUsers/', 'id' => $searchModel->id]);
-                    $url .= '&nbsp;'.Html::a('学员', ['Admin/TrainUsers/', 'id' => $searchModel->id]).'<br>';
+                    $url = Html::a('讲师管理', ['Admin/train-teachers', 'TrainTeachersSearch[train_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('添加讲师', ['Admin/train-teachers/create', 'train_id' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('学员', ['Admin/train-users/', 'TrainUsersSearch[train_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('考勤', ['Admin/train-users/attendance', 'train_id' => $searchModel->id]).'<br>';
                     return $url;
                 }
             ],

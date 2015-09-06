@@ -82,7 +82,6 @@ class AdmingroupController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 throw new ServerErrorHttpException('添加权限组失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
-                return $this->redirect(['create']);
             }
         } else {
             return $this->render('create', [

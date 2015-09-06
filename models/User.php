@@ -46,6 +46,31 @@ class User extends ActiveRecord implements IdentityInterface
 
     }
 
+
+    /**
+     * Finds user by email
+     *
+     * @param  string      $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email]);
+
+    }
+
+    /**
+     * Finds user by username
+     *
+     * @param  string      $mobilePhone
+     * @return static|null
+     */
+    public static function findByMobilePhone($mobilePhone)
+    {
+        return static::findOne(['mobile_phone' => $mobilePhone]);
+
+    }
+
     /**
      * @inheritdoc
      */
@@ -91,4 +116,19 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return false;
     }
+
+    public function saveLoginInfo($lastLoginTime, $ipAddress)
+    {
+        $model = new UsersLogin();
+        print_r(\Yii::$app->user->identity);exit;
+        $model->user_id = \Yii::$app->user->identity;
+        $model->login_time = $lastLoginTime;
+        $model->ip_address = $ipAddress;
+        if (!$model->save()) {
+            var_dump($model->errors);
+            exit;
+        }
+
+    }
+
 }

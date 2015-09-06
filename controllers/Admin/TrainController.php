@@ -2,12 +2,14 @@
 
 namespace app\controllers\Admin;
 
+use app\models\Attendance;
+use app\models\TrainUsers;
 use Yii;
 use app\models\Train;
 use app\models\TrainSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\ServerErrorHttpException;
 
 /**
  * TrainController implements the CRUD actions for Train model.
@@ -69,9 +71,22 @@ class TrainController extends Controller
     public function actionCreate()
     {
         $model = new Train();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+            $postInfo = Yii::$app->request->post();
+            if (strtotime($postInfo['Train']['end_time']) <= strtotime($postInfo['Train']['begin_time'])) {
+                throw new ServerErrorHttpException('更新状态失败，原因：开始时间不能大于结束时间！');
+            }
+            if (strtotime($postInfo['Train']['sign_up_end_time']) <= strtotime($postInfo['Train']['sign_up_begin_time'])) {
+                throw new ServerErrorHttpException('更新状态失败，原因：注册开始时间不能大于注册结束时间！');
+            }
+            if (strtotime($postInfo['Train']['begin_time']) <= strtotime($postInfo['Train']['sign_up_end_time'])) {
+                throw new ServerErrorHttpException('更新状态失败，原因：注册结束时间不能大于开始时间！');
+            }
+            if ($model->load($postInfo) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                throw new ServerErrorHttpException('更新状态失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -88,10 +103,60 @@ class TrainController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $transaction = Yii::$app->db->beginTransaction();
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                if ($model->status == Train::DOING) {
+                    //获取改课程下通过审核的学员
+                    $trainUsers = TrainUsers::getApprovedTrainUsersByTrainId($model->id);
+                    if (!empty($trainUsers)) {
+                        if ($model->sign_up_status != Train::END_SIGN_UP) {
+                            throw new ServerErrorHttpException('更新状态失败，原因：该培训课程的报名状态不为' . Train::$signUpStatusList[Train::END_SIGN_UP] . '！');
+                        }
+                        //根据课程id，用户id更新用户状态为正在进行
+                        $result = TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::DOING, $model->id);
+                        if ($result < 1) {
+                            $transaction->rollBack();
+                            throw new ServerErrorHttpException('更新状态失败，原因：更新学员状态失败！');
+                        }
+                        foreach ($trainUsers as $key => $val) {
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+                            //创建考勤信息
+                            for ($i = strtotime($model->begin_time); $i < strtotime($model->end_time); $i += 86400) {
+                                $day = date('Y-m-d H:i:s', $i);
+                                $isExist = Attendance::findOne(['train_id' => $model->id, 'user_id' => $val['user_id'], 'day' => $day]);
+                                if (empty($isExist)) {
+                                    $attendance = [
+                                        'train_id' => $model->id,
+                                        'user_id' => $val['user_id'],
+                                        'day' => $day,
+                                    ];
+                                    Attendance::add($attendance);
+                                }
+                            }
+                        }
+                    } else {
+                        $transaction->rollBack();
+                        throw new ServerErrorHttpException('更新状态失败，原因：该培训课程下没有学员！');
+                    }
+                } else if ($model->status == Train::END) { //如果更新为结束状态
+                    $trainUsers = TrainUsers::getDoingTrainUsersByTrainId($model->id);
+                    if (!empty($trainUsers)) {
+                        $result = TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::END, $model->id);
+                        if ($result < 1) {
+                            $transaction->rollBack();
+                            throw new ServerErrorHttpException('更新状态失败，原因：更新学员状态失败！');
+                        }
+                    }  else {
+                        $transaction->rollBack();
+                        throw new ServerErrorHttpException('更新状态失败，原因：该培训课程下没有学员！');
+                    }
+                }
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+        else {
             return $this->render('update', [
                 'model' => $model,
             ]);

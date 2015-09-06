@@ -100,7 +100,7 @@ class News extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 
-    public function getStatusName($status)
+    public static  function getStatusName($status)
     {
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }

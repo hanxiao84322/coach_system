@@ -34,11 +34,16 @@ class Train extends \yii\db\ActiveRecord
 
     //分类
     const WEEKEND = 1;
-    const DAILY = 2;
+    const FULLTIME = 2;
+    const BIGWEEKEND = 3;
+
 
     static public $categoryList = [
         self::WEEKEND => '周末班',
-        self::DAILY => '日常班'
+        self::FULLTIME => '脱产班',
+        self::BIGWEEKEND => '大周末班',
+
+
     ];
 
     //报名状态
@@ -52,12 +57,39 @@ class Train extends \yii\db\ActiveRecord
         self::END_SIGN_UP => '报名结束',
     ];
 
+    //课程状态
+    const NO_BEGIN = 1;
+    const DOING = 2;
+    const END = 3;
+
     static public $statusList = [
-        self::NEW_ADD => '未开始',
-        self::BEGIN_SIGN_UP => '进行中',
-        self::END_SIGN_UP => '结束',
+        self::NO_BEGIN => '未开始',
+        self::DOING => '进行中',
+        self::END => '结束',
     ];
 
+    static public $districtList = [
+        '东城区' => '东城区',
+        '西城区' => '西城区',
+        '朝阳区' => '朝阳区',
+        '丰台区' => '丰台区',
+        '石景山区' => '石景山区',
+        '海淀区' => '海淀区',
+        '门头沟区' => '门头沟区',
+        '房山区' => '房山区',
+        '通州区' => '通州区',
+        '顺义区' => '顺义区',
+        '昌平区' => '昌平区',
+        '大兴区' => '大兴区',
+        '怀柔区' => '怀柔区',
+        '平谷区' => '平谷区',
+        '密云县' => '密云县',
+        '延庆县' => '延庆县',
+        '其他区' => '其他区',
+    ];
+
+    //以招收人数
+    public $already_recruit_count;
     /**
      * @inheritdoc
      */
@@ -75,7 +107,7 @@ class Train extends \yii\db\ActiveRecord
             [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson'], 'integer'],
             [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson'], 'required'],
             [['sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
-            [['content'], 'string'],
+            [['content', 'district'], 'string'],
             [['name', 'create_user', 'update_user'], 'string', 'max' => 45],
             [['address'], 'string', 'max' => 50]
         ];
@@ -94,9 +126,10 @@ class Train extends \yii\db\ActiveRecord
             'recruit_count' => '招收人数',
             'sign_up_begin_time' => '注册开始时间',
             'sign_up_end_time' => '注册结束时间',
-            'sign_up_status' => '注册状态',
+            'sign_up_status' => '报名状态',
             'begin_time' => '开始时间',
             'end_time' => '结束时间',
+            'district' => '所在区域',
             'status' => '状态',
             'lesson' => '课时',
             'address' => '地址',
@@ -139,6 +172,21 @@ class Train extends \yii\db\ActiveRecord
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
 
+    /*
+     * 根据级别group by活动
+     */
+    public static function getTrainByLevel($levelId)
+    {
+        $sql = "SELECT * FROM `train` WHERE level_id='" . $levelId . "'";
+        return Yii::$app->db->createCommand($sql)->queryAll();
+    }
+
+    public static  function getOneTrainNameById($trainId)
+    {
+        $sql = "SELECT name FROM `train` WHERE id='" . $trainId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result['name'];
+    }
 
     public function beforeSave($insert = '')
     {

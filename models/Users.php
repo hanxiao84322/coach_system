@@ -4,11 +4,12 @@ namespace app\models;
 
 use Yii;
 
+
 /**
  * This is the model class for table "users".
  *
  * @property integer $id
- * @property string $name
+ * @property string $username
  * @property string $password
  * @property integer $sex
  * @property string $birthday
@@ -156,11 +157,10 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'password','sex', 'status', 'credentials_type', 'credentials_number', 'account_location','telephone', 'mobile_phone', 'email', 'height', 'weight', 'disease_history', 'contact_address','company_name', 'company_address', 'company_contact_phone', 'clothes_size', 't_shirt_size', 'shorts_size', 'language', 'spoken_language', 'write_language', 'birthday'], 'required'],
             [['height', 'weight','telephone', 'mobile_phone'], 'integer'],
             ['email', 'email'],
             ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message'=> '两次输入的密码不一致！'],
-            [['name', 'company_name'], 'string', 'max' => 20,'min' => 2],
+            [['username', 'company_name'], 'string', 'max' => 20,'min' => 2],
             [['password'], 'string', 'max' => 18,'min' => 6],
             [['credentials_number'], 'string', 'max' => 19,'min' => 18],
             [['telephone', 'mobile_phone', 'company_contact_phone'], 'string', 'max' => 20,'min' => 8],
@@ -176,7 +176,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => '姓名',
+            'username' => '姓名',
             'password' => '密码',
             'password_repeat' => '重复密码',
             'sex' => '性别',
@@ -337,6 +337,19 @@ class Users extends \yii\db\ActiveRecord
     public static  function getAbilityName($ability)
     {
         return isset(self::$abilityList[$ability]) ? self::$abilityList[$ability] : $ability;
+    }
+
+    public static function getLevelUsersCount()
+    {
+        $sql = "SELECT count(a.id) as count,b.username FROM `users` a LEFT JOIN `level` b ON a.level_id = id GROUP BY a.level_id";
+        Yii::$app->db->createCommand($sql)->queryAll();
+    }
+
+    public static  function getOneUserNameById($userId)
+    {
+        $sql = "SELECT username FROM `users` WHERE id='" . $userId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result['username'];
     }
 
 

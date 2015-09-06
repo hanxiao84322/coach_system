@@ -36,50 +36,66 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         [
-            'label' => '用户管理', 'url' => ['/Admin/users'],
+            'label' => '用户', 'url' => ['/Admin/users'],
             'items' => [
                 ['label' => '基本信息',
                     'url' => ['/Admin/users']
                 ],
                 ['label' => '培训信息',
-                    'url' => ['/Admin/usersTrain']
+                    'url' => ['/Admin/train-users']
                 ],
                 ['label' => '活动信息',
-                    'url' => ['/Admin/usersActivity']
+                    'url' => ['/Admin/users-activity']
                 ],
                 ['label' => '晋升信息',
-                    'url' => ['/Admin/userslevel']
+                    'url' => ['/Admin/users-level']
                 ]
             ]
         ],
-        ['label' => '级别管理', 'url' => ['/Admin/level']],
-        ['label' => '培训课程管理', 'url' => ['/Admin/train']],
-        ['label' => '活动管理', 'url' => ['/Admin/activity']],
-        ['label' => '内容管理', 'url' => ['/Admin/pages']],
+        ['label' => '讲师', 'url' => ['/Admin/teachers']],
+        ['label' => '级别', 'url' => ['/Admin/level']],
+        ['label' => '培训课程', 'url' => ['/Admin/train'],
+            'items' => [
+                ['label' => '培训课程信息管理',
+                    'url' => ['/Admin/train']
+                ],
+                ['label' => '评分管理',
+                    'url' => ['/Admin/train-users']
+                ],
+                ['label' => '讲师管理',
+                    'url' => ['/Admin/train-teachers']
+                ],
+                ['label' => '考勤信息',
+                    'url' => ['/Admin/train-users/attendance']
+                ]
+            ]
+        ],
+        ['label' => '活动', 'url' => ['/Admin/activity']],
+        ['label' => '内容', 'url' => ['/Admin/pages']],
         [
             'label' => '新闻管理', 'url' => ['/Admin/news'],
             'items' => [
                 ['label' => '分类',
-                    'url' => ['/Admin/newscategory']
+                    'url' => ['/Admin/news-category']
                 ],
                 ['label' => '新闻',
                     'url' => ['/Admin/news']
                 ]
             ]
         ],
-        ['label' => '配置管理', 'url' => ['/Admin/configuration']],
+        ['label' => '配置', 'url' => ['/Admin/configuration']],
         [
             'label' => '管理员管理', 'url' => ['/Admin/admin'],
             'items' => [
                 ['label' => '权限组',
-                    'url' => ['/Admin/admingroup']
+                    'url' => ['/Admin/admin-group']
                 ],
                 ['label' => '管理员',
                     'url' => ['/Admin/admin']
                 ]
             ]
         ],
-        Yii::$app->admin->isGuest ?
+            Yii::$app->admin->isGuest ?
             ['label' => '登陆', 'url' => ['/Admin/site/login']] :
             [
                 'label' => '登出 (' . Yii::$app->admin->identity->username . ')',

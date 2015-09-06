@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'thumb',
                 'format' => 'html',
-                'value' => $model->thumb ? '<img src="upload/images/news/thumb/'. $model->thumb . '">' : '无'
+                'value' => $model->thumb ? '<img src="/upload/images/news/thumb/'. $model->thumb . '">' : '无'
             ],
             [
                 'attribute' => 'is_recommend',
