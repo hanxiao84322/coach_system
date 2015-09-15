@@ -14,19 +14,26 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['style'=>'width:300px']) ?>
 
-    <?= $form->field($model, 'sex')->dropDownList(\app\models\Users::$sexList,['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'sex')->dropDownList(\app\models\Teachers::$sexList,['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'age')->textInput(['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'level')->dropDownList(\app\models\Teachers::$levelList,['style'=>'width:300px']) ?>
     <?php if (!$model->isNewRecord && !empty($model->photo)) {?>
-        <a href="#"><img src="upload/images/teachers/photo/<?= $model->photo ?>"></a>
+        <a href="#"><img src="/upload/images/teachers/photo/<?= $model->photo ?>"></a>
 
         <?= $form->field($model, 'photo')->fileInput(['style'=>'width:500px']) ?>
     <?php } else {?>
         <?= $form->field($model, 'photo')->fileInput(['style'=>'width:500px']) ?>
     <?php } ?>
 
+    <?= $form->field($model, 'lesson')->textInput(['style'=>'width:300px']) ?>
+
+    <?= $form->field($model, 'score')->textInput(['style'=>'width:300px']) ?>
+
+    <?= $form->field($model, 'register_district')->dropDownList(\app\models\Train::$districtList,['style'=>'width:300px']) ?>
+
+    <?= $form->field($model, 'certificate_number')->textInput(['style'=>'width:300px']) ?>
 
 
     <div class="form-group">

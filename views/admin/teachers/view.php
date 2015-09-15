@@ -42,6 +42,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=> app\models\Teachers::getLevelName($model->level)
             ],
             'lesson',
+            [
+                'attribute' => 'photo',
+                'format' => 'html',
+                'value' => $model->photo ? '<img src="/upload/images/teachers/photo/'. $model->photo . '">' : '无'
+            ],
+            'score',
+            'register_district',
+            'certificate_number',
             'create_time',
             'create_user',
             'update_time',

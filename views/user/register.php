@@ -1,31 +1,3 @@
-<script type="text/javascript">
-    $(function(){
-        //tab
-        $(".tabs .title_h42 a:first-child").addClass("hover");
-        $(".tabs").each(function(){
-            $(".tab_son",this).eq(0).addClass("nodis");
-        });
-        $(".tabs .title_h42 a").click(function(){
-            var nnum = $(this).index();
-            $(this).siblings().removeClass("hover");
-            $(this).addClass("hover");
-            var nnum = $(this).index();
-            $(this).parent().siblings(".tab_son").removeClass("nodis");
-            $(this).parent().siblings(".tab_son").eq(nnum).addClass("nodis");
-
-        });
-
-
-        //个人信息伸缩
-        $(".nrset_set li h1").click(function(){
-            $(this).addClass('hover')
-            $(this).siblings().slideDown();
-            $(this).parent().siblings().find("h1").removeClass('hover');
-            $(this).parent().siblings().find(".form_input").slideUp();
-
-        });
-    })
-</script>
 <?php
 use yii\widgets\ActiveForm;
 ?>
@@ -34,7 +6,6 @@ use yii\widgets\ActiveForm;
         var ok1=false;
         var ok2=false;
         var ok3=false;
-        var ok4=false;
         //验证密码
         $('input[name="password"]').focus(function(){
             $(this).next().text('密码长多6~16位，数字、字母、字符至少包括两种').removeClass('state1').addClass('state2');
@@ -77,7 +48,7 @@ use yii\widgets\ActiveForm;
 
         $('input[name="submit"]').click(function(){
             if(ok1 && ok2 && ok3){
-                $('register').submit();
+                return true;
             }else{
                 return false;
             }
@@ -89,17 +60,28 @@ use yii\widgets\ActiveForm;
     'id'=>'register',
     'enableAjaxValidation' => false,
     'options'=>['enctype'=>'multipart/form-data'],
-    'action' => \yii\helpers\Url::to('/user/register-post')
+    'action' => \yii\helpers\Url::to('/user/register')
 ]); ?>
 <div class="bjsj_register">
     <div class="div_register">
         <p class="login_infro"><span>注册</span></p>
-        <p class="dl_check"><a href="javascript:;" class="hover">用邮箱注册</a><a href="javascript:;">用手机号码注册</a></p>
+        <p class="dl_check"><a href="<?= \yii\helpers\Url::to(['/user/register', 'type' => 'email'])?>" class="hover">用邮箱注册</a><a href="<?= \yii\helpers\Url::to(['/user/register', 'type' => 'mobile_phone'])?>">用手机号码注册</a></p>
         <table cellpadding="0" cellspacing="0" class="table_login">
+            <?php if ($type == 'email') {?>
             <tr>
                 <td width="145" align="right"><b>*</b>邮箱地址：</td>
                 <td><input type="text" name="email" class="phone"><span class='state1'></span></td>
             </tr>
+            <?php } else {?>
+            <tr>
+                <td width="145" align="right"><b>*</b>手机号码：</td>
+                <td><input type="text" value="" name="phone" class="phone"<span class='state1'></span></td>
+            </tr>
+            <tr>
+                <td align="right"><b>*</b>验证码：</td>
+                <td><input type="text" value="" class="w130"><input type="button" name="check_num" value="获取短信验证码" class="button_hq" /> 请输入手机收到的验证码。如果一段时间没收到，请重新获取</td>
+            </tr>
+            <?php }?>
             <tr>
                 <td align="right"><b>*</b>设置密码：</td>
                 <td><input type="password" name="password" class="password"> <span class='state1'></span></td>

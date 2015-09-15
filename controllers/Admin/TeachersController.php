@@ -78,6 +78,8 @@ class TeachersController extends Controller
 
             if ($model->hasErrors('file')) {
                 throw new ServerErrorHttpException($model->getErrors('file'));
+            } else {
+                $teachersInfo['Teachers']['photo'] = $fileName;
             }
             if ($model->load($teachersInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -117,7 +119,7 @@ class TeachersController extends Controller
             if ($model->load($teacherInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
-                throw new ServerErrorHttpException('添加新闻失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
+                throw new ServerErrorHttpException('添加讲师失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
         } else {
             return $this->render('update', [

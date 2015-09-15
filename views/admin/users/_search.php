@@ -17,65 +17,33 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'username') ?>
 
     <?= $form->field($model, 'password') ?>
 
-    <?= $form->field($model, 'sex') ?>
+    <?= $form->field($model, 'level_id') ?>
 
-    <?= $form->field($model, 'birthday') ?>
+    <?= $form->field($model, 'level_order') ?>
 
-    <?php // echo $form->field($model, 'title') ?>
+    <?php // echo $form->field($model, 'email_auth') ?>
+
+    <?php // echo $form->field($model, 'phone_auth') ?>
 
     <?php // echo $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'credentials_type') ?>
-
-    <?php // echo $form->field($model, 'credentials_number') ?>
-
-    <?php // echo $form->field($model, 'account_loaction') ?>
-
-    <?php // echo $form->field($model, 'telephone') ?>
 
     <?php // echo $form->field($model, 'mobile_phone') ?>
 
     <?php // echo $form->field($model, 'email') ?>
 
-    <?php // echo $form->field($model, 'height') ?>
-
-    <?php // echo $form->field($model, 'weight') ?>
-
-    <?php // echo $form->field($model, 'disease_history') ?>
-
-    <?php // echo $form->field($model, 'contact_address') ?>
-
-    <?php // echo $form->field($model, 'contact_postcode') ?>
-
-    <?php // echo $form->field($model, 'company_name') ?>
-
-    <?php // echo $form->field($model, 'company_address') ?>
-
-    <?php // echo $form->field($model, 'company_postcode') ?>
-
-    <?php // echo $form->field($model, 'company_contact_phone') ?>
-
-    <?php // echo $form->field($model, 'clothes_size') ?>
-
-    <?php // echo $form->field($model, 't_shirt_size') ?>
-
-    <?php // echo $form->field($model, 'shorts_size') ?>
-
-    <?php // echo $form->field($model, 'language') ?>
-
-    <?php // echo $form->field($model, 'spoken_language') ?>
-
-    <?php // echo $form->field($model, 'writh_language') ?>
-
-    <?php // echo $form->field($model, 'lession') ?>
+    <?php // echo $form->field($model, 'lesson') ?>
 
     <?php // echo $form->field($model, 'credit') ?>
 
     <?php // echo $form->field($model, 'score') ?>
+
+    <?php // echo $form->field($model, 'authKey') ?>
+
+    <?php // echo $form->field($model, 'accessToken') ?>
 
     <?php // echo $form->field($model, 'create_time') ?>
 

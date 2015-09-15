@@ -15,52 +15,42 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('新建用户', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+
             'username',
+            [
+                'attribute' => 'email_auth',
+                'value' => function($searchModel){
+                    return $searchModel->email_auth ? '是' : '否';
+                }
+            ],
+            [
+                'attribute' => 'phone_auth',
+                'value' => function($searchModel){
+                    return $searchModel->phone_auth ? '是' : '否';
+                }
+            ],
             [
                 'attribute' => 'status',
                 'value' => function($searchModel){
                     return app\models\Users::getStatusName($searchModel->status);
                 }
             ],
-            // 'credentials_type',
-            // 'credentials_number',
-            // 'account_location',
-            // 'telephone',
-            // 'mobile_phone',
-             'email:email',
-            // 'height',
-            // 'weight',
-            // 'disease_history',
-            // 'contact_address',
-            // 'contact_postcode',
-            // 'company_name',
-            // 'company_address',
-            // 'company_postcode',
-            // 'company_contact_phone',
-            // 'clothes_size',
-            // 't_shirt_size',
-            // 'shorts_size',
-            // 'language',
-            // 'spoken_language',
-            // 'write_language',
-            // 'lesson',
+            'mobile_phone',
+            'email:email',
             [
                 'label' => '查看',
                 'format' => 'html',
                 'value' => function($searchModel) {
-                    $url = Html::a('教育经历', ['Admin/usersEducation/', 'UserId' => $searchModel->id]);
-                    $url .= '&nbsp;'.Html::a('培训经历', ['Admin/usersTrain/', 'UserId' => $searchModel->id]).'<br>';
-                    $url .= Html::a('运动经历', ['Admin/usersPlayers/', 'UserId' => $searchModel->id]);
-                    $url .= '&nbsp;'.Html::a('执教经历', ['Admin/usersVocational/', 'UserId' => $searchModel->id]);
+                    $url = Html::a('基本信息', ['Admin/users-info/', 'UsersInfoSearch[user_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('教育经历', ['Admin/users-education/', 'UsersEducationSearch[user_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('培训经历', ['Admin/users-train/', 'UsersTrainSearch[user_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('运动经历', ['Admin/users-players/', 'UsersPlayersSearch[user_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('执教经历', ['Admin/users-vocational/', 'UsersVocationalSearch[user_id]' => $searchModel->id]);
                     return $url;
                 }
             ],
@@ -69,12 +59,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'html',
                 'value' => function($searchModel) {
                     $url = Html::a('晋升', ['Admin/UsersLevel/', 'UserId' => $searchModel->id]);
-                    $url .= '&nbsp;'.Html::a('活动', ['Admin/ActivityUsers/', 'UserId' => $searchModel->id]).'<br>';
-                    $url .= Html::a('培训课程', ['Admin/TrainUsers/', 'UserId' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('活动', ['Admin/ActivityUsers/', 'UserId' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('培训课程', ['Admin/TrainUsers/', 'UserId' => $searchModel->id]);
                     return $url;
                 }
             ],
-            // 'score',
              'create_time',
             // 'update_time',
             // 'update_user',

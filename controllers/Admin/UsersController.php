@@ -7,10 +7,7 @@ use app\models\Users;
 use app\models\UsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 use yii\filters\VerbFilter;
-use yii\data\ActiveDataProvider;
-
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -59,12 +56,8 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => $this->findModel($id),
-        ]);
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'dataProvider' => $dataProvider
         ]);
     }
 
@@ -75,19 +68,20 @@ class UsersController extends Controller
      */
     public function actionCreate()
     {
-//        $userInfo = Yii::$app->user;
-//        print_r($userInfo);exit;
         $model = new Users();
-        $postInfo = Yii::$app->request->post();
-        if (!empty($postInfo)) {
-            if ($model->load($postInfo) && $model->save()) {
-                Yii::$app->getSession()->setFlash('success', '添加成功！');
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                throw new ServerErrorHttpException('添加用户失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
-                return $this->redirect(['create']);
+        if (Yii::$app->request->isPost) {
+
+            $postInfo = Yii::$app->request->post();
+            if (!empty($postInfo)) {
+                if ($model->load($postInfo) && $model->save()) {
+                    Yii::$app->getSession()->setFlash('success', '添加成功！');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else {
+                    throw new ServerErrorHttpException('添加用户失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
+                    return $this->redirect(['create']);
+                }
             }
-        } else {
+        }  else {
             return $this->render('create', [
                 'model' => $model,
             ]);
@@ -103,10 +97,12 @@ class UsersController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $postInfo = Yii::$app->request->post();
+        if (Yii::$app->request->isPost) {
+            $postInfo = Yii::$app->request->post();
 
-        if ($model->load($postInfo) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($postInfo) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -142,5 +138,4 @@ class UsersController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-
 }

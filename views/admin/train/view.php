@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label'=>'级别',
                 'value'=> app\models\Level::getOneLevelNameById($model->level_id)
             ],
+            'code',
             'recruit_count',
             'sign_up_begin_time',
             'sign_up_end_time',
@@ -57,6 +58,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'district',
             'address',
+            'bus',
+            'near_site',
             'content:ntext',
             'create_time',
             'create_user',

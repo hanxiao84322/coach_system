@@ -3,6 +3,7 @@
 $params = require(__DIR__ . '/params.php');
 
 $config = [
+    'defaultRoute' => 'home',
     'id' => 'basic',
     'language' => 'zh-CN',
     'basePath' => dirname(__DIR__),
@@ -19,7 +20,7 @@ $config = [
             'class' => 'yii\web\User',
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
-            'loginUrl' => ['site/login'],
+            'loginUrl' => ['user/login'],
             'identityCookie' => ['name' => '__user_identity', 'httpOnly' => true],
             'idParam' => '__user'
         ],
@@ -28,7 +29,7 @@ $config = [
             'identityClass' => 'app\models\AdminUser',
             'enableAutoLogin' => true,
             'loginUrl' => ['Admin/site/login'],
-            'identityCookie' => ['name' => '__user_identity', 'httpOnly' => true],
+            'identityCookie' => ['name' => '__admin_identity', 'httpOnly' => true],
             'idParam' => '__admin'
         ],
         'errorHandler' => [

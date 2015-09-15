@@ -2,10 +2,10 @@
     <div class="max_width">
         <table cellpadding="0" cellspacing="0" width="100%">
             <tr>
-                <?= $this->render('left',['result' => $result]);?>
+                <?= $this->render('left',['data' => $data]);?>
                 <td valign="top">
                     <div class="content_box">
-                        <h3 class="h3_h40"><span class="fl">您好：<b><?= Yii::$app->user->identity->username?></b>　　欢迎光临北京足协教练员管理系统！</span><span class="fr">您的级别：<b><?= $result['levelName']?></b></span></h3>
+                        <h3 class="h3_h40"><span class="fl">您好：<b><?= Yii::$app->user->identity->username?></b>　　欢迎光临北京足协教练员管理系统！</span><span class="fr">您的级别：<b><?= $data['levelName']?></b></span></h3>
                         <div class="h196">
                             <img src="/images/user/pic2.jpg" />
                             <p><span>站内公告</span>1、热爱教练事业有限<br />2、大专以上学历（体育专业优先）<br />3、年龄在25-45岁<br />4、提交报名表后会在7-14个工作日以短信形式通知滤去信息以及培训信息，请您务必准确填写每项信息<br /><b>注意：如有虚假报名申请请教列入教练员黑名单！！</b></p>
@@ -25,8 +25,8 @@
                                         <th>报名状态</th>
                                         <th>操作</th>
                                     </tr>
-                                    <?php if (!empty($result['trainModel'])) {?>
-                                    <?php foreach ($result['trainModel'] as $key => $val) :?>
+                                    <?php if (!empty($data['trainModel'])) {?>
+                                    <?php foreach ($data['trainModel'] as $key => $val) :?>
                                     <tr>
                                         <td><?= $key + 1?></td>
                                         <td><a href="<?= \yii\helpers\Url::to(['/user-center/train-view', 'trainUsersId' => $val['id']])?>"><?= $val['name']?></a></td>
@@ -36,7 +36,7 @@
                                         <td>招<?= $val['recruit_count']?>人 ( <b class="red">已录取 <?= \app\models\TrainUsers::getRecruitCount($val['train_id'])?> 人</b> )</td>
                                         <td><b class="<?php if ($val['status'] == '6') {?>red<?php }elseif ($val['status'] == '5'){?>gray<?php } else {?>green<?php }?>"><?= \app\models\TrainUsers::$statusList[$val['status']]?></b></td>
                                         <td>
-                                            <a href="<?= \yii\helpers\Url::to('/user-center/updateUserInfo')?>">修改信息</a>
+                                            <a href="<?= \yii\helpers\Url::to('/user-center/user-info')?>">修改信息</a>
                                             <?php if (in_array($val['status'], [\app\models\TrainUsers::NO_APPROVED,\app\models\TrainUsers::SIGN,\app\models\TrainUsers::APPROVED])) {?>
                                             <a href="<?= \yii\helpers\Url::to(['/user-center/update-train-user-status', 'trainId' => $val['id'], 'status' => 7])?>">取消</a>
                                             <?php }?>
@@ -59,10 +59,10 @@
                                         <th colspan="2">综合信息统计</th>
                                     </tr>
                                     <tr>
-                                        <?php if (empty($result['currentTrain'])) {?>
+                                        <?php if (empty($data['currentTrain'])) {?>
                                             <td>您目前没有参与的培训课程</td>
                                         <?php } else {?>
-                                            <td>您申请报名的培训课程是：<?= $result['currentTrain']['name']?>  状态：<b> <?= \app\models\TrainUsers::$statusList[$result['currentTrain']['status']]?></b> </td>
+                                            <td>您申请报名的培训课程是：<?= $data['currentTrain']['name']?>  状态：<b> <?= \app\models\TrainUsers::$statusList[$data['currentTrain']['status']]?></b> </td>
                                         <?php }?>
                                         <td>您申请报名了：（0）个继续教育活动，（0）个执教活动</td>
                                     </tr>
@@ -87,28 +87,31 @@
                                         <th>参与人数</th>
                                         <th>报名状态</th>
                                     </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>望京小学执教</td>
-                                        <td>执教</td>
-                                        <td>2015-05-10</td>
-                                        <td>望京小学</td>
-                                        <td>20课时</td>
-                                        <td>00分</td>
-                                        <td>招01人 ( <b class="green">已录取 00 人</b> )</td>
-                                        <td><a href="javascript:;">审核中</a><a href="javascript:;" class="red">取消</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>校园足球活动</td>
-                                        <td>继续考核</td>
-                                        <td>2015-05-10</td>
-                                        <td>八十一中学</td>
-                                        <td>20课时</td>
-                                        <td>00分</td>
-                                        <td>招12人 ( <b class="green">已录取08 人</b> )</td>
-                                        <td><b class="green">活动进行中</b> </td>
-                                    </tr>
+                                    <?php if (!empty($data['Model'])) {?>
+                                        <?php foreach ($data['trainModel'] as $key => $val) :?>
+                                            <tr>
+                                                <td><?= $key + 1?></td>
+                                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/train-view', 'trainUsersId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                                <td><?= \app\models\Train::getCategoryName($val['category'])?></td>
+                                                <td><?= $val['begin_time']?></td>
+                                                <td><?= $val['address']?></td>
+                                                <td>招<?= $val['recruit_count']?>人 ( <b class="red">已录取 <?= \app\models\TrainUsers::getRecruitCount($val['train_id'])?> 人</b> )</td>
+                                                <td><b class="<?php if ($val['status'] == '6') {?>red<?php }elseif ($val['status'] == '5'){?>gray<?php } else {?>green<?php }?>"><?= \app\models\TrainUsers::$statusList[$val['status']]?></b></td>
+                                                <td>
+                                                    <a href="<?= \yii\helpers\Url::to('/user-center/user-info')?>">修改信息</a>
+                                                    <?php if (in_array($val['status'], [\app\models\TrainUsers::NO_APPROVED,\app\models\TrainUsers::SIGN,\app\models\TrainUsers::APPROVED])) {?>
+                                                        <a href="<?= \yii\helpers\Url::to(['/user-center/update-train-user-status', 'trainId' => $val['id'], 'status' => 7])?>">取消</a>
+                                                    <?php }?>
+                                                    <?php if (in_array($val['status'], [\app\models\TrainUsers::END,\app\models\TrainUsers::NO_APPROVED,\app\models\TrainUsers::CANCEL])) {?>
+
+                                                        <a href="<?= \yii\helpers\Url::to(['/user-center/delete-train-users', 'id' => $val['id']])?>">删除</a>
+                                                    <?php }?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach?>
+                                    <?php } else {?>
+                                        <td colspan="8">目前没有数据</td>
+                                    <?php }?>
                                     <tr>
                                         <td colspan="9" class="bg_set"><a href="javascript:;">查看全部</a></td>
                                     </tr>
@@ -118,10 +121,10 @@
                                         <th colspan="2">综合信息统计</th>
                                     </tr>
                                     <tr>
-                                        <?php if (!empty($result['currentTrain'])) {?>
+                                        <?php if (empty($data['currentTrain'])) {?>
                                         <td>您目前没有参与的培训课程</td>
                                         <?php } else {?>
-                                        <td>您申请报名的培训课程是：<?= $result['currentTrain']['name']?>  状态：<b> <?= \app\models\TrainUsers::$statusList[$result['currentTrain']['status']]?></b> </td>
+                                        <td>您申请报名的培训课程是：<?= $data['currentTrain']['name']?>  状态：<b> <?= \app\models\TrainUsers::$statusList[$data['currentTrain']['status']]?></b> </td>
                                         <?php }?>
                                         <td>您申请报名了：（0）个继续教育活动，（0）个执教活动</td>
                                     </tr>

@@ -104,11 +104,11 @@ class Train extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson'], 'integer'],
-            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson'], 'required'],
+            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson','code'], 'integer'],
+            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson','code'], 'required'],
             [['sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['content', 'district'], 'string'],
-            [['name', 'create_user', 'update_user'], 'string', 'max' => 45],
+            [['name', 'create_user', 'update_user','bus', 'near_site'], 'string', 'max' => 45],
             [['address'], 'string', 'max' => 50]
         ];
     }
@@ -123,6 +123,7 @@ class Train extends \yii\db\ActiveRecord
             'name' => '名称',
             'category' => '分类',
             'level_id' => '级别',
+            'code' => '编号',
             'recruit_count' => '招收人数',
             'sign_up_begin_time' => '注册开始时间',
             'sign_up_end_time' => '注册结束时间',
@@ -133,6 +134,8 @@ class Train extends \yii\db\ActiveRecord
             'status' => '状态',
             'lesson' => '课时',
             'address' => '地址',
+            'bus' => '公交路线',
+            'near_site' => '附近站点',
             'content' => '内容',
             'create_time' => '创建时间',
             'create_user' => '创建人',
@@ -186,6 +189,29 @@ class Train extends \yii\db\ActiveRecord
         $sql = "SELECT name FROM `train` WHERE id='" . $trainId . "'";
         $result = Yii::$app->db->createCommand($sql)->queryOne();
         return $result['name'];
+    }
+
+    public static function getOneCodeById($trainId)
+    {
+        $sql = "SELECT code FROM `train` WHERE id='" . $trainId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result['code'];
+    }
+
+
+    public static function getOneDistrictById($trainId)
+    {
+        $sql = "SELECT district FROM `train` WHERE id='" . $trainId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result['district'];
+    }
+
+
+    public static function getTrainCount()
+    {
+        $sql = "SELECT count(*) as count FROM " . self::tableName();
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
     }
 
     public function beforeSave($insert = '')

@@ -11,8 +11,12 @@ use Yii;
  * @property string $name
  * @property integer $sex
  * @property integer $age
+ * @property string $photo
  * @property integer $level
  * @property integer $lesson
+ * @property integer $score
+ * @property string $register_district
+ * @property string $certificate_number
  * @property string $create_time
  * @property string $create_user
  * @property string $update_time
@@ -55,9 +59,9 @@ class Teachers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sex', 'age', 'level', 'lesson'], 'integer'],
+            [['sex', 'age', 'level'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name', 'create_user', 'update_user'], 'string', 'max' => 45]
+            [['name', 'photo', 'register_district', 'certificate_number', 'create_user', 'update_user'], 'string', 'max' => 45]
         ];
     }
 
@@ -71,9 +75,12 @@ class Teachers extends \yii\db\ActiveRecord
             'name' => '姓名',
             'sex' => '性别',
             'age' => '年龄',
-            'photo' => '头像',
+            'photo' => '照片',
             'level' => '级别',
             'lesson' => '已授课时',
+            'score' => '积分',
+            'register_district' => '注册区域',
+            'certificate_number' => '证件号码',
             'create_time' => '创建时间',
             'create_user' => '创建人',
             'update_time' => '更新时间',
@@ -113,6 +120,31 @@ class Teachers extends \yii\db\ActiveRecord
         $sql = "SELECT name FROM " . self::tableName() . " WHERE id='" . $teacherId . "'";
         $result = Yii::$app->db->createCommand($sql)->queryOne();
         return $result['name'];
+    }
+
+    public static function getTeachersCount()
+    {
+        $sql = "SELECT count(*) as count FROM " . self::tableName();
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
+    }
+
+    public static function getAllTeachersForNewsTrain()
+    {
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . ' LIMIT 0 , 6 ')->queryAll();
+        return $result;
+    }
+
+    public static function getAllTeachersForTeachersIndex()
+    {
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName())->queryAll();
+        return $result;
+    }
+
+    public static function getTeachersCountGroupByArea()
+    {
+        $result = Yii::$app->db->createCommand('SELECT count(t.id) as count,train.district FROM  ' . self::tableName() . ' t LEFT JOIN ' . TrainTeachers::tableName() . ' tt ON t.id = tt.teachers_id LEFT JOIN ' . Train::tableName() . ' train ON tt.train_id = train.id WHERE train.district is not null group by train.district')->queryAll();
+        return $result;
     }
 
     public function beforeSave($insert = '')

@@ -37,7 +37,7 @@ WebAppAsset::register($this);
                 document.writeln(s);
             </script>
         </p>
-        <p class="fr login_box"><?php if (Yii::$app->admin->isGuest) {?><a href="<?= Url::to('/user/login')?>">登录</a><?php } else { ?><a href="<?= Url::to('/user-center/index')?>">会员中心</a> | <a href="<?= Url::to('/user/logout')?>">登出</a><?php }?> | <a href="javascript:;">加入收藏</a></p>
+        <p class="fr login_box"><?php if (Yii::$app->user->isGuest) {?><a href="<?= Url::to('/user/login')?>">登录</a><?php } else { ?><a href="<?= Url::to('/user-center/index')?>">会员中心</a> | <a href="<?= Url::to('/user/logout')?>">登出</a><?php }?> | <a href="javascript:;">加入收藏</a></p>
     </div>
 </div>
 <!--top-->
@@ -52,13 +52,13 @@ WebAppAsset::register($this);
 <!--nav-->
 <div class="nav_box">
     <ul class="nav">
-        <li><a href="<?= Url::to('/home/index')?>" class="hover">首页</a></li>
-        <li><a href="<?= Url::to(['/news/index','id' => '2'])?>">最新动态</a></li>
+        <li><a href="<?= Url::to('/home/index')?>">首页</a></li>
+        <li><a href="<?= Url::to('/news/index')?>">最新动态</a></li>
         <li><a href="<?= Url::to('/train/index')?>">培训报名</a></li>
-        <li><a href="<?= Url::to(['/news/index','id' => '3'])?>">培训风采</a></li>
-        <li><a href="<?= Url::to('/register/coach')?>">教练员注册</a></li>
-        <li><a href="<?= Url::to('/coach/index')?>">教练员专区</a></li>
-        <li><a href="<?= Url::to(['/news/index','id' => '10'])?>">政策法规</a></li>
+        <li><a href="<?= Url::to(['/news/train','level_id' => 2])?>">培训风采</a></li>
+        <li><a href="<?= Url::to('/user/register-coach')?>">教练员注册</a></li>
+        <li><a href="<?= Url::to('/user/index')?>">教练员专区</a></li>
+        <li><a href="<?= Url::to('/news/train')?>">政策法规</a></li>
         <li><a href="javascript:;">足协官网</a></li>
     </ul>
 </div>

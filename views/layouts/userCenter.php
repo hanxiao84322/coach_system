@@ -2,18 +2,18 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-
     <link href="/css/user_center.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/js/jquery.SuperSlide.js"></script>
     <script type="text/javascript" src="/js/self.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=2c327dae2b9abd9727b0e8da3d988040"></script>
 </head>
 <body>
 

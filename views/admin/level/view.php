@@ -30,8 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'lesson',
-            'credit',
+            'code',
             'score',
             'login_duration',
             'register_fee',

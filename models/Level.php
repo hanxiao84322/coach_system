@@ -41,13 +41,14 @@ class Level extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['lesson', 'credit', 'score', 'login_duration','order'], 'integer'],
-            [['lesson', 'credit', 'score', 'login_duration'], 'default', 'value' => 0],
+            [['score', 'login_duration','order'], 'integer'],
+            [[ 'score', 'login_duration'], 'default', 'value' => 0],
             ['register_fee', 'default', 'value' => 0.00],
 
             [['register_fee'], 'number'],
             [['create_time', 'update_time'], 'safe'],
             [['name'], 'string', 'max' => 45],
+            [['code'], 'string', 'max' => 5],
             [['content'], 'string', 'max' => 500]
         ];
     }
@@ -60,10 +61,9 @@ class Level extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => '名称',
-            'order' => '类别排序（越大级别越高）',
-            'lesson' => '升级所需课时',
-            'credit' => '升级所需学分',
-            'score' => '升级所学评分',
+            'code' => '编码',
+            'order' => '类别排序（越大级别越高，系统自动生成）',
+            'score' => '升级所需积分',
             'login_duration' => '升级所需注册时长单位月',
             'register_fee' => '注册费单位元',
             'content' => '录取条件',
@@ -126,6 +126,33 @@ class Level extends \yii\db\ActiveRecord
             ->where('id=:id', [':id'=>$levelId])
             ->one();
         return $row['name'];
+    }
+
+    public static function getContentById($id)
+    {
+        $result = Yii::$app->db->createCommand('SELECT content FROM  ' . self::tableName() . ' WHERE id=:id', [':id' => $id])->queryOne();
+        return $result['content'];
+    }
+
+    public static function getOneCodeById($levelId)
+    {
+        $sql = "SELECT code FROM " . self::tableName() . " WHERE id='" . $levelId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result['code'];
+    }
+
+    public static function getOrderById($levelId)
+    {
+        $sql = "SELECT `order` FROM " . self::tableName() . " WHERE id='" . $levelId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
+    }
+
+    public static function getRegisterFeeById($levelId)
+    {
+        $sql = "SELECT `register_fee` FROM " . self::tableName() . " WHERE id='" . $levelId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
     }
 
     public function beforeSave($insert = '')

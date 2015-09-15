@@ -31,74 +31,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'username',
             [
-                'attribute' => 'sex',
-                'label'=>'性别',
-                'value'=> app\models\Users::getSexName($model->sex)
-            ],
-            'birthday',
+                'attribute' => 'level_id',
+                'value'=> app\models\Level::getOneLevelNameById($model->level_id)            ],
             [
-                'attribute' => 'title',
-                'label'=>'类型',
-                'value'=> app\models\Users::getTitleName($model->title)
+                'attribute' => 'email_auth',
+                'value' => $model->email_auth ? '是' : '否'
+            ],
+            [
+                'attribute' => 'phone_auth',
+                'value' => $model->phone_auth ? '是' : '否'
             ],
             [
                 'attribute' => 'status',
-                'label'=>'状态',
                 'value'=> app\models\Users::getStatusName($model->status)
             ],
-            [
-                'attribute' => 'credentials_type',
-                'label'=>'证件类型',
-                'value'=> app\models\Users::getCredentialsName($model->credentials_type)
-            ],
-            'credentials_number',
-            'account_location',
-            'telephone',
             'mobile_phone',
             'email:email',
-            'height',
-            'weight',
-            [
-                'attribute' => 'disease_history',
-                'label'=>'既往病史',
-                'value'=> app\models\Users::getDiseaseHistoryName($model->disease_history)
-            ],
-            'contact_address',
-            'contact_postcode',
-            'company_name',
-            'company_address',
-            'company_postcode',
-            'company_contact_phone',
-            [
-                'attribute' => 'clothes_size',
-                'label'=>'训练服尺码',
-                'value'=> app\models\Users::getSizeName($model->clothes_size)
-            ],
-            [
-                'attribute' => 't_shirt_size',
-                'label'=>'训练T恤尺码',
-                'value'=> app\models\Users::getSizeName($model->t_shirt_size)
-            ],
-            [
-                'attribute' => 'shorts_size',
-                'label'=>'训练鞋尺码',
-                'value'=> app\models\Users::getSizeName($model->shorts_size)
-            ],
-            [
-                'attribute' => 'language',
-                'label'=>'外语',
-                'value'=> app\models\Users::getLanguageName($model->language)
-            ],
-            [
-                'attribute' => 'spoken_language',
-                'label'=>'外语',
-                'value'=> app\models\Users::getAbilityName($model->spoken_language)
-            ],
-            [
-                'attribute' => 'write_language',
-                'label'=>'外语',
-                'value'=> app\models\Users::getAbilityName($model->write_language)
-            ],
             'lesson',
             'credit',
             'score',

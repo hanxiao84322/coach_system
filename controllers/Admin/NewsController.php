@@ -7,7 +7,6 @@ use app\models\News;
 use app\models\NewsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\web\ServerErrorHttpException;
 
@@ -112,6 +111,7 @@ class NewsController extends Controller
             $newsInfo = Yii::$app->request->post();
 
             $model->thumb = UploadedFile::getInstance($model, 'thumb');
+
             if (!empty($model->thumb)) {
                 $fileName = time().  '.' .$model->thumb->extension;
                 $model->thumb->saveAs('upload/images/news/thumb/' . $fileName, true);

@@ -28,8 +28,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'user_id',
+                'format' => 'html',
                 'value'=> function ($searchModel) {
-                    return app\models\Users::getOneUserNameById($searchModel->user_id);
+                    return '<a href="/Admin/users/index?UsersSearch[id]=' . $searchModel->user_id . '">' . app\models\Users::getOneUserNameById($searchModel->user_id) . '</a>';
                 }
             ],
             [

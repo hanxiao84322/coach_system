@@ -4,51 +4,31 @@ namespace app\models;
 
 use Yii;
 
-
 /**
  * This is the model class for table "users".
  *
  * @property integer $id
  * @property string $username
  * @property string $password
- * @property integer $sex
- * @property string $birthday
- * @property integer $title
+ * @property integer $level_id
+ * @property integer $level_order
+ * @property integer $email_auth
+ * @property integer $phone_auth
  * @property integer $status
- * @property integer $credentials_type
- * @property string $credentials_number
- * @property string $account_location
- * @property string $telephone
  * @property string $mobile_phone
  * @property string $email
- * @property integer $height
- * @property integer $weight
- * @property integer $disease_history
- * @property string $contact_address
- * @property string $contact_postcode
- * @property string $company_name
- * @property string $company_address
- * @property string $company_postcode
- * @property string $company_contact_phone
- * @property integer $clothes_size
- * @property integer $t_shirt_size
- * @property integer $shorts_size
- * @property integer $language
- * @property integer $spoken_language
- * @property integer $write_language
  * @property integer $lesson
  * @property integer $credit
  * @property integer $score
+ * @property string $authKey
+ * @property string $accessToken
  * @property string $create_time
  * @property string $update_time
  * @property string $update_user
  *
  * @property ActivityUsers[] $activityUsers
- * @property News[] $news
- * @property TrainUsers[] $trainUsers
  * @property UsersEducation[] $usersEducations
  * @property UsersImage[] $usersImages
- * @property UsersLevel[] $usersLevels
  * @property UsersLogin[] $usersLogins
  * @property UsersPlayers[] $usersPlayers
  * @property UsersTrain[] $usersTrains
@@ -56,24 +36,6 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord
 {
-
-    const MAN = 1; // 男
-    const WOMAN = 2; // 女
-    //性别
-    public static $sexList = [
-        self::MAN => '男',
-        self::WOMAN => '女',
-    ];
-
-    const TEACHER = 1; // 一般用户
-    const STUDENT = 2; //讲师
-    //性别
-    public static $titleList = [
-        self::TEACHER => '一般用户',
-        self::STUDENT => '讲师',
-    ];
-
-
     const NEW_ADD = 0; // 待审核
     const APPROVED = 1; // 已审核
     const NOT_APPROVED = 2; // 驳回
@@ -86,62 +48,6 @@ class Users extends \yii\db\ActiveRecord
         self::NOT_APPROVED => '驳回',
         self::CLOSE => '关闭'
     ];
-
-    const ID_CARD = 1; // 身份证
-    const DRIVER_LICENSE = 2; // 驾驶证
-
-    // 状态
-    static public $credentialsType = [
-        self::ID_CARD => '身份证',
-        self::DRIVER_LICENSE => '驾驶证'
-    ];
-
-    //既往病史
-    const YES = 1; // 有
-    const NO = 2; // 没有
-
-    public static $diseaseHistory = [
-        self::YES => '有',
-        self::NO => '没有',
-    ];
-
-    //尺码
-    const S = 1;
-    const M = 2;
-    const L = 3;
-    const XL = 4;
-    const XXL = 5;
-
-    public static $sizeList = [
-        self::S => 'S',
-        self::M => 'M',
-        self::L => 'L',
-        self::XL => 'XL',
-        self::XXL => 'XXL'
-    ];
-
-    //外语
-    const ENGLISH = 1; // 英语
-    const GERMAN = 2; // 德语
-
-    public static $languageList = [
-        self::ENGLISH => '英语',
-        self::GERMAN => '德语',
-    ];
-
-    //会话,写作能力
-    const PROFICIENT = 1; // 精通
-    const GOOD = 2; // 良好
-    const GENERAL = 3; //一般
-
-    public static $abilityList = [
-        self::PROFICIENT => '精通',
-        self::GOOD => '良好',
-        self::GENERAL => '一般',
-
-    ];
-
-    public $password_repeat;
 
     /**
      * @inheritdoc
@@ -157,15 +63,12 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['height', 'weight','telephone', 'mobile_phone'], 'integer'],
-            ['email', 'email'],
-            ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message'=> '两次输入的密码不一致！'],
-            [['username', 'company_name'], 'string', 'max' => 20,'min' => 2],
-            [['password'], 'string', 'max' => 18,'min' => 6],
-            [['credentials_number'], 'string', 'max' => 19,'min' => 18],
-            [['telephone', 'mobile_phone', 'company_contact_phone'], 'string', 'max' => 20,'min' => 8],
-            [['email', 'contact_address', 'company_address'], 'string', 'max' => 100,'min' => 2],
-            [['contact_postcode', 'company_postcode'], 'string', 'max' => 7, 'min' => 6]
+            [['level_id', 'level_order', 'email_auth', 'phone_auth', 'status', 'lesson', 'credit', 'score'], 'integer'],
+            [['create_time', 'update_time'], 'safe'],
+            [['username'], 'string', 'max' => 50],
+            [['password', 'update_user'], 'string', 'max' => 45],
+            [['mobile_phone'], 'string', 'max' => 20],
+            [['email', 'authKey', 'accessToken'], 'string', 'max' => 100]
         ];
     }
 
@@ -178,35 +81,18 @@ class Users extends \yii\db\ActiveRecord
             'id' => 'ID',
             'username' => '姓名',
             'password' => '密码',
-            'password_repeat' => '重复密码',
-            'sex' => '性别',
-            'birthday' => '生日',
-            'title' => '类型',
+            'level_id' => '等级',
+            'level_order' => '等级排序',
+            'email_auth' => '邮箱验证',
+            'phone_auth' => '电话验证',
             'status' => '状态',
-            'credentials_type' => '证件类型',
-            'credentials_number' => '证件号码',
-            'account_location' => '户口所在地',
-            'telephone' => '联系座机',
-            'mobile_phone' => '联系手机',
+            'mobile_phone' => '手机',
             'email' => 'Email',
-            'height' => '身高 (单位CM)',
-            'weight' => '体重 (单位KG)',
-            'disease_history' => '既往病史',
-            'contact_address' => '联系地址',
-            'contact_postcode' => '联系邮编',
-            'company_name' => '公司名称',
-            'company_address' => '公司地址',
-            'company_postcode' => '公司邮编',
-            'company_contact_phone' => '公司联系电话',
-            'clothes_size' => '训练服尺码',
-            't_shirt_size' => '训练T恤尺码',
-            'shorts_size' => '训练鞋尺码',
-            'language' => '外语',
-            'spoken_language' => '会话能力',
-            'write_language' => '写作能力',
-            'lesson' => '课时',
-            'credit' => '学分',
-            'score' => '综合评分',
+            'lesson' => '参与课时',
+            'credit' => '评分',
+            'score' => '积分',
+            'authKey' => '认证key',
+            'accessToken' => '访问秘钥',
             'create_time' => '创建时间',
             'update_time' => '更新时间',
             'update_user' => '更新人',
@@ -224,22 +110,6 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNews()
-    {
-        return $this->hasMany(News::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainUsers()
-    {
-        return $this->hasMany(TrainUsers::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUsersEducations()
     {
         return $this->hasMany(UsersEducation::className(), ['user_id' => 'id']);
@@ -251,14 +121,6 @@ class Users extends \yii\db\ActiveRecord
     public function getUsersImages()
     {
         return $this->hasMany(UsersImage::className(), ['user_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsersLevels()
-    {
-        return $this->hasMany(UsersLevel::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -293,57 +155,6 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasMany(UsersVocational::className(), ['user_id' => 'id']);
     }
 
-    /*
-     * get sex name
-     */
-    public static function getSexName($sex)
-    {
-        return isset(self::$sexList[$sex]) ? self::$sexList[$sex] : $sex;
-    }
-
-    /*
-     * get sex name
-     */
-    public static function getTitleName($title)
-    {
-        return isset(self::$sexList[$title]) ? self::$titleList[$title] : $title;
-    }
-
-    public static function getStatusName($status)
-    {
-        return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
-    }
-
-    public static  function getCredentialsName($credentialsType)
-    {
-        return isset(self::$credentialsType[$credentialsType]) ? self::$credentialsType[$credentialsType] : $credentialsType;
-    }
-
-    public static  function getDiseaseHistoryName($diseaseHistory)
-    {
-        return isset(self::$diseaseHistory[$diseaseHistory]) ? self::$diseaseHistory[$diseaseHistory] : $diseaseHistory;
-    }
-
-    public static  function getSizeName($size)
-    {
-        return isset(self::$sizeList[$size]) ? self::$sizeList[$size] : $size;
-    }
-
-    public static  function getLanguageName($language)
-    {
-        return isset(self::$languageList[$language]) ? self::$languageList[$language] : $language;
-    }
-
-    public static  function getAbilityName($ability)
-    {
-        return isset(self::$abilityList[$ability]) ? self::$abilityList[$ability] : $ability;
-    }
-
-    public static function getLevelUsersCount()
-    {
-        $sql = "SELECT count(a.id) as count,b.username FROM `users` a LEFT JOIN `level` b ON a.level_id = id GROUP BY a.level_id";
-        Yii::$app->db->createCommand($sql)->queryAll();
-    }
 
     public static  function getOneUserNameById($userId)
     {
@@ -352,6 +163,38 @@ class Users extends \yii\db\ActiveRecord
         return $result['username'];
     }
 
+    public static function getUserCountGroupByLevel()
+    {
+        $sql = "SELECT l.name as name,count(u.id) as count FROM `users` u RIGHT JOIN level l on u.level_id = l.id  group by u.level_id ";
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
+    public static function getStatusName($status)
+    {
+        return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
+    }
+
+    public static function getAllCount()
+    {
+        $sql = "SELECT count(id) as count FROM `users`";
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
+    }
+
+    public static function getAllCountByLevelId($levelId)
+    {
+        $sql = "SELECT count(id) as count FROM `users` WHERE level_id='" . $levelId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
+    }
+
+    public static function getCountUserByLevelId($levelId, $count)
+    {
+        $sql = "SELECT u.level_id,ui.photo,ui.name,ui.birthday,u.id FROM " . self::tableName() . " u LEFT JOIN " . UsersInfo::tableName() . " ui ON u.id = ui.user_id WHERE u.level_id='" . $levelId . "' LIMIT 0," .$count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
 
     public function beforeSave($insert = '')
     {
@@ -360,7 +203,6 @@ class Users extends \yii\db\ActiveRecord
                 $this->password = md5($this->password);
             }
             if ($this->isNewRecord) {
-                $this->title = 1;
                 $this->create_time = date('Y-m-d H:i:s', time());
                 $this->update_time = date('Y-m-d H:i:s', time());
                 $this->update_user = 'admin';

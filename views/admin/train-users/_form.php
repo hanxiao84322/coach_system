@@ -22,8 +22,11 @@ use yii\widgets\ActiveForm;
             <a href="/Admin/users/index?UsersSearch[id]=<?= $model->user_id?>" target="_blank" style="width:300px"><?= $model->userName?></a>
         <div class="help-block"></div>
     </div>
-
-    <?= $form->field($model, 'status')->dropDownList(\app\models\TrainUsers::$statusList,['style'=>'width:100px']) ?>
+    <?php if (in_array($model->status, [\app\models\TrainUsers::PASS,\app\models\TrainUsers::NO_PASS])) {?>
+        <?= $form->field($model, 'status')->dropDownList([$model->status=>\app\models\TrainUsers::$statusList[$model->status]],['style'=>'width:100px']) ?>
+    <?php } else {?>
+        <?= $form->field($model, 'status')->dropDownList(\app\models\TrainUsers::$statusList,['style'=>'width:100px']) ?>
+    <?php }?>
     评分说明：实践（满分100分）理论（满分100分）规则（满分100分） 总评（（实践分数+理论分数+规则分数）/3）
     <?= $form->field($model, 'practice_score')->textInput(['style'=>'width:100px']) ?>
 

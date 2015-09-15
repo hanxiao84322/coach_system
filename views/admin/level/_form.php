@@ -14,11 +14,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['style'=>'width:300px']) ?>
 
-    <?= $form->field($model, 'order')->textInput(['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'order')->textInput(['style'=>'width:100px','disabled' => true]) ?>
 
-    <?= $form->field($model, 'lesson')->textInput(['style'=>'width:100px']) ?>
-
-    <?= $form->field($model, 'credit')->textInput(['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'code')->textInput(['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'score')->textInput(['style'=>'width:100px']) ?>
 

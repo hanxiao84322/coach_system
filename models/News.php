@@ -105,6 +105,55 @@ class News extends \yii\db\ActiveRecord
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
 
+    public static function getIndexNewsByCategory($categoryId, $count)
+    {
+        $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "' AND is_recommend = 1 ORDER BY id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
+    public static function getAboutNewsByCategory($categoryId)
+    {
+        $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "'  ORDER BY id desc LIMIT 0,5";
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
+    public static function getImgRecommendNewsByCategory($categoryId, $count)
+    {
+        $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "' AND is_recommend = 1 AND thumb != '' ORDER BY id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
+    /**
+     * @param $levelId
+     * @param $count
+     *
+     * @return array
+     */
+    public static function getTrainWindByLevelId($levelId, $count)
+    {
+        $sql = "SELECT n.* FROM `news` n LEFT JOIN `users` u on n.user_id = u.id WHERE u.level_id = '" . $levelId . "' AND is_recommend = 1 AND thumb != '' ORDER BY n.id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+
+    }
+
+    public static function getNewsByUserId($userId, $count)
+    {
+        $sql = "SELECT * FROM `news` WHERE user_id = '" . $userId . "' AND  thumb != '' ORDER BY id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
+    public static function getNewsByCategory($categoryId, $count)
+    {
+        $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "'  ORDER BY id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
     public function beforeSave($insert = '')
     {
         if (parent::beforeSave($this->isNewRecord)) {

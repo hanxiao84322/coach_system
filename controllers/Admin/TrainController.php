@@ -82,6 +82,7 @@ class TrainController extends Controller
             if (strtotime($postInfo['Train']['begin_time']) <= strtotime($postInfo['Train']['sign_up_end_time'])) {
                 throw new ServerErrorHttpException('更新状态失败，原因：注册结束时间不能大于开始时间！');
             }
+            $postInfo['Train']['code'] = date('Ymd', time());
             if ($model->load($postInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -106,8 +107,9 @@ class TrainController extends Controller
         $transaction = Yii::$app->db->beginTransaction();
         if (Yii::$app->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                //课程开始
                 if ($model->status == Train::DOING) {
-                    //获取改课程下通过审核的学员
+                    //获取该课程下已录取的学员
                     $trainUsers = TrainUsers::getApprovedTrainUsersByTrainId($model->id);
                     if (!empty($trainUsers)) {
                         if ($model->sign_up_status != Train::END_SIGN_UP) {
@@ -136,18 +138,6 @@ class TrainController extends Controller
                             }
                         }
                     } else {
-                        $transaction->rollBack();
-                        throw new ServerErrorHttpException('更新状态失败，原因：该培训课程下没有学员！');
-                    }
-                } else if ($model->status == Train::END) { //如果更新为结束状态
-                    $trainUsers = TrainUsers::getDoingTrainUsersByTrainId($model->id);
-                    if (!empty($trainUsers)) {
-                        $result = TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::END, $model->id);
-                        if ($result < 1) {
-                            $transaction->rollBack();
-                            throw new ServerErrorHttpException('更新状态失败，原因：更新学员状态失败！');
-                        }
-                    }  else {
                         $transaction->rollBack();
                         throw new ServerErrorHttpException('更新状态失败，原因：该培训课程下没有学员！');
                     }

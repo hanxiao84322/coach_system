@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Pages;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -91,5 +92,11 @@ class SiteController extends Controller
             // 无论是初始化显示还是数据验证错误
             return $this->render('entry', ['model' => $model]);
         }
+    }
+
+    public function actionPage()
+    {
+        $id = Yii::$app->request->get('id');
+        $model = Pages::findOne($id);
     }
 }

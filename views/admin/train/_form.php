@@ -34,11 +34,12 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'sign_up_end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
     <?php }?>
+    <?= $form->field($model, 'district')->dropDownList(\app\models\Train::$districtList,['style'=>'width:100px']) ?>
 
     <?php if ($model->sign_up_status == \app\models\Train::BEGIN_SIGN_UP) {?>
-    <?= $form->field($model, 'sign_up_status')->dropDownList([\app\models\Train::BEGIN_SIGN_UP => \app\models\Train::$statusList[\app\models\Train::BEGIN_SIGN_UP],\app\models\Train::END_SIGN_UP => \app\models\Train::$statusList[\app\models\Train::END_SIGN_UP]],['style'=>'width:200px']) ?>
+    <?= $form->field($model, 'sign_up_status')->dropDownList([\app\models\Train::BEGIN_SIGN_UP => \app\models\Train::$signUpStatusList[\app\models\Train::BEGIN_SIGN_UP],\app\models\Train::END_SIGN_UP => \app\models\Train::$signUpStatusList[\app\models\Train::END_SIGN_UP]],['style'=>'width:200px']) ?>
     <?php  } else if ($model->sign_up_status == \app\models\Train::END_SIGN_UP) {?>
-        <?= $form->field($model, 'sign_up_status')->dropDownList([\app\models\Train::END_SIGN_UP => \app\models\Train::$statusList[\app\models\Train::END_SIGN_UP]],['style'=>'width:200px']) ?>
+        <?= $form->field($model, 'sign_up_status')->dropDownList([\app\models\Train::END_SIGN_UP => \app\models\Train::$signUpStatusList[\app\models\Train::END_SIGN_UP]],['style'=>'width:200px']) ?>
     <?php } else {?>
     <?= $form->field($model, 'sign_up_status')->dropDownList(\app\models\Train::$signUpStatusList,['style'=>'width:200px']) ?>
     <?php }?>
@@ -59,11 +60,12 @@ use yii\helpers\ArrayHelper;
     <?php } else {?>
         <?= $form->field($model, 'status')->dropDownList(\app\models\Train::$statusList,['style'=>'width:100px']) ?>
     <?php }?>
-    <?= $form->field($model, 'status')->dropDownList(\app\models\Train::$statusList,['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'lesson')->textInput(['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'address')->textInput(['style'=>'width:500px']) ?>
+    <?= $form->field($model, 'bus')->textInput(['style'=>'width:500px']) ?>
+    <?= $form->field($model, 'near_site')->textInput(['style'=>'width:500px']) ?>
 
     <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
 

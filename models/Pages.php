@@ -52,6 +52,13 @@ class Pages extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function getContentById($pageId)
+    {
+        $sql = "SELECT content FROM " . self::tableName() . " WHERE id = " . $pageId;
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
+    }
+
     public function beforeSave($insert = '')
     {
         if (parent::beforeSave($this->isNewRecord)) {

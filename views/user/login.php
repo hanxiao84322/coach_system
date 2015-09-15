@@ -1,10 +1,6 @@
 <?php
 use yii\helpers\Url;
 ?>
-<div class="login_top">
-    <h1 class="fl"><img src="/images/logo.jpg" /></h1>
-    <p class="login_two"><a href=""<?= Url::to('/home/index')?>">教练员管理系统</a> | <a href=""<?= Url::to('/user/login')?>">欢迎登陆</a></p>
-</div>
 <?php
 use yii\bootstrap\ActiveForm;
 

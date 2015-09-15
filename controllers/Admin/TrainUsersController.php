@@ -3,7 +3,12 @@
 namespace app\controllers\Admin;
 
 use app\models\Attendance;
+use app\models\Level;
+use app\models\Pages;
 use app\models\Train;
+use app\models\Users;
+use app\models\UsersInfo;
+use app\models\UsersLevel;
 use Yii;
 use app\models\TrainUsers;
 use app\models\TrainUsersSearch;
@@ -11,6 +16,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\ServerErrorHttpException;
+use yii\web\User;
 
 
 /**
@@ -91,33 +97,98 @@ class TrainUsersController extends Controller
     {
         $model = $this->findModel($id);
 
-        $model->trainName = Train::getOneTrainNameById($model->train_id);
+        $trainInfo = Train::findOne(['id',$model->train_id]);
         $model->userName = \app\models\Users::getOneUserNameById($model->user_id);
         if (Yii::$app->request->isPost) {
+
             $updateParams = Yii::$app->request->post();
-            if ($updateParams['TrainUsers']['practice_score'] >100 || $updateParams['TrainUsers']['theory_score'] >100 || $updateParams['TrainUsers']['rule_score'] >100) {
+            $transaction = Yii::$app->db->beginTransaction();
+            if ($updateParams['TrainUsers']['practice_score'] > 100 || $updateParams['TrainUsers']['theory_score'] > 100 || $updateParams['TrainUsers']['rule_score'] > 100) {
                 throw new ServerErrorHttpException('评分更新错误，原因：每项评分都不能超过100分！');
             }
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                //根据3个单项评分计算全部评价内容包括考勤
-                $result = $this->updateSource($model->train_id, $model->user_id, $model->practice_score,$model->theory_score,$model->rule_score);
-                $model->score_appraise = $result['scoreAppraise'];
-                $model->appraise_result = $result['performance'];
-                $model->attendance_appraise = $result['attendanceComment'];
-                $model->practice_comment = $result['practiceComment'];
-                $model->theory_comment = $result['theoryComment'];
-                $model->rule_comment = $result['rulesComment'];
-                $model->total_comment = $result['commentAppraise'];
-                $model->result_comment = $result['scoreAppraise'];
-                $model->status = $result['status'];
+            if ($model->load($updateParams) && $model->save()) {
+                if ($updateParams['TrainUsers']['status'] == TrainUsers::END) {//如果结束状态，必须评分
+                    if ($updateParams['TrainUsers']['practice_score'] <= 0 || $updateParams['TrainUsers']['theory_score'] <= 0 || $updateParams['TrainUsers']['rule_score'] <= 0) {
+                        throw new ServerErrorHttpException('评分更新错误，原因：每项评分都必须大于零！');
+                    }
+                    //根据3个单项评分计算全部评价内容包括考勤
+                    $result = $this->getSource($model->train_id, $model->user_id, $model->practice_score, $model->theory_score, $model->rule_score);
+                    $model->score_appraise = $result['scoreAppraise'];
+                    $model->appraise_result = $result['performance'];
+                    $model->attendance_appraise = $result['attendanceComment'];
+                    $model->practice_comment = $result['practiceComment'];
+                    $model->theory_comment = $result['theoryComment'];
+                    $model->rule_comment = $result['rulesComment'];
+                    $model->total_comment = $result['commentAppraise'];
+                    $model->result_comment = $result['scoreAppraise'];
+                    $model->status = $result['status'];
+                    if ($model->save()) {
+                        //如果通过更新晋级信息
+                        if ($model->status == TrainUsers::PASS) {
+                            $trainCode = $trainInfo['code'];
+                            $levelCode = Level::getOneCodeById($model->level_id);
+                            $certificateNumber = $this->getCertificateNumber($trainCode, sprintf("%04d", $model->orders), $levelCode);
+                            $res = UsersLevel::updateAll(['status'=>1, 'certificate_number' => $certificateNumber, 'update_time' => date('Y-m-d H:i:s', time()), 'update_user' => Yii::$app->admin->identity->username], ['user_id' => $model->user_id, 'train_id' => $model->train_id]);
+                            if ($res) {
+                                $transaction->commit();
+                                return $this->redirect(['view', 'id' => $model->id]);
+                            } else {
+                                $transaction->rollBack();
+                                throw new ServerErrorHttpException('更新晋升信息错误，原因：' . json_encode($res, JSON_UNESCAPED_UNICODE) . '！');
+                            }
+                        } else {
+                            //如果没有通过，删除users_level表信息
+                            $deleteUsersLevelResult = UsersLevel::deleteAll(['user_id' => $model->user_id, 'train_id' => $model->train_id]);
+                            if (!$deleteUsersLevelResult) {
+                                $transaction->rollBack();
+                                throw new ServerErrorHttpException('评分更新错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
+                            } else {
+                                $transaction->commit();
+                                Yii::$app->getSession()->setFlash('success', '更新成功！');
+                                return $this->redirect(['view', 'id' => $model->id]);
+                            }
+                        }
+                    } else {
+                        $transaction->rollBack();
+                        throw new ServerErrorHttpException('评分更新错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
+                    }
+                } else if($updateParams['TrainUsers']['status'] == TrainUsers::ENROLL) {
+                    //如果录取，给出用户的序号
+                    $trainUsersOrder = TrainUsers::getTrainUsersOrder($model->user_id, $model->train_id);
+                    if (empty($trainUsersOrder)) {
+                        $trainUsersOrder = 1;
+                    }
+                    $model->orders = $trainUsersOrder;
+                    $model->status = TrainUsers::ENROLL;
 
-                if ($model->save()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    if ($model->save()) {
+                        //新增一条用户和级别对应的信息，只有在录取状态下才能确认添加，状态为未通过
+                        $userLevelModel = new UsersLevel();
+                        $userLevelModel->user_id = $model->user_id;
+                        $userLevelModel->train_id = $model->train_id;
+                        $userLevelModel->level_id = $model->level_id;
+                        $userLevelModel->district = $trainInfo['district'];
+                        $userLevelModel->credentials_number = UsersInfo::getCredentialsNumberByUserId($model->user_id);
+                        if (!$userLevelModel->save()) {
+                            $transaction->rollBack();
+                            throw new ServerErrorHttpException('更新状态错误，原因：' . json_encode($userLevelModel->errors, JSON_UNESCAPED_UNICODE) . '！');
+                        } else {
+                            $transaction->commit();
+                            Yii::$app->getSession()->setFlash('success', '更新成功！');
+                            return $this->redirect(['view', 'id' => $model->id]);
+                        }
+                    } else {
+                        $transaction->rollBack();
+//                    Yii::$app->getSession()->setFlash('error', '更新状态错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
+                        throw new ServerErrorHttpException('更新状态错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
+                    }
                 } else {
-                    throw new ServerErrorHttpException('评分更新错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
-
+                    $transaction->commit();
+                    Yii::$app->getSession()->setFlash('success', '更新成功！');
+                    return $this->redirect(['view', 'id' => $model->id]);
                 }
             } else {
+                $transaction->rollBack();
                 throw new ServerErrorHttpException('评分更新错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
             }
         } else {
@@ -198,13 +269,13 @@ class TrainUsersController extends Controller
      * @param $user_id
      *
      */
-    public function updateSource($trainId,$userId,$practiceScore,$theoryScore,$ruleScore)
+    public function getSource($trainId, $userId, $practiceScore, $theoryScore, $ruleScore)
     {
         if (!empty($practiceScore) && !empty($theoryScore) && !empty($ruleScore)) {
             //成绩总评
-            $scoreAppraise = intval(($practiceScore + $theoryScore + $ruleScore)/3);
+            $scoreAppraise = intval(($practiceScore + $theoryScore + $ruleScore) / 3);
             //考勤
-            $attendanceList = Attendance::getAllByTrainIdAndUserId($trainId,$userId);
+            $attendanceList = Attendance::getAllByTrainIdAndUserId($trainId, $userId);
             $attendanceScore = 100;
             foreach ($attendanceList as $key => $val) {
 
@@ -214,7 +285,7 @@ class TrainUsersController extends Controller
                     $attendanceScore -= Attendance::EARLY_SOURCE;
                 } elseif ($val['status'] == Attendance::ABSENCES) {
                     $attendanceScore -= Attendance::ABSENCES_SOURCE;
-                }elseif ($val['status'] == Attendance::LEAVE) {
+                } elseif ($val['status'] == Attendance::LEAVE) {
                     $attendanceScore -= Attendance::LEAVE_SOURCE;
                 } else {
                     $attendanceScore == $attendanceScore;
@@ -267,4 +338,11 @@ class TrainUsersController extends Controller
 
         return $result;
     }
+
+    public function getCertificateNumber($trainCode, $userOrder, $levelCode)
+    {
+        $certificateNumber = 'BJ' . $levelCode . $trainCode . $userOrder;
+        return $certificateNumber;
+    }
+
 }

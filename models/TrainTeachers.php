@@ -58,6 +58,21 @@ class TrainTeachers extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @param $trainId
+     */
+    public static function getAllTeachersByTrainId($trainId)
+    {
+        $result = Yii::$app->db->createCommand('SELECT tu.train_id,t.name,t.photo,t.age,t.sex,t.level,tu.teachers_id FROM  ' . self::tableName() . ' tu LEFT JOIN ' . Teachers::tableName() . ' t ON tu.teachers_id = t.id WHERE tu.train_id=:train_id', [':train_id' => $trainId])->queryAll();
+        return $result;
+    }
+
+    public static function getAllTeachersForNewsTrain()
+    {
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . ' LIMIT 0 , 6 ')->queryAll();
+        return $result;
+    }
+
     public function beforeSave($insert = '')
     {
         if (parent::beforeSave($this->isNewRecord)) {

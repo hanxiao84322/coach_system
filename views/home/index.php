@@ -43,7 +43,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="reg_con">
-        <span>北京市共有注册教练员：360 名</span>  [  市级 <b>90</b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;D 级 <b>90</b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;C级 <b>90</b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;B 级 <b>90</b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;A级 <b>90</b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;职业级 <b>90</b> 名   ]
+        <span>北京市共有注册教练员：<?= $data['userCount']?> 名</span>  [  市级 <b><?= \app\models\Users::getAllCountByLevelId(2)?></b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;D 级 <b><?= \app\models\Users::getAllCountByLevelId(3)?></b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;C级 <b><?= \app\models\Users::getAllCountByLevelId(4)?></b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;B 级 <b><?= \app\models\Users::getAllCountByLevelId(5)?></b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;A级 <b><?= \app\models\Users::getAllCountByLevelId(6)?></b> 名&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;职业级 <b><?= \app\models\Users::getAllCountByLevelId(7)?></b> 名   ]
     </div>
 </div>
 <!--注册人数-->
@@ -57,8 +57,8 @@
                 <li>
                     <img src="/images/t4.jpg" />
                     <span>教练员培训报名</span>
-                    <a href="javascript:;">各级别教练员</a>
-                    <a href="javascript:;">培训报名</a>
+                    <a href="<?=\yii\helpers\Url::to('/train/index')?>">各级别教练员</a>
+                    <a href="<?=\yii\helpers\Url::to('/train/index')?>">培训报名</a>
                 </li>
                 <li>
                     <img src="/images/t2.jpg" />
@@ -82,12 +82,11 @@
                 <div class="fl tt_middle">
                     <h3 class="news_title">最新动态</h3>
                     <ul class="news_dt">
-                        <li><a href="javascript:;">中国足协2015年01期D级教练员正式注册通知</a><span>15-08-03</span></li>
-                        <li><a href="javascript:;">中国足协2015年01期D级教练员正式注册通知</a><span>15-08-03</span></li>
-                        <li><a href="javascript:;">中国足协2015年01期D级教练员正式注册通知</a><span>15-08-03</span></li>
-                        <li><a href="javascript:;">中国足协2015年01期D级教练员正式注册通知</a><span>15-08-03</span></li>
-                        <li><a href="javascript:;">中国足协2015年01期D级教练员正式注册通知</a><span>15-08-03</span></li>
-                        <li><a href="javascript:;">中国足协2015年01期D级教练员正式注册通知</a><span>15-08-03</span></li>
+                        <?php if (!empty($data['newsA'])) {?>
+                        <?php foreach ($data['newsA'] as $key => $val) :?>
+                        <li><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a><span><?= date('Y-m-d', strtotime($val['create_time']))?></span></li>
+                        <?php endforeach;?>
+                        <?php }?>
                     </ul>
                 </div>
                 <div class="fr tt_right">
@@ -99,18 +98,11 @@
             <div class="two_middle">
                 <h3 class="jjfc">教练员风采</h3>
                 <div class="krakatoa" data-settings="{ items : 4, autoplay : true, loop : true }">
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗纳尔多执教望京小学</span></a>
-                    <a href="javascript:;"><img src="/images/pic1.jpg" /><span>D级教练员罗执教望京小学</span></a>
+                    <?php if (!empty($data['newsB'])) {?>
+                        <?php foreach ($data['newsB'] as $key => $val) :?>
+                            <a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><img src="<?= '/upload/images/news/thumb/' . $val['thumb']?>" WIDTH="197" HEIGHT="130" /><span><?= $val['title']?></span></a>
+                        <?php endforeach;?>
+                    <?php }?>
                 </div>
                 <script>
                     $(window).on('load',function(){
@@ -120,33 +112,33 @@
             </div>
             <div class="two_bottom">
                 <div class="fl tb_left">
-                    <h3 class="titlebj"><span>培训计划</span><a href="javascript:;"><img src="/images/more.png" /></a></h3>
+                    <h3 class="titlebj"><span>培训计划</span><a href="<?= \yii\helpers\Url::to(['/news/category/', 'category_id' => 7])?>"><img src="/images/more.png" /></a></h3>
                     <ul class="ul_list">
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
+                        <?php if (!empty($data['newsC'])) {?>
+                            <?php foreach ($data['newsC'] as $key => $val) :?>
+                                <li><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a><span><?= date('m-d', strtotime($val['create_time']))?></span></li>
+                            <?php endforeach;?>
+                        <?php }?>
                     </ul>
                 </div>
                 <div class="fl tb_left1">
-                    <h3 class="titlebj"><span>最新注册</span><a href="javascript:;"><img src="/images/more.png" /></a></h3>
+                    <h3 class="titlebj"><span>最新注册</span><a href="<?= \yii\helpers\Url::to(['/news/category/', 'category_id' => 8])?>"><img src="/images/more.png" /></a></h3>
                     <ul class="ul_list">
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
+                        <?php if (!empty($data['newsD'])) {?>
+                            <?php foreach ($data['newsD'] as $key => $val) :?>
+                                <li><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a><span><?= date('m-d', strtotime($val['create_time']))?></span></li>
+                            <?php endforeach;?>
+                        <?php }?>
                     </ul>
                 </div>
                 <div class="fr tb_left">
-                    <h3 class="titlebj"><span>教练员动态</span><a href="javascript:;"><img src="/images/more.png" /></a></h3>
+                    <h3 class="titlebj"><span>教练员动态</span><a href="<?= \yii\helpers\Url::to(['/news/category/', 'category_id' => 6])?>"><img src="/images/more.png" /></a></h3>
                     <ul class="ul_list">
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
-                        <li><a href="javascript:;">3月20日-4月5日 北京体育大学 D级班</a><span>08-03</span></li>
+                        <?php if (!empty($data['newsE'])) {?>
+                            <?php foreach ($data['newsE'] as $key => $val) :?>
+                                <li><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a><span><?= date('m-d', strtotime($val['create_time']))?></span></li>
+                            <?php endforeach;?>
+                        <?php }?>
                     </ul>
                 </div>
             </div>

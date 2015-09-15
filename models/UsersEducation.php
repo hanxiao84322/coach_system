@@ -77,4 +77,22 @@ class UsersEducation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
+
+
+    public function beforeSave($insert = '')
+    {
+        if (parent::beforeSave($this->isNewRecord)) {
+            if ($this->isNewRecord) {
+                $this->create_time = date('Y-m-d H:i:s', time());
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            } else {
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

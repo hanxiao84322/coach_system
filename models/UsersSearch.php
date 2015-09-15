@@ -18,8 +18,8 @@ class UsersSearch extends Users
     public function rules()
     {
         return [
-            [['id', 'sex', 'title', 'status', 'credentials_type', 'height', 'weight', 'disease_history', 'clothes_size', 't_shirt_size', 'shorts_size', 'language', 'spoken_language', 'write_language', 'lesson', 'credit', 'score'], 'integer'],
-            [['username', 'password', 'birthday', 'credentials_number', 'account_location', 'telephone', 'mobile_phone', 'email', 'contact_address', 'contact_postcode', 'company_name', 'company_address', 'company_postcode', 'company_contact_phone', 'create_time', 'update_time', 'update_user'], 'safe'],
+            [['id', 'level_id', 'level_order', 'email_auth', 'phone_auth', 'status', 'lesson', 'credit', 'score'], 'integer'],
+            [['username', 'password', 'mobile_phone', 'email', 'authKey', 'accessToken', 'create_time', 'update_time', 'update_user'], 'safe'],
         ];
     }
 
@@ -57,20 +57,11 @@ class UsersSearch extends Users
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'sex' => $this->sex,
-            'birthday' => $this->birthday,
-            'title' => $this->title,
+            'level_id' => $this->level_id,
+            'level_order' => $this->level_order,
+            'email_auth' => $this->email_auth,
+            'phone_auth' => $this->phone_auth,
             'status' => $this->status,
-            'credentials_type' => $this->credentials_type,
-            'height' => $this->height,
-            'weight' => $this->weight,
-            'disease_history' => $this->disease_history,
-            'clothes_size' => $this->clothes_size,
-            't_shirt_size' => $this->t_shirt_size,
-            'shorts_size' => $this->shorts_size,
-            'language' => $this->language,
-            'spoken_language' => $this->spoken_language,
-            'write_language' => $this->write_language,
             'lesson' => $this->lesson,
             'credit' => $this->credit,
             'score' => $this->score,
@@ -80,17 +71,10 @@ class UsersSearch extends Users
 
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'password', $this->password])
-            ->andFilterWhere(['like', 'credentials_number', $this->credentials_number])
-            ->andFilterWhere(['like', 'account_location', $this->account_location])
-            ->andFilterWhere(['like', 'telephone', $this->telephone])
             ->andFilterWhere(['like', 'mobile_phone', $this->mobile_phone])
             ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'contact_address', $this->contact_address])
-            ->andFilterWhere(['like', 'contact_postcode', $this->contact_postcode])
-            ->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'company_address', $this->company_address])
-            ->andFilterWhere(['like', 'company_postcode', $this->company_postcode])
-            ->andFilterWhere(['like', 'company_contact_phone', $this->company_contact_phone])
+            ->andFilterWhere(['like', 'authKey', $this->authKey])
+            ->andFilterWhere(['like', 'accessToken', $this->accessToken])
             ->andFilterWhere(['like', 'update_user', $this->update_user]);
 
         return $dataProvider;

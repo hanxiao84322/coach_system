@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * UsersLevelController implements the CRUD actions for UsersLevel model.
  */
-class UserslevelController extends Controller
+class UsersLevelController extends Controller
 {
     public $layout = 'admin';
 
