@@ -32,7 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             [
                 'attribute' => 'level_id',
-                'value'=> app\models\Level::getOneLevelNameById($model->level_id)            ],
+                'value'=> app\models\Level::getOneLevelNameById($model->level_id)
+            ],
             [
                 'attribute' => 'email_auth',
                 'value' => $model->email_auth ? '是' : '否'

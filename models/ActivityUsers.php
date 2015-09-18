@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\data\SqlDataProvider;
 
 /**
  * This is the model class for table "activity_users".
@@ -99,7 +100,7 @@ class ActivityUsers extends \yii\db\ActiveRecord
         $count = Yii::$app->db->createCommand('SELECT (au.id) as count FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id', [':user_id' => $userId])->queryScalar();
 
         $dataProvider = new SqlDataProvider([
-            'sql' => 'SELECT au.id as id,au.train_id,a.name,a.category,a.create_time,a.address,a.recruit_count,au.status,a.begin_time FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id',
+            'sql' => 'SELECT au.id as id,au.activity_id,a.name,a.category,a.create_time,a.address,a.recruit_count,au.status,a.begin_time FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id',
             'params' => [':user_id' => $userId],
             'totalCount' => $count,
             'pagination' => [

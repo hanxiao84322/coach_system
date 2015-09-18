@@ -32,7 +32,7 @@ class Pages extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'create_user', 'update_user'], 'string', 'max' => 45],
-            [['content'], 'string', 'max' => 500]
+            [['content'], 'string', 'max' => 10000]
         ];
     }
 

@@ -71,12 +71,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'photo',
                 'format' => 'html',
-                'value'=> $model->photo ? '<img src="/upload/images/user_info/photo/'. $model->photo . '">' : '无'
+                'value'=> $model->photo ? '<img src="/upload/images/users_info/photo/'. $model->photo . '">' : '无'
             ],
             [
                 'attribute' => 'credentials_photo',
                 'format' => 'html',
-                'value'=> $model->credentials_photo ? '<img src="/upload/images/user_info/credentials_photo/'. $model->credentials_photo . '">' : '无'
+                'value'=> $model->credentials_photo ? '<img src="/upload/images/users_info/credentials_photo/'. $model->credentials_photo . '">' : '无'
             ]
         ],
     ]) ?>

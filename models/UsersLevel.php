@@ -114,6 +114,13 @@ class UsersLevel extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getLevelCertificateNumberByUserIdAndLevelId($userId, $levelId)
+    {
+        $sql = "SELECT certificate_number FROM " . self::tableName() . " WHERE user_id =:user_id AND level_id=:level_id";
+        $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId, ':level_id' => $levelId])->queryScalar();
+        return $result;
+    }
+
     public function beforeSave($insert = '')
     {
         if (parent::beforeSave($this->isNewRecord)) {

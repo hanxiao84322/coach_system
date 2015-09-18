@@ -63,8 +63,8 @@
                 <li>
                     <img src="/images/t2.jpg" />
                     <span>教练员注册</span>
-                    <a href="javascript:;">在线注册</a>
-                    <a href="javascript:;">实时管理</a>
+                    <a href="<?=\yii\helpers\Url::to('/user/register-coach')?>">在线注册</a>
+                    <a href="<?=\yii\helpers\Url::to('/user/register-coach')?>">实时管理</a>
                 </li>
                 <li style="border-right:none;">
                     <img src="/images/t3.jpg" />

@@ -48,8 +48,8 @@
             </tr>
             <?php foreach ($models as $key => $val) :?>
                 <tr>
-                <td><?= $val->id ?></td>
-                <td><?= $val->name ?></td>
+                <td><?= $key+1 ?></td>
+                <td><a href="<?= \yii\helpers\Url::to(['/train/view', 'id'=> $val->id])?>"><?= $val->name ?></td>
                 <td><?= \app\models\Train::$categoryList[$val->category] ?></td>
                 <td><?= $val->begin_time ?></td>
                 <td><?= $val->address ?></td>

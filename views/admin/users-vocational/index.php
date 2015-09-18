@@ -7,17 +7,13 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\UsersVocationalSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Users Vocationals';
+$this->title = '执教经历管理';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-vocational-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Users Vocational', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

@@ -92,6 +92,15 @@ class UsersInfo extends \yii\db\ActiveRecord
         self::NO => '有',
     ];
 
+    const ID_CARD = 1; // 身份证
+    const DRIVER_LICENSE = 2; // 驾驶证
+
+    // 状态
+    static public $credentialsType = [
+        self::ID_CARD => '身份证',
+        self::DRIVER_LICENSE => '驾驶证'
+    ];
+
 
     /**
      * @inheritdoc

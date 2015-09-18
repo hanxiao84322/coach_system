@@ -55,19 +55,19 @@ class UsersEducation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'school' => 'School',
-            'begin_time' => 'Begin Time',
-            'end_time' => 'End Time',
-            'address' => 'Address',
-            'educational_background' => 'Educational Background',
-            'witness' => 'Witness',
-            'witness_phone' => 'Witness Phone',
-            'description' => 'Description',
-            'create_time' => 'Create Time',
-            'update_time' => 'Update Time',
-            'update_user' => 'Update User',
-        ];
+            'user_id' => '用户ID',
+            'school' => '学校名称',
+            'begin_time' => '开始时间',
+            'end_time' => '结束时间',
+            'address' => '地址',
+                'educational_background' => '学历/学位',
+                'witness' => '证明人',
+                'witness_phone' => '证明人联系方式',
+                'description' => '描述',
+                'create_time' => '创建时间',
+                'update_time' => '更新时间',
+                'update_user' => '更新人',
+            ];
     }
 
     /**

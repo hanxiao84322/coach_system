@@ -8,6 +8,7 @@ use Yii;
 use app\models\Train;
 use yii\web\ServerErrorHttpException;
 use yii\data\Pagination;
+use app\models\TrainTeachers;
 
 class TrainController extends \yii\web\Controller
 {
@@ -61,24 +62,30 @@ class TrainController extends \yii\web\Controller
             if (!empty($isExist)) {
                 throw new ServerErrorHttpException('系统错误,原因：您已经参与了该级别下的培训课程，请耐心等待培训结果，谢谢。');
             }
+            //报名成功，给出用户的序号
+            $trainUsersOrder = TrainUsers::getTrainUsersOrder($userId, $trainId);
+            if (empty($trainUsersOrder)) {
+                $trainUsersOrder = 1;
+            }
+
             $data = [
                 'train_id' => $trainId,
                 'user_id' => $userId,
-                'status' => '1',
+                'status' => TrainUsers::SIGN,
                 'practice_score' => 0,
                 'theory_score' => 0,
                 'rule_score' => 0,
-                'level_id' => $trainInfo['level_id']
+                'level_id' => $trainInfo['level_id'],
+                'orders' => $trainUsersOrder
             ];
             $model = new TrainUsers();
             $model->setAttributes($data);
             if ($model->save()) {
                 $trainUserId = $model->id;
                 $trainUser = TrainUsers::findOne(['id' => $trainUserId]);
-                $maxCount = TrainUsers::getMaxSignUpOrder($trainUser['train_id']);
                 $trainName = Train::getOneTrainNameById($trainUser['train_id']);
                 $data = [
-                    'maxCount' => $maxCount,
+                    'orders' => $trainUser['orders'],
                     'trainName' => $trainName
                 ];
                 return $this->render('/train/apply-success', ['data' => $data]);
@@ -101,7 +108,39 @@ class TrainController extends \yii\web\Controller
             'trainName' => $trainName
         ];
         return $this->redirect(['/train/apply-success', 'data' => $data]);
+    }
 
+    public function actionView()
+    {
+        $trainId = Yii::$app->request->get('id');
+        $trainModel = Train::findOne(['id' => $trainId]);
+        $trainTeachersModel = TrainTeachers::getAllTeachersByTrainId($trainModel['id']);
+        $trainUsers = [];
+        if ($trainModel['recruit_count'] > 0) {
+            for ($i = 1; $i <= $trainModel['recruit_count']; $i++) {
+
+                $trainUsersInfo = TrainUsers::findOne(['train_id' => $trainModel['id'], 'orders' => $i]);
+                if (empty($trainUsersInfo)) {
+                    $trainUsers[$i]['status'] = '未报名';
+                    $trainUsers[$i]['class'] = 'red';
+                    $trainUsers[$i]['userId'] = '';
+                } else {
+                    $trainUsers[$i]['status'] = TrainUsers::$statusList[$trainUsersInfo['status']];
+                    $trainUsers[$i]['userId'] = $trainUsersInfo['user_id'];
+                    if ($trainUsersInfo['status'] == TrainUsers::NO_APPROVED) {
+                        $trainUsers[$i]['class'] = 'blue';
+                    } else {
+                        $trainUsers[$i]['class'] = '';
+                    }
+                }
+            }
+        }
+        $data = [
+            'trainModel' => $trainModel,
+            'trainTeachersModel' => $trainTeachersModel,
+            'trainUsers' => $trainUsers
+        ];
+        return $this->render('/train/view', ['data' => $data]);
 
     }
 

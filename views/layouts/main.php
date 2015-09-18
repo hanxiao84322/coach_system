@@ -17,7 +17,9 @@ WebAppAsset::register($this);
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title>教练员管理系统</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=2c327dae2b9abd9727b0e8da3d988040"></script>
+
     <?php $this->head() ?>
 
 </head>
@@ -58,8 +60,8 @@ WebAppAsset::register($this);
         <li><a href="<?= Url::to(['/news/train','level_id' => 2])?>">培训风采</a></li>
         <li><a href="<?= Url::to('/user/register-coach')?>">教练员注册</a></li>
         <li><a href="<?= Url::to('/user/index')?>">教练员专区</a></li>
-        <li><a href="<?= Url::to('/news/train')?>">政策法规</a></li>
-        <li><a href="javascript:;">足协官网</a></li>
+        <li><a href="<?= Url::to(['/pages/view', 'id' => 1])?>">政策法规</a></li>
+        <li><a href="http://www.bj-fa.org.cn/" target="_blank">足协官网</a></li>
     </ul>
 </div>
 <!--nav-->

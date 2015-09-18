@@ -14,6 +14,9 @@ use yii\filters\VerbFilter;
  */
 class UsersVocationalController extends Controller
 {
+
+    public $layout = 'admin';
+
     public function behaviors()
     {
         return [

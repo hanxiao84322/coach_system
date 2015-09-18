@@ -56,18 +56,18 @@ class UsersTrain extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'credentials_number' => 'Credentials Number',
-            'begin_time' => 'Begin Time',
-            'end_time' => 'End Time',
-            'level' => 'Level',
-            'address' => 'Address',
-            'witness' => 'Witness',
-            'witness_phone' => 'Witness Phone',
-            'description' => 'Description',
-            'create_time' => 'Create Time',
-            'update_time' => 'Update Time',
-            'update_user' => 'Update User',
+            'user_id' => '用户ID',
+            'credentials_number' => '证件编号',
+            'begin_time' => '开始时间',
+            'end_time' => '结束时间',
+            'level' => '级别',
+            'address' => '地址',
+            'witness' => '证明人',
+            'witness_phone' => '证明人联系方式',
+            'description' => '描述',
+            'create_time' => '创建时间',
+            'update_time' => '更新时间',
+            'update_user' => '更新人',
         ];
     }
 

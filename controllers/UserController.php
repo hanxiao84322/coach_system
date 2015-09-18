@@ -437,7 +437,6 @@ class UserController extends \yii\web\Controller
         $modelInfo = UsersInfo::findOne(['user_id' => $id]);
         $modelUserLevel = UsersLevel::findOne(['user_id' => $model->id,'level_id' => $model->level_id]);
         $trainWind = News::getImgRecommendNewsByCategory(11, 12);
-
         return $this->render('view', [
             'data' => $modelInfo,
             'userModel' => $model,

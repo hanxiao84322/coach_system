@@ -127,7 +127,7 @@ class TrainUsers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['train_id', 'user_id', 'status', 'practice_score', 'theory_score', 'rule_score', 'level_id'], 'integer'],
+            [['train_id', 'user_id', 'status', 'practice_score', 'theory_score', 'rule_score', 'level_id', 'orders'], 'integer'],
             [['status', 'practice_score', 'theory_score', 'rule_score'], 'required'],
             [['create_time', 'update_time'], 'safe'],
         ];

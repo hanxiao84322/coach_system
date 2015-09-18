@@ -99,6 +99,7 @@ class TrainUsersController extends Controller
 
         $trainInfo = Train::findOne(['id',$model->train_id]);
         $model->userName = \app\models\Users::getOneUserNameById($model->user_id);
+        $model->trainName = $trainInfo->name;
         if (Yii::$app->request->isPost) {
 
             $updateParams = Yii::$app->request->post();

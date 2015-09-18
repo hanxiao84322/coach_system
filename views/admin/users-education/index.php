@@ -7,17 +7,13 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\UsersEducationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Users Educations';
+$this->title = '教育经历';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-education-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Users Education', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

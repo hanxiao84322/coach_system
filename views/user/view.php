@@ -5,7 +5,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b><a href="<?= \yii\helpers\Url::to('/teachers/index')?>">讲师</a><b>></b><?= $data['name']?>
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b><a href="javascript:;">学员</a><b>></b><?= $data['name']?>
     </div>
 </div>
 <!--注册人数-->
@@ -14,14 +14,14 @@
     <div class="con_set">
         <div class="news_con1">
             <div class="city_title1">
-                讲师（<?= $data['name']?>）基本信息
+                学院（<?= $data['name']?>）基本信息
             </div>
             <div class="js_infromation">
                 <p class="fl js_header"><img src="/upload/images/users_info/photo/<?= $data['photo']?>" width="198" height="219" /></p>
                 <div class="fl w250">
                     <table cellpadding="0" cellspacing="0" class="table_s361">
                         <tr>
-                            <th colspan="2">教练员基本信息</th>
+                            <th colspan="2">学院基本信息</th>
                         </tr>
                         <tr>
                             <td>姓 名</td>
@@ -37,7 +37,7 @@
                         </tr>
                         <tr>
                             <td>级 别</td>
-                            <td><?= \app\models\Teachers::$levelList[$userModel['level_id']]?></td>
+                            <td><?= \app\models\Level::getOneLevelNameById($userModel['level_id'])?></td>
                         </tr>
                         <tr>
                             <td>注册地区</td>
@@ -45,7 +45,7 @@
                         </tr>
                         <tr>
                             <td>证书编号</td>
-                            <td><?= $modelUserLevel['certificate_number']?></td>
+                            <td><?= \app\models\UsersLevel::getLevelCertificateNumberByUserIdAndLevelId($userModel['id'], $userModel['level_id'])?></td>
                         </tr>
                     </table>
                 </div>
@@ -58,7 +58,7 @@
                         </tr>
                         <tr>
                             <td width="87">活动积分</td>
-                            <td style="border-right:none;">（<b><?= $modelUserLevel['score']?></b>）分</td>
+                            <td style="border-right:none;">（<b><?= $userModel['score']?></b>）分</td>
                         </tr>
                         <tr>
                             <td width="87" style="border-bottom:none;">综合评分</td>

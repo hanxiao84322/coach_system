@@ -7,18 +7,13 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\UsersTrainSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Users Trains';
+$this->title = '培训信息管理';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-train-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Users Train', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
