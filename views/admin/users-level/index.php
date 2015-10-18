@@ -22,10 +22,26 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'user_id',
-            'level_id',
+            [
+                'attribute' => 'user_id',
+                'value' => function($searchModel){
+                    return app\models\Users::getOneUserNameById($searchModel->user_id);
+                }
+            ],
+            [
+                'attribute' => 'level_id',
+                'value' => function($searchModel){
+                    return app\models\level::getOneLevelNameById($searchModel->level_id);
+                }
+            ],
             'certificate_number',
             'district',
+            [
+                'attribute' => 'status',
+                'value' => function($searchModel){
+                    return app\models\UsersLevel::getStatusName($searchModel->status);
+                }
+            ],
             // 'receive_address',
             // 'postcode',
             // 'is_pay',

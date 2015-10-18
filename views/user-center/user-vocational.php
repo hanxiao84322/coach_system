@@ -87,7 +87,7 @@ use yii\jui\DatePicker;
                         <div class="boxset_content">
                             <ul class="nrset_set">
                                 <li>
-                                    <h1><span>教练员培训经历</span></h1>
+                                    <h1><span>教练员执教经历</span></h1>
 
                                     <div class="form_input">
                                         <div class="divp_pt">

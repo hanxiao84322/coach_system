@@ -36,14 +36,6 @@ use yii\helpers\ArrayHelper;
     <?php }?>
     <?= $form->field($model, 'district')->dropDownList(\app\models\Train::$districtList,['style'=>'width:100px']) ?>
 
-    <?php if ($model->sign_up_status == \app\models\Train::BEGIN_SIGN_UP) {?>
-    <?= $form->field($model, 'sign_up_status')->dropDownList([\app\models\Train::BEGIN_SIGN_UP => \app\models\Train::$signUpStatusList[\app\models\Train::BEGIN_SIGN_UP],\app\models\Train::END_SIGN_UP => \app\models\Train::$signUpStatusList[\app\models\Train::END_SIGN_UP]],['style'=>'width:200px']) ?>
-    <?php  } else if ($model->sign_up_status == \app\models\Train::END_SIGN_UP) {?>
-        <?= $form->field($model, 'sign_up_status')->dropDownList([\app\models\Train::END_SIGN_UP => \app\models\Train::$signUpStatusList[\app\models\Train::END_SIGN_UP]],['style'=>'width:200px']) ?>
-    <?php } else {?>
-    <?= $form->field($model, 'sign_up_status')->dropDownList(\app\models\Train::$signUpStatusList,['style'=>'width:200px']) ?>
-    <?php }?>
-
     <?php if ($model->isNewRecord) {?>
     <?= $form->field($model, 'begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
 
@@ -54,11 +46,11 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
     <?php }?>
     <?php if  ($model->status == \app\models\Train::DOING) {?>
-    <?= $form->field($model, 'status')->dropDownList([\app\models\Train::DOING => \app\models\Train::$statusList[\app\models\Train::DOING],\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'status')->dropDownList([\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:200px']) ?>
     <?php  } elseif  ($model->status == \app\models\Train::END) { ?>
-        <?= $form->field($model, 'status')->dropDownList([\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:100px']) ?>
+        <?= $form->field($model, 'status')->dropDownList([\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:200px']) ?>
     <?php } else {?>
-        <?= $form->field($model, 'status')->dropDownList(\app\models\Train::$statusList,['style'=>'width:100px']) ?>
+        <?= $form->field($model, 'status')->dropDownList(\app\models\Train::$statusList,['style'=>'width:200px']) ?>
     <?php }?>
 
     <?= $form->field($model, 'lesson')->textInput(['style'=>'width:100px']) ?>

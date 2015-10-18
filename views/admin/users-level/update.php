@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\UsersLevel */
 
-$this->title = 'Update Users Level: ' . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Users Levels', 'url' => ['index']];
+$this->title = '更新用户晋升信息';
+$this->params['breadcrumbs'][] = ['label' => '用户晋升管理', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = '更新';
 ?>
 <div class="users-level-update">
 

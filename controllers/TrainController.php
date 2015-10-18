@@ -49,9 +49,13 @@ class TrainController extends \yii\web\Controller
         }
 
         if (Yii::$app->user->isGuest) {
-            return $this->redirect('/user/register');
+            return $this->redirect(['/user/register','train_id'=>$trainId]);
         } else {
             $userId = Yii::$app->user->id;
+            if (Yii::$app->user->identity->status != '1') {
+                throw new ServerErrorHttpException('系统错误,原因：您目前的状态是未审核，不能报名课程，谢谢。');
+
+            }
             $trainLevelInfo = Level::findOne(['id' => $trainInfo['level_id']]);
             if ($trainLevelInfo['order'] != (Yii::$app->user->identity->level_order + 1)) {
                 throw new ServerErrorHttpException('系统错误,原因：您目前没有权限报名该级别下的课程，谢谢。');

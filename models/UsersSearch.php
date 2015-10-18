@@ -6,6 +6,8 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Users;
+use yii\data\SqlDataProvider;
+
 
 /**
  * UsersSearch represents the model behind the search form about `app\models\Users`.

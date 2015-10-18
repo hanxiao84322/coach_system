@@ -116,11 +116,7 @@ class TrainController extends Controller
                             throw new ServerErrorHttpException('更新状态失败，原因：该培训课程的报名状态不为' . Train::$signUpStatusList[Train::END_SIGN_UP] . '！');
                         }
                         //根据课程id，用户id更新用户状态为正在进行
-                        $result = TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::DOING, $model->id);
-                        if ($result < 1) {
-                            $transaction->rollBack();
-                            throw new ServerErrorHttpException('更新状态失败，原因：更新学员状态失败！');
-                        }
+                        TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::DOING, $model->id);
                         foreach ($trainUsers as $key => $val) {
 
                             //创建考勤信息

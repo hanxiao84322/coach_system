@@ -7,7 +7,7 @@ use app\models\UsersLevel;
 use app\models\UsersLevelSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * UsersLevelController implements the CRUD actions for UsersLevel model.
@@ -89,8 +89,31 @@ class UsersLevelController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+
+
+            $infoParams = Yii::$app->request->post();
+
+            $model->credentials_photo = UploadedFile::getInstance($model, 'credentials_photo');
+            if (!empty($model->credentials_photo)) {
+                if (!in_array($model->credentials_photo->extension, ['jpg', 'gif'])) {
+                    throw new ServerErrorHttpException('不允许的格式');
+                }
+                $photoFileName = time().  '.' .$model->credentials_photo->extension;
+                $model->credentials_photo->saveAs('upload/images/users_level/credentials_photo/' . $photoFileName, true);
+
+                if ($model->hasErrors('file')){
+                    throw new ServerErrorHttpException($model->getErrors('file'));
+                } else {
+                    $infoParams['UsersLevel']['credentials_photo'] = $photoFileName;
+
+                }
+            }
+            $userLevelInfo = $infoParams;
+
+            if ($model->load($userLevelInfo) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,

@@ -129,7 +129,7 @@ class TrainUsersController extends Controller
                             $trainCode = $trainInfo['code'];
                             $levelCode = Level::getOneCodeById($model->level_id);
                             $certificateNumber = $this->getCertificateNumber($trainCode, sprintf("%04d", $model->orders), $levelCode);
-                            $res = UsersLevel::updateAll(['status'=>1, 'certificate_number' => $certificateNumber, 'update_time' => date('Y-m-d H:i:s', time()), 'update_user' => Yii::$app->admin->identity->username], ['user_id' => $model->user_id, 'train_id' => $model->train_id]);
+                            $res = UsersLevel::updateAll(['status'=>1, 'certificate_number' => $certificateNumber, 'update_time' => date('Y-m-d H:i:s', time()), 'update_user' => Yii::$app->admin->identity->username, 'level_id' => $model->level_id], ['user_id' => $model->user_id, 'train_id' => $model->train_id]);
                             if ($res) {
                                 $transaction->commit();
                                 return $this->redirect(['view', 'id' => $model->id]);
@@ -137,18 +137,9 @@ class TrainUsersController extends Controller
                                 $transaction->rollBack();
                                 throw new ServerErrorHttpException('更新晋升信息错误，原因：' . json_encode($res, JSON_UNESCAPED_UNICODE) . '！');
                             }
-                        } else {
-                            //如果没有通过，删除users_level表信息
-                            $deleteUsersLevelResult = UsersLevel::deleteAll(['user_id' => $model->user_id, 'train_id' => $model->train_id]);
-                            if (!$deleteUsersLevelResult) {
-                                $transaction->rollBack();
-                                throw new ServerErrorHttpException('评分更新错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
-                            } else {
-                                $transaction->commit();
-                                Yii::$app->getSession()->setFlash('success', '更新成功！');
-                                return $this->redirect(['view', 'id' => $model->id]);
-                            }
                         }
+                        $transaction->commit();
+                        Yii::$app->getSession()->setFlash('success', '更新成功！');
                     } else {
                         $transaction->rollBack();
                         throw new ServerErrorHttpException('评分更新错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
@@ -163,21 +154,9 @@ class TrainUsersController extends Controller
                     $model->status = TrainUsers::ENROLL;
 
                     if ($model->save()) {
-                        //新增一条用户和级别对应的信息，只有在录取状态下才能确认添加，状态为未通过
-                        $userLevelModel = new UsersLevel();
-                        $userLevelModel->user_id = $model->user_id;
-                        $userLevelModel->train_id = $model->train_id;
-                        $userLevelModel->level_id = $model->level_id;
-                        $userLevelModel->district = $trainInfo['district'];
-                        $userLevelModel->credentials_number = UsersInfo::getCredentialsNumberByUserId($model->user_id);
-                        if (!$userLevelModel->save()) {
-                            $transaction->rollBack();
-                            throw new ServerErrorHttpException('更新状态错误，原因：' . json_encode($userLevelModel->errors, JSON_UNESCAPED_UNICODE) . '！');
-                        } else {
-                            $transaction->commit();
-                            Yii::$app->getSession()->setFlash('success', '更新成功！');
-                            return $this->redirect(['view', 'id' => $model->id]);
-                        }
+                        $transaction->commit();
+                        Yii::$app->getSession()->setFlash('success', '更新成功！');
+                        return $this->redirect(['view', 'id' => $model->id]);
                     } else {
                         $transaction->rollBack();
 //                    Yii::$app->getSession()->setFlash('error', '更新状态错误，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');

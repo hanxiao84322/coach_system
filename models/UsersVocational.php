@@ -39,6 +39,7 @@ class UsersVocational extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['address', 'begin_time', 'end_time', 'witness_phone', 'witness', 'description'], 'required'],
             [['user_id', 'post'], 'integer'],
             [['begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['team'], 'string', 'max' => 25],
@@ -77,5 +78,10 @@ class UsersVocational extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
+    }
+
+    public static function getLevel()
+    {
+        return '高级';
     }
 }

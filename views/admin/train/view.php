@@ -44,11 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'recruit_count',
             'sign_up_begin_time',
             'sign_up_end_time',
-            [
-                'attribute' => 'sign_up_status',
-                'label'=>'状态',
-                'value'=> app\models\Train::getSignUpStatusName($model->sign_up_status)
-            ],
             'begin_time',
             'end_time',
             [

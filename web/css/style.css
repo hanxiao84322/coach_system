@@ -466,7 +466,7 @@ img{border:none;}
 .fixed_information tr td span{float:left;margin-right:10px;padding-top:10px;}
 .fixed_information tr td span a{display:block;margin-top:8px;}
 .fixed_information tr td span.green{color:#438E0D;font-size:12px;}
-.fixe_btn{width:130px;height:40px;background:#FF6100;font-size:18px;color:#fff;border:none;font-family:Microsoft Yahei;cursor:pointer;margin-top:20px;}
+.fixe_btn{width:230px;height:40px;background:#FF6100;font-size:18px;color:#fff;border:none;font-family:Microsoft Yahei;cursor:pointer;margin-top:20px;}
 
 .divp_pt{padding:20px;}
 .wans_content{width:100%;border-left:solid 2px #fff;border-bottom:solid 2px #fff;}

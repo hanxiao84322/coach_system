@@ -46,24 +46,17 @@ class Train extends \yii\db\ActiveRecord
 
     ];
 
-    //报名状态
+    //课程状态
     const NEW_ADD = 1;
     const BEGIN_SIGN_UP = 2;
     const END_SIGN_UP = 3;
+    const DOING = 4;
+    const END = 5;
 
-    static public $signUpStatusList = [
+    static public $statusList = [
         self::NEW_ADD => '未开始报名',
         self::BEGIN_SIGN_UP => '报名开始',
         self::END_SIGN_UP => '报名结束',
-    ];
-
-    //课程状态
-    const NO_BEGIN = 1;
-    const DOING = 2;
-    const END = 3;
-
-    static public $statusList = [
-        self::NO_BEGIN => '未开始',
         self::DOING => '进行中',
         self::END => '结束',
     ];
@@ -104,8 +97,8 @@ class Train extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson','code'], 'integer'],
-            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson','code'], 'required'],
+            [['category', 'level_id', 'recruit_count', 'status', 'lesson','code'], 'integer'],
+            [['category', 'level_id', 'recruit_count', 'status', 'lesson','code'], 'required'],
             [['sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['content', 'district'], 'string'],
             [['name', 'create_user', 'update_user','bus', 'near_site'], 'string', 'max' => 45],
@@ -125,8 +118,8 @@ class Train extends \yii\db\ActiveRecord
             'level_id' => '级别',
             'code' => '编号',
             'recruit_count' => '招收人数',
-            'sign_up_begin_time' => '注册开始时间',
-            'sign_up_end_time' => '注册结束时间',
+            'sign_up_begin_time' => '报名开始时间',
+            'sign_up_end_time' => '报名结束时间',
             'sign_up_status' => '报名状态',
             'begin_time' => '开始时间',
             'end_time' => '结束时间',

@@ -6,7 +6,7 @@
 use yii\helpers\Html;
 use app\assets\WebAppAsset;
 use yii\helpers\Url;
-
+use yii\widgets\ActiveForm;
 
 WebAppAsset::register($this);
 ?>
@@ -19,7 +19,6 @@ WebAppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title>教练员管理系统</title>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=2c327dae2b9abd9727b0e8da3d988040"></script>
-
     <?php $this->head() ?>
 
 </head>
@@ -44,12 +43,19 @@ WebAppAsset::register($this);
 </div>
 <!--top-->
 <!--logo search-->
+<?php $form = ActiveForm::begin([
+    'id'=>'registerInfo',
+    'enableAjaxValidation' => false,
+    'action' => \yii\helpers\Url::to('/search/index'),
+    'method' => 'get'
+]); ?>
 <div class="logo_search">
     <h1 class="fl"><a href="javascript:;"><img src="/images/logo.jpg" /></a></h1>
     <div class="fr search">
-        <span>教练员搜索：</span><input type="text" class="input_set" placeholder="输入教练员姓名、身份证号或证书编号" /><input type="submit" value="搜索"  class="search_btn" /><a href="javascript:;" class="top_search">高级搜索</a>
+        <span>教练员搜索：</span><input type="text" name="keyword" class="input_set" placeholder="输入教练员姓名、身份证号或证书编号" /><input type="submit" value="搜索"  class="search_btn" /><a href="<?= Url::to('/top-search/index')?>" class="top_search">高级搜索</a>
     </div>
 </div>
+<?php ActiveForm::end(); ?>
 <!--logo search-->
 <!--nav-->
 <div class="nav_box">
@@ -69,7 +75,7 @@ WebAppAsset::register($this);
 
 <!--foooter-->
 <div class="footer">
-    <p><a href="javascript:;">首页</a>  |  <a href="javascript:;">最新动态</a>  | <a href="javascript:;"> 培训报名</a>  |  <a href="javascript:;">培训风采 </a> | <a href="javascript:;"> 教练员注册</a>  | <a href="javascript:;"> 教练员专栏</a>  | <a href="javascript:;"> 政策法规</a>  | <a href="javascript:;"> 足协官网</a>  | <a href="javascript:;"> 帮助中心</a> | <a href="javascript:;"> 关于本站</a></p>
+    <p><a href="<?= Url::to('/home/index')?>">首页</a>  |  <a href="<?= Url::to('/news/index')?>">最新动态</a>  | <a href="<?= Url::to('/train/index')?>"> 培训报名</a>  |  <a href="<?= Url::to(['/news/train','level_id' => 2])?>">培训风采 </a> | <a href="<?= Url::to('/user/register-coach')?>"> 教练员注册</a>  | <a href="<?= Url::to('/user/index')?>"> 教练员专栏</a>  | <a href="<?= Url::to(['/pages/view', 'id' => 1])?>"> 政策法规</a>  | <a href="http://www.bj-fa.org.cn/" target="_blank"> 足协官网</a>  | <a href="<?= Url::to(['/pages/view', 'id' => 2])?>"> 帮助中心</a> | <a href="<?= Url::to(['/pages/view', 'id' => 3])?>"> 关于本站</a></p>
     版权所有：北京足球协会   地址：北京市宣武区先农坛体育场内2号楼 客服及报障电话：4008888888 <br />客服邮箱：beijingzuxie@beijingzuxie.org  ICP经营许可证：京ICP证888888 <br />本网站由北京我家科技发展有限公司提供制作及技术支持
 
 </div>

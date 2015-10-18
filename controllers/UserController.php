@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Level;
 use app\models\News;
 use app\models\Pages;
+use app\models\Sms;
 use app\models\UsersEducation;
 use app\models\UsersInfo;
 use app\models\UsersLevel;
@@ -69,9 +70,15 @@ class UserController extends \yii\web\Controller
     public function actionRegister()
     {
         $type = Yii::$app->request->get('type');
+        $trainId = Yii::$app->request->get('train_id');
+        $session = Yii::$app->session;
         if (Yii::$app->request->isPost) {
             $registerParams = Yii::$app->request->post();
-            $usersModel = new Users();
+            $trainId = Yii::$app->request->post('train_id');
+            if ($registerParams['password'] != $registerParams['password_repeat']) {
+                throw new ServerErrorHttpException('两次输入的密码不相同，请重新输入！');
+            }
+                $usersModel = new Users();
             if (!empty($registerParams['email'])) {
                 //验证
                 $isExist = Users::findOne(['email' => $registerParams['email']]);
@@ -89,15 +96,18 @@ class UserController extends \yii\web\Controller
                     ]
                 ];
             } else {
-                $isExist = Users::findOne(['phone' => $registerParams['phone']]);
+                $isExist = Users::findOne(['mobile_phone' => $registerParams['phone']]);
                 if (!empty($isExist)) {
                     throw new ServerErrorHttpException('已经存在的手机号码！');
+                }
+                if ($registerParams['check_num'] != $session['checkNum']) {
+                    throw new ServerErrorHttpException('短信验证码输入错误，请重新输入！');
                 }
                 //验证手机
                 $registerInfo = [
                     '_csrf' => $registerParams['_csrf'],
                     'Users' => [
-                        'phone' => $registerParams['phone'],
+                        'mobile_phone' => $registerParams['phone'],
                         'password' => $registerParams['password'],
                         'score' => 60,
                         'level_id' => 1,
@@ -105,17 +115,32 @@ class UserController extends \yii\web\Controller
                     ]
                 ];
             }
+            $transaction = Yii::$app->db->beginTransaction();
 
             if ($usersModel->load($registerInfo) && $usersModel->save()) {
+                //新增一条用户和级别对应的信息
+                $userLevelModel = new UsersLevel();
+                $userLevelModel->user_id = $usersModel->id;
+                $userLevelModel->train_id = $trainId;
+                $userLevelModel->level_id = 2;
+                $userLevelModel->district = '';
+                $userLevelModel->credentials_number = '';
+                if (!$userLevelModel->save()) {
+                    $transaction->rollBack();
+                    throw new ServerErrorHttpException('更新状态错误，原因：' . json_encode($userLevelModel->errors, JSON_UNESCAPED_UNICODE) . '！');
+                } else {
+                    $transaction->commit();
+                }
+
                 $model = new LoginForm();
                 $loginInfo['_csrf'] = $registerInfo['_csrf'];
                 $loginInfo['LoginForm'] = $registerInfo['Users'];
                 unset($loginInfo['LoginForm']['level_id']);
                 unset($loginInfo['LoginForm']['level_order']);
                 unset($loginInfo['LoginForm']['score']);
-                $loginInfo['LoginForm']['rememberMe'] = 1;
+                $loginInfo['LoginForm']['rememberMe'] = 0;
                 if ($model->load($loginInfo) && $model->login()) {
-                    return $this->redirect(['/user/register-info']);
+                    return $this->redirect(['/user/register-info','train_id'=>$trainId]);
                 } else {
                     throw new ServerErrorHttpException('自动登录失败,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
                 }
@@ -123,7 +148,7 @@ class UserController extends \yii\web\Controller
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($usersModel->errors, JSON_UNESCAPED_UNICODE));
             }
         } else {
-            return $this->render('register', ['type' => $type]);
+            return $this->render('register', ['type' => $type, 'train_id' => $trainId]);
         }
     }
 
@@ -132,6 +157,10 @@ class UserController extends \yii\web\Controller
     {
         if (Yii::$app->request->isPost) {
             $infoParams = Yii::$app->request->post();
+            $trainId = Yii::$app->request->post('train_id');
+            $year = Yii::$app->request->post('year');
+            $month = Yii::$app->request->post('month');
+            $day = Yii::$app->request->post('day');
             $userId = Yii::$app->user->id;
             $modelInfo = new UsersInfo();
 
@@ -171,20 +200,33 @@ class UserController extends \yii\web\Controller
             }
 
             $infoParams['UsersInfo']['user_id'] = $userId;
+            $infoParams['UsersInfo']['birthday'] = $year . '-' . $month . '-' . $day . ' 00:00:00';
+            $transaction = Yii::$app->db->beginTransaction();
 
             $infoInfo = $infoParams;
+
             if ($modelInfo->load($infoInfo) && $modelInfo->save()) {
-                return $this->redirect(['/user/register-info', 'id' => $userId]);
+                Users::updateAll(['username'=>$infoInfo['UsersInfo']['name'], 'status' => 1],['id' => $userId]);
+                //更新级别信息的信息
+                $result = UsersLevel::updateAll(['credentials_number' => $modelInfo['credentials_number']], ['user_id' => $userId]);
+                if (!$result) {
+                    $transaction->rollBack();
+                    throw new ServerErrorHttpException('更新信息错误！');
+                } else {
+                    $transaction->commit();
+                }
+                return $this->redirect(['/user/register-education','train_id' => $trainId]);
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($modelInfo->errors, JSON_UNESCAPED_UNICODE));
             }
         }else {
-
             $model = UsersInfo::findOne(['user_id'=>Yii::$app->user->id]);
+            $trainId = Yii::$app->request->get('train_id');
             $userModel = Users::findOne(Yii::$app->user->id);
             return $this->render('register-info',[
                 'model' => $model,
-                'userModel' => $userModel
+                'userModel' => $userModel,
+                'train_id' => $trainId
             ]);
         }
     }
@@ -194,6 +236,8 @@ class UserController extends \yii\web\Controller
         if (Yii::$app->request->isPost) {
             $infoParams = Yii::$app->request->post();
             $userId = Yii::$app->user->id;
+            $trainId = Yii::$app->request->post('train_id');
+
             $modelInfo = new UsersEducation();
 
             $infoParams['UsersEducation']['user_id'] = $userId;
@@ -202,17 +246,17 @@ class UserController extends \yii\web\Controller
             }
             $infoInfo = $infoParams;
             if ($modelInfo->load($infoInfo) && $modelInfo->save()) {
-                return $this->redirect(['/user/register-education', 'id' => $userId]);
+                return $this->redirect(['/user/register-education', 'train_id' => $trainId]);
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($modelInfo->errors, JSON_UNESCAPED_UNICODE));
             }
         }else {
             $userId = Yii::$app->user->id;
-
+            $trainId = Yii::$app->request->get('train_id');
             $model = UsersEducation::findAll(['user_id' => $userId]);
             return $this->render('register-education',[
                 'model' => $model,
-                'user_id' => $userId
+                'train_id' => $trainId,
             ]);
         }
     }
@@ -222,6 +266,7 @@ class UserController extends \yii\web\Controller
         if (Yii::$app->request->isPost) {
             $infoParams = Yii::$app->request->post();
             $userId = Yii::$app->user->id;
+            $trainId = Yii::$app->request->post('train_id');
             $modelInfo = new UsersTrain();
 
             $infoParams['UsersTrain']['user_id'] = $userId;
@@ -230,7 +275,7 @@ class UserController extends \yii\web\Controller
             }
             $infoInfo = $infoParams;
             if ($modelInfo->load($infoInfo) && $modelInfo->save()) {
-                return $this->redirect(['/user/register-train', 'id' => $userId]);
+                return $this->redirect(['/user/register-train', 'train_id' => $trainId]);
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($modelInfo->errors, JSON_UNESCAPED_UNICODE));
             }
@@ -238,9 +283,10 @@ class UserController extends \yii\web\Controller
             $userId = Yii::$app->user->id;
 
             $model = UsersTrain::findAll(['user_id' => $userId]);
+            $trainId = Yii::$app->request->get('train_id');
             return $this->render('register-train',[
                 'model' => $model,
-                'user_id' => $userId
+                'train_id' => $trainId
             ]);
         }
     }
@@ -250,6 +296,7 @@ class UserController extends \yii\web\Controller
         if (Yii::$app->request->isPost) {
             $infoParams = Yii::$app->request->post();
             $userId = Yii::$app->user->id;
+            $trainId = Yii::$app->request->post('train_id');
             $modelInfo = new UsersVocational();
 
             $infoParams['UsersVocational']['user_id'] = $userId;
@@ -258,7 +305,7 @@ class UserController extends \yii\web\Controller
             }
             $infoInfo = $infoParams;
             if ($modelInfo->load($infoInfo) && $modelInfo->save()) {
-                return $this->redirect('/user/register-vocational');
+                return $this->redirect(['/user/register-vocational', 'train_id' => $trainId]);
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($modelInfo->errors, JSON_UNESCAPED_UNICODE));
             }
@@ -266,9 +313,10 @@ class UserController extends \yii\web\Controller
             $userId = Yii::$app->user->id;
 
             $model = UsersVocational::findAll(['user_id' => $userId]);
+            $trainId = Yii::$app->request->get('train_id');
             return $this->render('register-vocational',[
                 'model' => $model,
-                'user_id' => $userId
+                'train_id' => $trainId
             ]);
         }
     }
@@ -278,6 +326,7 @@ class UserController extends \yii\web\Controller
         if (Yii::$app->request->isPost) {
             $infoParams = Yii::$app->request->post();
             $userId = Yii::$app->user->id;
+            $trainId = Yii::$app->request->post('train_id');
             $modelInfo = new UsersPlayers();
 
             $infoParams['UsersPlayers']['user_id'] = $userId;
@@ -286,7 +335,7 @@ class UserController extends \yii\web\Controller
             }
             $infoInfo = $infoParams;
             if ($modelInfo->load($infoInfo) && $modelInfo->save()) {
-                return $this->redirect('/user/register-players');
+                return $this->redirect(['/user/register-players', 'train_id' => $trainId]);
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($modelInfo->errors, JSON_UNESCAPED_UNICODE));
             }
@@ -294,9 +343,10 @@ class UserController extends \yii\web\Controller
             $userId = Yii::$app->user->id;
 
             $model = UsersPlayers::findAll(['user_id' => $userId]);
+            $trainId = Yii::$app->request->get('train_id');
             return $this->render('register-players',[
                 'model' => $model,
-                'user_id' => $userId
+                'train_id' => $trainId
             ]);
         }
     }
@@ -445,4 +495,38 @@ class UserController extends \yii\web\Controller
         ]);
     }
 
+    public function actionGetCheckNum()
+    {
+        $phone = Yii::$app->request->get('phone');
+        $checkNum = rand(100000,999999);
+        $session = Yii::$app->session;
+
+        if (!isset($session['time']))//判断缓存时间
+        {
+            $session['time'] = date("Y-m-d H:i:s");
+        }
+        $session['checkNum'] = $checkNum;//将content的值保存在session中
+        if (!empty($phone)) {
+            if ((strtotime($session['time']) + 60) < time()) {//将获取的缓存时间转换成时间戳加上60秒后与当前时间比较，小于当前时间即为过期
+                session_destroy();
+                $session->remove('time');
+                $msg =  '验证码已过期，请重新获取！';
+            } else {
+                $checkNum = '验证码已经发送到手机'.$phone . '，请注意查收。';
+
+                $content = "尊敬的学员，您的注册验证码是".$checkNum.",次验证码于一分钟后过期，请尽快完成注册，谢谢！【教练系统】";
+                $smsModel = Sms::getInstance(Yii::$app->params['smsUserName'],Yii::$app->params['smsPassword']);
+
+                $result = $smsModel->pushMt($phone,time().$checkNum, $content, 0);
+                if ($result == '0') {
+                    $msg = '发送成功，请注意查收！';
+                } else {
+                    $msg = $checkNum;
+                }
+            }
+        } else {
+            $msg =  '发送失败，请再次尝试！';
+        }
+        return $msg;
+    }
 }

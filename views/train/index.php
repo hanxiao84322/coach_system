@@ -54,7 +54,13 @@
                 <td><?= $val->begin_time ?></td>
                 <td><?= $val->address ?></td>
                 <td>招<?= $val->recruit_count ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
-                <td><b><a href="<?= \yii\helpers\Url::to(['/train/apply', 'id' => $val->id])?>">申请报名</a></b></td>
+                    <?php if ($val['status'] == \app\models\Train::BEGIN_SIGN_UP) {?>
+                <td><b><a href="<?= \yii\helpers\Url::to(['/train/apply', 'id' => $val->id])?>" style="color:green;">申请报名</a></b></td>
+                    <?php } else {?>
+                        <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Train::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Train::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Train::$statusList[$val->status]?></a></b></td>
+                    <?php } ?>
+
+
             </tr>
             <?php endforeach; ?>
 

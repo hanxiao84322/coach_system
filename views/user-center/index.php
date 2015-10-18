@@ -35,13 +35,13 @@
                                         <td><?= $val['begin_time']?></td>
                                         <td><?= $val['address']?></td>
                                         <td>招<?= $val['recruit_count']?>人 ( <b class="red">已录取 <?= \app\models\TrainUsers::getRecruitCount($val['train_id'])?> 人</b> )</td>
-                                        <td><b class="<?php if ($val['status'] == '6') {?>red<?php }elseif ($val['status'] == '5'){?>gray<?php } else {?>green<?php }?>"><?= \app\models\TrainUsers::$statusList[$val['status']]?></b></td>
+                                            <td><b class="<?php if ($val['status'] == '6') {?>red<?php }elseif ($val['status'] == '5'){?>gray<?php } else {?>green<?php }?>"><?= \app\models\TrainUsers::$statusList[$val['status']]?></b></td>
                                         <td>
                                             <a href="<?= \yii\helpers\Url::to('/user-center/user-info')?>">修改信息</a>
                                             <?php if (in_array($val['status'], [\app\models\TrainUsers::NO_APPROVED,\app\models\TrainUsers::SIGN,\app\models\TrainUsers::APPROVED])) {?>
                                             <a href="<?= \yii\helpers\Url::to(['/user-center/update-train-user-status', 'trainId' => $val['id'], 'status' => 7])?>">取消</a>
                                             <?php }?>
-                                            <?php if (in_array($val['status'], [\app\models\TrainUsers::END,\app\models\TrainUsers::NO_APPROVED,\app\models\TrainUsers::CANCEL])) {?>
+                                            <?php if (in_array($val['status'], [\app\models\TrainUsers::PASS,\app\models\TrainUsers::NO_PASS,\app\models\TrainUsers::NO_APPROVED,\app\models\TrainUsers::CANCEL])) {?>
 
                                             <a href="<?= \yii\helpers\Url::to(['/user-center/delete-train-users', 'id' => $val['id']])?>">删除</a>
                                             <?php }?>

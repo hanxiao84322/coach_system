@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => '查看',
                 'format' => 'html',
                 'value' => function($searchModel) {
-                    $url = Html::a('基本信息', ['Admin/users-info/view', 'id' => $searchModel->id]);
+                    $url = Html::a('基本信息', ['Admin/users-info/', 'UsersInfoSearch[user_id]' => $searchModel->id]);
                     $url .= '&nbsp;'.Html::a('教育经历', ['Admin/users-education/', 'UsersEducationSearch[user_id]' => $searchModel->id]);
                     $url .= '&nbsp;'.Html::a('培训经历', ['Admin/users-train/', 'UsersTrainSearch[user_id]' => $searchModel->id]);
                     $url .= '&nbsp;'.Html::a('运动经历', ['Admin/users-players/', 'UsersPlayersSearch[user_id]' => $searchModel->id]);
@@ -58,9 +58,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => '管理',
                 'format' => 'html',
                 'value' => function($searchModel) {
-                    $url = Html::a('晋升', ['Admin/UsersLevel/', 'UserId' => $searchModel->id]);
+                    $url = Html::a('晋升', ['Admin/users-level/', 'UsersLevelSearch[user_id]' => $searchModel->id]);
                     $url .= '&nbsp;'.Html::a('活动', ['Admin/ActivityUsers/', 'UserId' => $searchModel->id]);
-                    $url .= '&nbsp;'.Html::a('培训课程', ['Admin/TrainUsers/', 'UserId' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('培训课程', ['Admin/train-users/', 'TrainUsersSearch[user_id]' => $searchModel->id]);
                     return $url;
                 }
             ],

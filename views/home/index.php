@@ -69,8 +69,8 @@
                 <li style="border-right:none;">
                     <img src="/images/t3.jpg" />
                     <span>教练员证书查询</span>
-                    <a href="javascript:;">注册教练员证书</a>
-                    <a href="javascript:;">在线查询</a>
+                    <a href="<?=\yii\helpers\Url::to('/search-certificate-number/index')?>">注册教练员证书</a>
+                    <a href="<?=\yii\helpers\Url::to('/search-certificate-number/index')?>">在线查询</a>
                 </li>
             </ul>
         </div>

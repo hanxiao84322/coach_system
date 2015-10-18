@@ -18,6 +18,8 @@ use Yii;
  * @property string $create_time
  * @property string $update_time
  * @property string $update_user
+ * @property string $photo
+ * @property string $credentials_photo
  *
  * @property Users $user
  * @property Level $level
@@ -56,12 +58,14 @@ class UsersLevel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'level_id', 'is_pay'], 'integer'],
+            [['user_id', 'level_id', 'is_pay', 'status'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
             [['certificate_number'], 'string', 'max' => 25],
             [['district', 'postcode'], 'string', 'max' => 10],
             [['receive_address'], 'string', 'max' => 100],
-            [['update_user'], 'string', 'max' => 45]
+            [['update_user'], 'string', 'max' => 45],
+            [['photo', 'credentials_photo'], 'string', 'max' => 45]
+
         ];
     }
 
@@ -72,6 +76,7 @@ class UsersLevel extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'train_id' => '参加培训课程',
             'user_id' => '用户名',
             'level_id' => '级别',
             'certificate_number' => '证件号码',
@@ -79,9 +84,12 @@ class UsersLevel extends \yii\db\ActiveRecord
             'receive_address' => '收货地址',
             'postcode' => '邮编',
             'is_pay' => '是否支付',
+            'status' => '状态',
             'create_time' => '创建时间',
             'update_time' => '更新时间',
             'update_user' => '更新人',
+            'photo' => '形象照',
+            'credentials_photo' => '证件照',
         ];
     }
 
@@ -119,6 +127,19 @@ class UsersLevel extends \yii\db\ActiveRecord
         $sql = "SELECT certificate_number FROM " . self::tableName() . " WHERE user_id =:user_id AND level_id=:level_id";
         $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId, ':level_id' => $levelId])->queryScalar();
         return $result;
+    }
+
+    public static function getStatusName($status)
+    {
+        return !empty(self::$statusList[$status]) ? self::$statusList[$status] : '';
+    }
+
+    public static function getLevelUpInfoByUserIdOrder($userId, $levelOrder)
+    {
+        $sql = "SELECT u.score,u.lesson,u.credit,u.create_time,l.credit as level_credit,l.score as level_score,l.name,l.login_duration,l.content FROM " . self::tableName() . " ul LEFT JOIN " . Users::tableName() . " u ON ul.user_id = u.id LEFT JOIN " . Level::tableName() . " l ON ul.level_id = l.id WHERE ul.user_id=:user_id AND l.order=:level_order";
+        $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId, ':level_order' => $levelOrder])->queryOne();
+        return $result;
+
     }
 
     public function beforeSave($insert = '')

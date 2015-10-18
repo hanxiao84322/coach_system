@@ -55,7 +55,11 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
+        'session'=> [
+            'timeout'=>3600,
+        ],
         'db' => require(__DIR__ . '/db.php'),
+
     ],
     'params' => $params,
 ];

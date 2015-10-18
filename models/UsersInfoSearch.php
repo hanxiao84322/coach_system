@@ -12,6 +12,7 @@ use app\models\UsersInfo;
  */
 class UsersInfoSearch extends UsersInfo
 {
+
     /**
      * @inheritdoc
      */

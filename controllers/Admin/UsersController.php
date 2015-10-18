@@ -2,6 +2,11 @@
 
 namespace app\controllers\Admin;
 
+use app\models\UsersEducation;
+use app\models\UsersInfo;
+use app\models\UsersPlayers;
+use app\models\UsersTrain;
+use app\models\UsersVocational;
 use Yii;
 use app\models\Users;
 use app\models\UsersSearch;
@@ -56,8 +61,19 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
+        $modelInfo = UsersInfo::findOne(['user_id' => $id]);
+        $modelEducation = UsersEducation::findAll(['user_id' => $id]);
+        $modelTrain = UsersTrain::findAll(['user_id' => $id]);
+        $modelVocational = UsersVocational::findAll(['user_id' => $id]);
+        $modelPlayers = UsersPlayers::findAll(['user_id' => $id]);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'modelInfo' => $modelInfo,
+            'modelEducation' => $modelEducation,
+            'modelTrain' => $modelTrain,
+            'modelVocational' => $modelVocational,
+            'modelPlayers' => $modelPlayers,
         ]);
     }
 

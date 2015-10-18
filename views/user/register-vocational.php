@@ -3,89 +3,40 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 
 ?>
-<script>
-    $(function () {
-        var ok1 = false;
-        var ok2 = false;
-        var ok3 = false;
-        var ok4 = false;
-
-        //验证地点
-        $('input[name="UsersEducation[address]"]').focus(function () {
-            $(this).next().text('填写地点').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok1 = true;
-            } else {
-                $(this).next().text('地点格式错误').removeClass('state1').addClass('state3');
-            }
-
-        });
-
-        //验证学校名称
-        $('input[name="UsersEducation[school]"]').focus(function () {
-            $(this).next().text('填写学校名称').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 40 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok2 = true;
-            } else {
-                $(this).next().text('学校名称错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证证明人
-        $('input[name="UsersEducation[witness]"]').focus(function () {
-            $(this).next().text('填写证明人').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok3 = true;
-            } else {
-                $(this).next().text('证明人格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证描述
-        $('input[name="UsersEducation[description]"]').focus(function () {
-            $(this).next().text('填写描述').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok4 = true;
-            } else {
-                $(this).next().text('描述格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-
-        //提交按钮,所有验证通过方可提交
-
-        $('input[name="submit"]').click(function () {
-            if (ok1 && ok2 && ok3 && ok4) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-    });
-</script>
-
 <!--content-->
+<style>
+    .rgsd_box_set{padding:30px 0 0;height:67px;}
+    .reg_mark{float:left;}
+    .reg_lc{float:right;width:774px;background:url(/images/xian.png) no-repeat center 5px;margin-top:10px;}
+    .reg_lc ul li{float:left;width:129px;text-align:center;font-size:16px;color:#666;}
+    .reg_lc ul li span{display:block;width:13px;height:13px;background:url(/images/wxz.png) no-repeat center top;margin:0 auto;padding-bottom:10px;}
+    .reg_lc ul li span.hover{display:block;width:13px;height:13px;background:url(/images/xz.png) no-repeat center top;margin:0 auto;padding-bottom:10px;}
+    .reg_lc ul li.hover{color:#438C0C;}
+</style>
 <div class="content_box">
     <div class="con_set">
+        <div class="rgsd_box_set">
+            <div class="reg_mark">
+                <img src="/images/reg.png">
+            </div>
+            <div class="reg_lc">
+                <ul>
+                    <li class="hover"><span class="hover"></span>基本信息</li>
+                    <li><span></span>教育经历</li>
+                    <li><span></span>培训经历</li>
+                    <li><span></span>执教经历</li>
+                    <li><span></span>运动经历</li>
+                    <li><span></span>提交成功</li>
+                </ul>
+            </div>
+        </div>
         <p class="p_jbinfor">基本信息</p>
 
         <div class="informatioin_self">
 
             <ul class="nrset_set">
                 <li>
-                    <h1><span>教育经历</span></h1>
+                    <h1><span>执教经历</span></h1>
 
                     <div class="form_input">
                         <div class="divp_pt">
@@ -126,14 +77,14 @@ use yii\jui\DatePicker;
                                     <td align="right"><em>*</em>时间：</td>
                                     <td><?= DatePicker::widget([
                                             'attribute' => 'birthday',
-                                            'name' => 'UsersEducation[begin_time]',
+                                            'name' => 'UsersVocational[begin_time]',
                                             'clientOptions' => [
                                                 'autoclose' => true,
                                                 'format' => 'dd-M-yyyy',
                                             ],
                                         ]);?> 至 <?= DatePicker::widget([
                                             'attribute' => 'birthday',
-                                            'name' => 'UsersEducation[end_time]',
+                                            'name' => 'UsersVocational[end_time]',
                                             'clientOptions' => [
                                                 'autoclose' => true,
                                                 'format' => 'dd-M-yyyy',
@@ -143,30 +94,30 @@ use yii\jui\DatePicker;
                                 </tr>
                                 <tr>
                                     <td align="right"><em>*</em>地点：</td>
-                                    <td><input type="text" value="" class="w400" name="UsersEducation[address]"/><span class='state1'></span></td>
+                                    <td><input type="text" value="" class="w400" name="UsersVocational[address]"/><span class='state1'></span></td>
                                 </tr>
                                 <tr>
-                                    <td align="right"><em>*</em>学校名称：</td>
-                                    <td><input type="text" value="" class="w400" name="UsersEducation[school]"/><span class='state1'></span></td>
+                                    <td align="right"><em>*</em>执教球队：</td>
+                                    <td><input type="text" value="" class="w400" name="UsersVocational[team]"/><span class='state1'></span></td>
                                 </tr>
                                 <tr>
-                                    <td align="right"><em>*</em>学历/学位：</td>
-                                    <td><select class="w78" name="UsersEducation[educational_background]">
-                                            <option value="1">大专</option>
-                                            <option value="2">本科</option>
+                                    <td align="right"><em>*</em>任职：</td>
+                                    <td><select class="w78" name="UsersVocational[post]">
+                                            <option value="1">市级</option>
+                                            <option value="2">国家级</option>
                                         </select></td>
                                 </tr>
                                 <tr>
                                     <td align="right"><em>*</em>证明人：</td>
-                                    <td><input type="text" value="" class="w189" name="UsersEducation[witness]"/> <span class='state1'></span>证明人电话：<input name="UsersEducation[witness_phone]" type="text" value="" class="w189"/></td>
+                                    <td><input type="text" value="" class="w189" name="UsersVocational[witness]"/> <span class='state1'></span>证明人电话：<input name="UsersVocational[witness_phone]" type="text" value="" class="w189"/></td>
                                 </tr>
                                 <tr>
                                     <td align="right" valign="top"><em>*</em>描述：</td>
-                                    <td><textarea class="w480" name="UsersEducation[description]"></textarea><span class='state1'></span></td>
+                                    <td><textarea class="w480" name="UsersVocational[description]"></textarea><span class='state1'></span></td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><input name="user_id" type="hidden" value="<?= $user_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to('/user/register-players')?>">添加运动信息</a></td>
+                                    <td><input name="train_id" type="hidden" value="<?= $train_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to(['/user/register-players','train_id' => $train_id])?>">添加运动信息</a><a href="<?= \yii\helpers\Url::to(['/train/apply', 'id' => $train_id])?>">填写完成</a></td>
                                 </tr>
                             </table>
                             <?php ActiveForm::end(); ?>

@@ -39,6 +39,7 @@ class UsersEducation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['school', 'begin_time', 'end_time', 'witness_phone', 'witness', 'description'], 'required'],
             [['user_id', 'educational_background'], 'integer'],
             [['begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['school', 'witness', 'update_user'], 'string', 'max' => 45],
@@ -78,6 +79,10 @@ class UsersEducation extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 
+    public static function getEducationalBackground()
+    {
+        return '本科';
+    }
 
     public function beforeSave($insert = '')
     {

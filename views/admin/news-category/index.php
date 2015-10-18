@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\NewsCategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '分类管理';
+$this->title = '栏目管理';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="news-category-index">

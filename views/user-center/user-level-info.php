@@ -58,12 +58,11 @@ use yii\widgets\ActiveForm;
                                             <table cellpadding="0" cellspacing="0" class="table_set1">
                                                 <tr>
                                                     <td></td>
-                                                    <td>
-                                                        <?php if (!empty($data['modelA']['photo'])) {?><img src="/upload/images/user_level/photo/<?= $data['modelA']['photo']?>"/><?php }?></td>
+                                                    <td><?php if (!empty($data['modelA']['photo'])) {?><img src="/upload/images/users_level/photo/<?= $data['modelA']['photo']?>" width="157" height="210" /><?php }?></td>
                                                 </tr>
                                                 <tr>
                                                     <td><b>*</b>形象照片：</td>
-                                                    <td><input name="photo" type="file"><span><b>(注：请上传1MB以内高清白底免冠照片，以便制作教练员证书、教练员上岗证等)</b></span>
+                                                    <td><input name="UsersLevel[photo]" type="file"><span><b>(注：请上传1MB以内高清白底免冠照片，以便制作教练员证书、教练员上岗证等)</b></span>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -84,10 +83,11 @@ use yii\widgets\ActiveForm;
                                                     <td><b>*</b>证书编号：</td>
                                                     <td><span><input type="text" readonly class="w228"
                                                                      value="<?= $data['modelA']['certificate_number']?>"/></span>
-
+                                                        <?php if (!empty($data['modelA']['credentials_photo'])) {?>
                                                         <p class="opactiy_set"><span>查看证书</span><span><img
-                                                                    src="/images/zs.jpg" width="33" height="22"/> </span><a
-                                                                href="javascript:;"><img src="/images/zoom.jpg"/></a></p>
+                                                                    src="/images/user/zs.jpg" width="33" height="22"/> </span><a
+                                                                href="/upload/images/users_level/credentials_photo/<?= $data['modelA']['credentials_photo']?>" target="_blank"><img src="/images/user/zoom.jpg"/></a></p>
+                                                        <?php }?>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -98,14 +98,17 @@ use yii\widgets\ActiveForm;
                                                 </tr>
                                                 <tr>
                                                     <td><b>*</b>收证地址：</td>
-                                                    <td><span><input type="text" name="receive_address" class="w398"
-                                                                     value=""/></span><span>邮编：<input
-                                                                type="text" name="postcode" class="w200"
-                                                                value=""/></span></td>
+                                                    <td><span><input type="text" name="UsersLevel[receive_address]" class="w398" value="<?= $data['modelA']['receive_address']?>"/></span><span>邮编：<input type="text" name="UsersLevel[postcode]" class="w200" value="<?= $data['modelA']['postcode']?>"/></span></td>
                                                 </tr>
                                                 <tr>
                                                     <td><b>*</b>注册费：</td>
-                                                    <td><span><input type="text" readonly class="w70" value="<?= \app\models\Level::getRegisterFeeById($data['modelA']['level_id'])?>"/> 元 (注册费用包含：教练员证书、教练员装备、教练员年费)</span><span class="pay"><b class="fl">未支付！</b><a href="javascript:;"><img src="/images/onlinepay.jpg"/></a><a href="javascript:;"><img src="/images/downlinepay.jpg"/></a></span><span class="green" style="display:none;">已支付</span></td>
+                                                    <td><span><input type="text" readonly class="w70" value="<?= \app\models\Level::getRegisterFeeById($data['modelA']['level_id'])?>"/> 元 (注册费用包含：教练员证书、教练员装备、教练员年费)</span><span class="pay"><b class="fl">
+                                                                <?php if ($data['modelA']['status'] <3) {?>
+                                                                未支付！</b><a href="<?= \yii\helpers\Url::to(['/user-center/pay', 'id' => $data['modelA']['id']])?>"><img src="/images/user/onlinepay.jpg"/></a><a href="javascript:;"><img src="/images/user/downlinepay.jpg"/></a></span><span class="green" style="display:none;">已支付</span>
+                                                                <?php  } else {?>
+                                                                已支付
+                                                                <?php }?>
+                                                            </td>
                                                 </tr>
                                                 <tr>
                                                     <td></td>

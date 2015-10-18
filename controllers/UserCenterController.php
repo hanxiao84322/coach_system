@@ -2,9 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\Activity;
 use app\models\ActivityUsers;
 use app\models\Attendance;
 use app\models\Level;
+use app\models\Messages;
+use app\models\MessagesUsers;
 use app\models\TrainTeachers;
 use app\models\TrainUsers;
 use app\models\Users;
@@ -17,6 +20,8 @@ use app\models\UsersPlayers;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UploadedFile;
+use yii\data\Pagination;
+
 
 
 class UserCenterController extends \yii\web\Controller
@@ -45,15 +50,16 @@ class UserCenterController extends \yii\web\Controller
         $isPage = \Yii::$app->request->get('is_page');
         $levelName = Level::getOneLevelNameById(\Yii::$app->user->identity->level_id);
         $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
         $trainModel = TrainUsers::getAllTrainByUserId(\Yii::$app->user->id, $isPage);
-        $activityModel = ActivityUsers::getAllActivityByUserId(\Yii::$app->user->id, $isPage);
         $currentTrain = TrainUsers::getTrainByUserId(\Yii::$app->user->id);
 
         $data = [
             'levelName' => $levelName,
             'trainModel' => $trainModel,
             'currentTrain' => $currentTrain,
-            'photo' => $photo
+            'photo' => $photo,
+            'messageCount' => $messageCount
         ];
         return $this->render('index', ['data' => $data]);
     }
@@ -95,6 +101,7 @@ class UserCenterController extends \yii\web\Controller
 
         $levelName = Level::getOneLevelNameById(\Yii::$app->user->identity->level_id);
         $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
         $currentTrain = TrainUsers::getTrainByUserId(\Yii::$app->user->id);
         //培训信息
         $trainModel = TrainUsers::getTrainInfoById($trainUsersId);
@@ -133,7 +140,8 @@ class UserCenterController extends \yii\web\Controller
             'attendanceAppraise' => $trainModel['attendance_appraise'],
             'trainTeachersModel' => $trainTeachersModel,
             'usersModel' => $usersModel,
-            'photo' => $photo
+            'photo' => $photo,
+            'messageCount' => $messageCount
 
         ];
 
@@ -147,6 +155,7 @@ class UserCenterController extends \yii\web\Controller
         $userId = \Yii::$app->user->id;
         $levelName = Level::getOneLevelNameById(\Yii::$app->user->identity->level_id);
         $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
         $currentTrain = TrainUsers::getTrainByUserId(\Yii::$app->user->id);
 
         $trainListA = TrainUsers::getAllTrainByUserIdAndLevel($userId,2);
@@ -166,8 +175,8 @@ class UserCenterController extends \yii\web\Controller
             'trainListD' => $trainListD,
             'trainListE' => $trainListE,
             'trainListF' => $trainListF,
-            'photo' => $photo
-
+            'photo' => $photo,
+            'messageCount' => $messageCount
         ];
         return $this->render('train-index', ['data' => $data]);
     }
@@ -240,12 +249,14 @@ class UserCenterController extends \yii\web\Controller
 
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $userModel = Users::findOne(['id'=>Yii::$app->user->id]);
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
-                'photo' => $photo
+                'photo' => $photo,
+                'messageCount' => $messageCount
             ];
             return $this->render('user-info',[
                 'userModel' => $userModel,
@@ -280,11 +291,13 @@ class UserCenterController extends \yii\web\Controller
             $model = UsersEducation::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
-                'photo' => $photo
+                'photo' => $photo,
+                'messageCount' => $messageCount
             ];
             return $this->render('user-education',[
                 'data' => $data,
@@ -317,11 +330,13 @@ class UserCenterController extends \yii\web\Controller
             $model = UsersTrain::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
-                'photo' => $photo
+                'photo' => $photo,
+                'messageCount' => $messageCount
             ];
             return $this->render('user-train',[
                 'data' => $data,
@@ -355,11 +370,13 @@ class UserCenterController extends \yii\web\Controller
             $model = UsersVocational::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
-                'photo' => $photo
+                'photo' => $photo,
+                'messageCount' => $messageCount
             ];
             return $this->render('user-vocational',[
                 'data' => $data,
@@ -392,11 +409,13 @@ class UserCenterController extends \yii\web\Controller
             $model = UsersPlayers::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
-                'photo' => $photo
+                'photo' => $photo,
+                'messageCount' => $messageCount
             ];
             return $this->render('user-players',[
                 'data' => $data,
@@ -407,7 +426,23 @@ class UserCenterController extends \yii\web\Controller
 
     public function actionUserLevelUp()
     {
+        if (Yii::$app->request->isPost) {
+        } else {
+            $model = usersLevel::getLevelUpInfoByUserIdOrder(Yii::$app->user->id, Yii::$app->user->identity->level_order+1);
+            $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+            $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+            $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
+            $data = [
+                'model' => $model,
+                'levelName' => $levelName,
+                'currentTrain' => $currentTrain,
+                'photo' => $photo,
+                'messageCount' => $messageCount
+            ];
+            return $this->render('user-level-up',['data' => $data]);
 
+        }
     }
 
     public function actionUserLevelInfo()
@@ -423,14 +458,22 @@ class UserCenterController extends \yii\web\Controller
                     throw new ServerErrorHttpException('不允许的格式');
                 }
                 $photoFileName = time().  '.' .$model->photo->extension;
-                $model->photo->saveAs('upload/images/users_info/photo/' . $photoFileName, true);
+                $model->photo->saveAs('upload/images/users_level/photo/' . $photoFileName, true);
 
                 if ($model->hasErrors('file')){
                     throw new ServerErrorHttpException($model->getErrors('file'));
                 } else {
-                    $infoParams['UsersInfo']['photo'] = $photoFileName;
+                    $infoParams['UsersLevel']['photo'] = $photoFileName;
 
                 }
+            }
+
+            $userLevelInfo = $infoParams;
+
+            if ($model->load($userLevelInfo) && $model->save()) {
+                return $this->redirect('/user-center/user-level-info');
+            } else {
+                throw new ServerErrorHttpException('系统错误,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
 
         } else {
@@ -442,11 +485,13 @@ class UserCenterController extends \yii\web\Controller
             $modelF = UsersLevel::getUserLevelAndScoreByUserIdLevelId(Yii::$app->user->id, 7);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
                 'photo' => $photo,
+                'messageCount' => $messageCount,
                 'modelA' => $modelA,
                 'modelB' => $modelB,
                 'modelC' => $modelC,
@@ -461,5 +506,142 @@ class UserCenterController extends \yii\web\Controller
 
     }
 
+    public function actionActivity()
+    {
+        $levelId = \Yii::$app->request->get('levelId') ? \Yii::$app->request->get('levelId') : 2;
 
+        $query = Activity::find()->where(['level_id' => $levelId]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count()]);
+        $models = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
+        if (!empty($models)) {
+            foreach ($models as $key => $val) {
+                $val->begin_time = date('Y-m-d', strtotime($val->begin_time));
+                //录取人数
+                $countResult = \app\models\ActivityUsers::find()->where(['train_id' => $val->id, 'status' => [ActivityUsers::APPROVED,ActivityUsers::DOING,ActivityUsers::END]]);
+                $val->already_recruit_count  = $countResult->count();
+            }
+        }
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+        $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
+        $data = [
+            'levelName' => $levelName,
+            'currentTrain' => $currentTrain,
+            'photo' => $photo,
+            'messageCount' => $messageCount,
+            'models' => $models,
+            'pages' => $pages,
+            'levelId' => $levelId
+        ];
+        return $this->render('activity', [
+            'data' => $data
+        ]);
+    }
+
+    public function actionPay()
+    {
+        $id = Yii::$app->request->get("id");
+
+        //执行支付
+        $result = UsersLevel::updateAll(['status' => '3'], ['id'=> $id]);
+        if ($result) {
+            return $this->redirect('/user-center/user-level-info');
+        }
+    }
+
+    public function actionMessagesComment()
+    {
+        if (Yii::$app->request->isPost) {
+            $idList = Yii::$app->request->post('id_list');
+            if (!empty($idList)) {
+                $result = MessagesUsers::deleteAll(['id' => $idList]);
+                if (!$result) {
+                    throw new ServerErrorHttpException('删除错误');
+                } else {
+                    return $this->redirect('/user-center/messages-comment');
+                }
+            }
+        } else {
+            $modelAndPages = MessagesUsers::getMessagesByTypeUserId(\Yii::$app->user->id,1);
+
+            $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+            $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+            $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
+            $data = [
+                'model' => $modelAndPages,
+                'levelName' => $levelName,
+                'currentTrain' => $currentTrain,
+                'photo' => $photo,
+                'messageCount' => $messageCount
+            ];
+            return $this->render('messages-comment',['data' => $data]);
+        }
+    }
+
+    public function actionMessagesView()
+    {
+        $id = Yii::$app->request->get('id');
+        $messagesInfo = Messages::findOne($id);
+        MessagesUsers::updateAll(['status'=>1], ['messages_id'=>$id]);
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+        $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
+        $data = [
+            'messagesInfo' => $messagesInfo,
+            'levelName' => $levelName,
+            'currentTrain' => $currentTrain,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('messages-view', ['data' => $data]);
+    }
+
+    public function actionSystemComment()
+    {
+        if (Yii::$app->request->isPost) {
+            $idList = Yii::$app->request->post('id_list');
+            if (!empty($idList)) {
+                $result = MessagesUsers::deleteAll(['id' => $idList]);
+                if (!$result) {
+                    throw new ServerErrorHttpException('删除错误');
+                } else {
+                    return $this->redirect('/user-center/system-comment');
+                }
+            }
+        } else {
+
+            $modelAndPages = MessagesUsers::getMessagesByTypeUserId(\Yii::$app->user->id,2);
+            $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+            $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+            $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+            $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
+
+            $data = [
+                'model' => $modelAndPages,
+                'levelName' => $levelName,
+                'currentTrain' => $currentTrain,
+                'photo' => $photo,
+                'messageCount' => $messageCount
+            ];
+            return $this->render('system-comment',['data' => $data]);
+        }
+    }
+
+    public function actionCommentDelete()
+    {
+        $id = Yii::$app->request->get("id");
+        $type = Yii::$app->request->get("type");
+        MessagesUsers::deleteAll(['messages_id' => $id, 'users_id' => \Yii::$app->user->id]);
+        if ($type == 1) {
+            return $this->redirect('/user-center/messages-comment');
+        } else {
+            return $this->redirect('/user-center/system-comment');
+        }
+    }
 }

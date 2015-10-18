@@ -6,7 +6,7 @@
         <p class="success_set"><span> <img src="/images/success.jpg" />报名成功！！！	欢迎报名参加<?= $data['trainName']?></span></p>
         <p class="success_infro"><span>我们将在7-14个工作日审核您的信息，并将通过您预留的联系方式反馈报名申请信息结果，尽请留意查看！</span>您的电话为：<?= Yii::$app->user->identity->mobile_phone ?>，电子邮件为：<?= Yii::$app->user->identity->email?><br />
             您也可登陆 <a href="<?= \yii\helpers\Url::to('/user-center/index')?>">个人管理</a> 页面进行相关操作！
-            <b>如系统30秒之内无法自动返回，请点击<a href="javascript:history.back(-1);">这里</a> !</b></p>
+            <b>如系统30秒之内无法自动跳转，请点击<a href="<?= \yii\helpers\Url::to('/user-center/index')?>">这里</a> !</b></p>
     </div>
 </div>
 <!--banner-->

@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Configuration */
 
-$this->title = '更新配置';
-$this->params['breadcrumbs'][] = ['label' => '配置管理', 'url' => ['index']];
+$this->title = '系统设置';
+$this->params['breadcrumbs'][] = ['label' => '系统设置', 'url' => ['index']];
 $this->params['breadcrumbs'][] = '更新';
 ?>
 <div class="configuration-update">

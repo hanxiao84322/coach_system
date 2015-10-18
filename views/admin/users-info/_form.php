@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'birthday')->textInput() ?>
 
-    <?= $form->field($model, 'sex')->dropDownList(\app\models\UsersInfo::$credentialsType,['style'=>'width:100px']) ?>
+        <?= $form->field($model, 'sex')->dropDownList(\app\models\UsersInfo::$credentialsType,['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'credentials_number')->textInput(['maxlength' => true]) ?>
 
@@ -44,7 +44,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'company_contact_phone')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'clothes_size')->dropDownList(\app\models\UsersInfo::$languageList,['style'=>'width:100px']) ?>
+        <?= $form->field($model, 'clothes_size')->dropDownList(\app\models\UsersInfo::$languageList,['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 't_shirt_size')->dropDownList(\app\models\UsersInfo::$abilityList,['style'=>'width:100px']) ?>
 

@@ -189,6 +189,13 @@ class Users extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getAllId()
+    {
+        $sql = "SELECT id FROM `users`";
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
     public static function getCountUserByLevelId($levelId, $count)
     {
         $sql = "SELECT u.level_id,ui.photo,ui.name,ui.birthday,u.id FROM " . self::tableName() . " u LEFT JOIN " . UsersInfo::tableName() . " ui ON u.id = ui.user_id WHERE u.level_id='" . $levelId . "' LIMIT 0," .$count;

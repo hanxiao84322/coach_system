@@ -233,7 +233,7 @@ class TrainUsers extends \yii\db\ActiveRecord
 
     public static function getApprovedTrainUsersByTrainId($trainId = '')
     {
-        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . '  WHERE train_id=:train_id AND status=' . self::ENROLL, [':train_id' => $trainId])->queryAll();
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . '  WHERE train_id=:train_id AND status in ("' . self::ENROLL . '","' . self::DOING . '")', [':train_id' => $trainId])->queryAll();
         return $result;
     }
 
@@ -279,6 +279,12 @@ class TrainUsers extends \yii\db\ActiveRecord
     public static function getMaxSignUpOrder($train_id = '')
     {
         $result = Yii::$app->db->createCommand('SELECT count(id) as max_count FROM  ' . self::tableName() . ' WHERE train_id=:train_id', [':train_id' => $train_id])->queryScalar();
+        return $result;
+    }
+
+    public static function getAppraiseResultByUserIdAndLevelId($train_id = '', $user_id)
+    {
+        $result = Yii::$app->db->createCommand('SELECT appraise_result FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND train_id=:train_id', [':user_id' => $user_id,':train_id' => $train_id])->queryScalar();
         return $result;
     }
 

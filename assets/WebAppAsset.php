@@ -22,9 +22,8 @@ class WebAppAsset extends AssetBundle
     ];
     public $js = [
         '/js/jquery-1.9.1.min.js',
-        '/js/jquery.krakatoa.js',
         '/js/jquery.SuperSlide.js',
-
+        '/js/jquery.krakatoa.js',
     ];
     public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 }

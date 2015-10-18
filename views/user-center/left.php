@@ -1,7 +1,7 @@
 <td width="220" valign="top">
     <div class="left_nav">
         <img src="<?php if (!empty($data['photo'])) {?><?= '/upload/images/users_info/photo/' .$data['photo']?><?php } else { ?>/images/4.jpg<?php }?>" width="71" height="99" />
-        Hi, <b class="green"><?= Yii::$app->user->identity->username?></b><br/>（<?= $data['levelName']?>）<span>消息（<b>1</b>）</span>
+        Hi, <b class="green"><?= Yii::$app->user->identity->username?></b><br/>（<?= $data['levelName']?>）<span>消息（<a href="<?= \yii\helpers\Url::to('/user-center/system-comment')?>"><b><?= $data['messageCount']?></b></a>）</span>
     </div>
     <div class="left_navbox">
         <ul class="nav">
@@ -19,22 +19,22 @@
                         <a href="<?= \yii\helpers\Url::to('/user-center/train-index')?>"><span>课程安排<?php if (!empty($data['currentTrain'])) echo '（<b>1</b>）';?></span></a>
                 </div>
             </li>
-            <?php if (\app\models\ActivityUsers::findAll(['user_id' => Yii::$app->user->id])) {?>
             <li>
                 <h1><a href="javascript:;">教练员管理</a></h1>
                 <div class="second_div">
                     <a href="<?= \yii\helpers\Url::to('/user-center/user-level-info')?>"><span>注册信息</span></a>
-                    <a href="javascript:;"><span>活动管理（考核&活动）</span></a>
-                    <a href="javascript:;"><span>我的活动</span></a>
+                    <a href="<?= \yii\helpers\Url::to('/user-center/activity')?>"><span>活动管理（考核&活动）</span></a>
+                    <?php if (\app\models\ActivityUsers::findAll(['user_id' => Yii::$app->user->id])) {?>
+                    <a href="<?= \yii\helpers\Url::to('/user-center/my-activity')?>"><span>我的活动</span></a>
+                    <?php } ?>
                     <a href="<?= \yii\helpers\Url::to('/user-center/user-level-up')?>"><span>晋升管理</span></a>
                 </div>
             </li>
-            <?php } ?>
             <li>
                 <h1><a href="javascript:;">消息管理</a></h1>
                 <div class="second_div">
-                    <a href="javascript:;"><span>最新公告（<b>2</b>）</span></a>
-                    <a href="javascript:;"><span>系统通知（<b>1</b>）</span></a>
+                    <a href="<?= \yii\helpers\Url::to('/user-center/messages-comment')?>"><span>最新公告（<b><?= \app\models\MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id,1)?></b>）</span></a>
+                    <a href="<?= \yii\helpers\Url::to('/user-center/system-comment')?>"><span>系统通知（<b><?= \app\models\MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id,2)?></b>）</span></a>
                 </div>
             </li>
             <li>

@@ -3,82 +3,34 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 
 ?>
-<script>
-    $(function () {
-        var ok1 = false;
-        var ok2 = false;
-        var ok3 = false;
-        var ok4 = false;
-
-        //验证地点
-        $('input[name="UsersEducation[address]"]').focus(function () {
-            $(this).next().text('填写地点').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok1 = true;
-            } else {
-                $(this).next().text('地点格式错误').removeClass('state1').addClass('state3');
-            }
-
-        });
-
-        //验证学校名称
-        $('input[name="UsersEducation[school]"]').focus(function () {
-            $(this).next().text('填写学校名称').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 40 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok2 = true;
-            } else {
-                $(this).next().text('学校名称错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证证明人
-        $('input[name="UsersEducation[witness]"]').focus(function () {
-            $(this).next().text('填写证明人').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok3 = true;
-            } else {
-                $(this).next().text('证明人格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证描述
-        $('input[name="UsersEducation[description]"]').focus(function () {
-            $(this).next().text('填写描述').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok4 = true;
-            } else {
-                $(this).next().text('描述格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-
-        //提交按钮,所有验证通过方可提交
-
-        $('input[name="submit"]').click(function () {
-            if (ok1 && ok2 && ok3 && ok4) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-    });
-</script>
 
 <!--content-->
+<style>
+    .rgsd_box_set{padding:30px 0 0;height:67px;}
+    .reg_mark{float:left;}
+    .reg_lc{float:right;width:774px;background:url(/images/xian.png) no-repeat center 5px;margin-top:10px;}
+    .reg_lc ul li{float:left;width:129px;text-align:center;font-size:16px;color:#666;}
+    .reg_lc ul li span{display:block;width:13px;height:13px;background:url(/images/wxz.png) no-repeat center top;margin:0 auto;padding-bottom:10px;}
+    .reg_lc ul li span.hover{display:block;width:13px;height:13px;background:url(/images/xz.png) no-repeat center top;margin:0 auto;padding-bottom:10px;}
+    .reg_lc ul li.hover{color:#438C0C;}
+</style>
 <div class="content_box">
     <div class="con_set">
+        <div class="rgsd_box_set">
+            <div class="reg_mark">
+                <img src="/images/reg.png">
+            </div>
+            <div class="reg_lc">
+                <ul>
+                    <li class="hover"><span class="hover"></span>基本信息</li>
+                    <li><span></span>教育经历</li>
+                    <li><span></span>培训经历</li>
+                    <li><span></span>执教经历</li>
+                    <li><span></span>运动经历</li>
+                    <li><span></span>提交成功</li>
+                </ul>
+            </div>
+        </div>
         <p class="p_jbinfor">基本信息</p>
 
         <div class="informatioin_self">
@@ -163,7 +115,7 @@ use yii\jui\DatePicker;
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><input name="user_id" type="hidden" value="<?= $user_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to('/user/register-train')?>">添加培训信息</a></td>
+                                    <td><input name="train_id" type="hidden" value="<?= $train_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to(['/user/register-train', 'train_id' => $train_id])?>">下一步，添加培训信息</a><a href="<?= \yii\helpers\Url::to(['/train/apply', 'id' => $train_id])?>">填写完成</a></td>
                                 </tr>
                             </table>
                             <?php ActiveForm::end(); ?>
