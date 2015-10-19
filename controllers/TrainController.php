@@ -44,7 +44,7 @@ class TrainController extends \yii\web\Controller
 
         $trainId = Yii::$app->request->get('id');
         $trainInfo = Train::findOne(['id' => $trainId]);
-        if ($trainInfo['sign_up_status'] != Train::BEGIN_SIGN_UP) {
+        if ($trainInfo['status'] != Train::BEGIN_SIGN_UP) {
             throw new ServerErrorHttpException('该课程的状态不是开始报名，谢谢。');
         }
 
@@ -57,7 +57,7 @@ class TrainController extends \yii\web\Controller
 
             }
             $trainLevelInfo = Level::findOne(['id' => $trainInfo['level_id']]);
-            if ($trainLevelInfo['order'] != (Yii::$app->user->identity->level_order + 1)) {
+            if ($trainLevelInfo['order'] != (Yii::$app->user->identity->level_order)) {
                 throw new ServerErrorHttpException('系统错误,原因：您目前没有权限报名该级别下的课程，谢谢。');
             }
 
