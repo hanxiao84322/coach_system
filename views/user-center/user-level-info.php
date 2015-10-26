@@ -93,7 +93,9 @@ use yii\widgets\ActiveForm;
                                                 <tr>
                                                     <td><b>*</b>所属区域：</td>
                                                     <td><select>
-                                                            <option><?= $data['modelA']['district']?></option>
+                                                            <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                                                                <option value="<?= $key?>" <?php if ($data['modelA']['district'] == $key){?>selected<?php }?>><?= $val?></option>
+                                                            <?php endforeach;?>
                                                         </select></td>
                                                 </tr>
                                                 <tr>
@@ -186,7 +188,9 @@ use yii\widgets\ActiveForm;
                                                 <tr>
                                                     <td><b>*</b>所属区域：</td>
                                                     <td><select>
-                                                            <option><?= $data['modelB']['district']?></option>
+                                                            <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                                                                <option value="<?= $key?>" <?php if ($data['modelB']['district'] == $key){?>selected<?php }?>><?= $val?></option>
+                                                            <?php endforeach;?>
                                                         </select></td>
                                                 </tr>
                                                 <tr>
@@ -276,7 +280,9 @@ use yii\widgets\ActiveForm;
                                                 <tr>
                                                     <td><b>*</b>所属区域：</td>
                                                     <td><select>
-                                                            <option><?= $data['modelC']['district']?></option>
+                                                            <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                                                                <option value="<?= $key?>" <?php if ($data['modelC']['district'] == $key){?>selected<?php }?>><?= $val?></option>
+                                                            <?php endforeach;?>
                                                         </select></td>
                                                 </tr>
                                                 <tr>
@@ -367,7 +373,9 @@ use yii\widgets\ActiveForm;
                                                 <tr>
                                                     <td><b>*</b>所属区域：</td>
                                                     <td><select>
-                                                            <option><?= $data['modelD']['district']?></option>
+                                                            <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                                                                <option value="<?= $key?>" <?php if ($data['modelD']['district'] == $key){?>selected<?php }?>><?= $val?></option>
+                                                            <?php endforeach;?>
                                                         </select></td>
                                                 </tr>
                                                 <tr>
@@ -458,7 +466,9 @@ use yii\widgets\ActiveForm;
                                                 <tr>
                                                     <td><b>*</b>所属区域：</td>
                                                     <td><select>
-                                                            <option><?= $data['modelE']['district']?></option>
+                                                            <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                                                                <option value="<?= $key?>" <?php if ($data['modelE']['district'] == $key){?>selected<?php }?>><?= $val?></option>
+                                                            <?php endforeach;?>
                                                         </select></td>
                                                 </tr>
                                                 <tr>
@@ -549,7 +559,9 @@ use yii\widgets\ActiveForm;
                                                 <tr>
                                                     <td><b>*</b>所属区域：</td>
                                                     <td><select>
-                                                            <option><?= $data['modelF']['district']?></option>
+                                                            <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                                                                <option value="<?= $key?>" <?php if ($data['modelF']['district'] == $key){?>selected<?php }?>><?= $val?></option>
+                                                            <?php endforeach;?>
                                                         </select></td>
                                                 </tr>
                                                 <tr>

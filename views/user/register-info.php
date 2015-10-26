@@ -168,7 +168,11 @@ use yii\jui\DatePicker;
             </tr>
             <tr>
                 <td align="right"><em>*</em>户口所在地：</td>
-                <td><select class="w78" name="UsersInfo[account_location]"><option>北京</option></select></td>
+                <td><select class="w78" name="UsersInfo[account_location]">
+                        <?php foreach (\app\models\Train::$districtList as $key => $val) :?>
+                            <option value="<?= $key?>"><?= $val?></option>
+                        <?php endforeach;?>
+                </select></td>
             </tr>
             <tr>
                 <td align="right"><em>*</em>联系电话：</td>

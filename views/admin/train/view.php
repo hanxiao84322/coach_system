@@ -32,8 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
                 'attribute' => 'category',
-                'label'=>'分类',
-                'value'=> app\models\Train::getCategoryName($model->category)
+                'label'=>'级别',
+                'value'=> app\models\TrainCategory::getNameById($model->category)
             ],
             [
                 'attribute' => 'level_id',

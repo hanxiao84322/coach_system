@@ -13,6 +13,7 @@ use Yii;
  * @property integer $age
  * @property string $photo
  * @property integer $level
+ * @property integer $status
  * @property integer $lesson
  * @property integer $score
  * @property string $register_district
@@ -24,6 +25,16 @@ use Yii;
  */
 class Teachers extends \yii\db\ActiveRecord
 {
+    const NEW_ADD = 0; // 待审核
+    const APPROVED = 1; // 已审核
+    const STOP = 2; // 暂停
+
+    // 状态
+    static public $statusList = [
+        self::NEW_ADD => '待审核',
+        self::APPROVED => '已审核',
+        self::STOP => '暂停'
+    ];
 
     const MAN = 1; // 男
     const WOMAN = 2; // 女
@@ -59,9 +70,10 @@ class Teachers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sex', 'age', 'level'], 'integer'],
+            [['sex', 'age', 'level','status'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name', 'photo', 'register_district', 'certificate_number', 'create_user', 'update_user'], 'string', 'max' => 45]
+            [['name', 'photo', 'register_district', 'certificate_number', 'create_user', 'update_user'], 'string', 'max' => 45],
+            [['content'], 'string', 'max' => 500]
         ];
     }
 
@@ -77,10 +89,12 @@ class Teachers extends \yii\db\ActiveRecord
             'age' => '年龄',
             'photo' => '照片',
             'level' => '级别',
+            'status' => '状态',
             'lesson' => '已授课时',
             'score' => '积分',
             'register_district' => '注册区域',
             'certificate_number' => '证件号码',
+            'content' => '讲师简介',
             'create_time' => '创建时间',
             'create_user' => '创建人',
             'update_time' => '更新时间',
@@ -145,6 +159,11 @@ class Teachers extends \yii\db\ActiveRecord
     {
         $result = Yii::$app->db->createCommand('SELECT count(t.id) as count,train.district FROM  ' . self::tableName() . ' t LEFT JOIN ' . TrainTeachers::tableName() . ' tt ON t.id = tt.teachers_id LEFT JOIN ' . Train::tableName() . ' train ON tt.train_id = train.id WHERE train.district is not null group by train.district')->queryAll();
         return $result;
+    }
+
+    public static function getStatusName($status)
+    {
+        return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
 
     public function beforeSave($insert = '')

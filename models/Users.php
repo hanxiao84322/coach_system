@@ -38,16 +38,16 @@ class Users extends \yii\db\ActiveRecord
 {
     const NEW_ADD = 0; // 待审核
     const APPROVED = 1; // 已审核
-    const NOT_APPROVED = 2; // 驳回
-    const CLOSE = 3; // 关闭
+    const STOP = 2; // 暂停
 
     // 状态
     static public $statusList = [
         self::NEW_ADD => '待审核',
         self::APPROVED => '已审核',
-        self::NOT_APPROVED => '驳回',
-        self::CLOSE => '关闭'
+        self::STOP => '暂停'
     ];
+
+    public $verifyCode;
 
     /**
      * @inheritdoc
@@ -68,7 +68,9 @@ class Users extends \yii\db\ActiveRecord
             [['username'], 'string', 'max' => 50],
             [['password', 'update_user'], 'string', 'max' => 45],
             [['mobile_phone'], 'string', 'max' => 20],
-            [['email', 'authKey', 'accessToken'], 'string', 'max' => 100]
+            [['email', 'authKey', 'accessToken'], 'string', 'max' => 100],
+            ['verifyCode', 'required'],
+            ['verifyCode', 'captcha'],
         ];
     }
 
@@ -155,7 +157,6 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasMany(UsersVocational::className(), ['user_id' => 'id']);
     }
 
-
     public static  function getOneUserNameById($userId)
     {
         $sql = "SELECT username FROM `users` WHERE id='" . $userId . "'";
@@ -182,6 +183,13 @@ class Users extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getAllByCount($count = 5)
+{
+    $sql = "SELECT * FROM `users` ORDER BY id desc LIMIT 0, " . $count;
+    $result = Yii::$app->db->createCommand($sql)->queryAll();
+    return $result;
+}
+
     public static function getAllCountByLevelId($levelId)
     {
         $sql = "SELECT count(id) as count FROM `users` WHERE level_id='" . $levelId . "'";
@@ -201,6 +209,16 @@ class Users extends \yii\db\ActiveRecord
         $sql = "SELECT u.level_id,ui.photo,ui.name,ui.birthday,u.id FROM " . self::tableName() . " u LEFT JOIN " . UsersInfo::tableName() . " ui ON u.id = ui.user_id WHERE u.level_id='" . $levelId . "' LIMIT 0," .$count;
         $result = Yii::$app->db->createCommand($sql)->queryAll();
         return $result;
+    }
+
+    public static function  getLoginDuration($userId)
+    {
+        $sql = "SELECT create_time FROM " . self::tableName() . " WHERE id=" . $userId;
+        $createTime = Yii::$app->db->createCommand($sql)->queryScalar();
+
+        $loginDuration = (time() - strtotime($createTime))/(3600*24*30);
+        return floor($loginDuration);
+
     }
 
     public function beforeSave($insert = '')

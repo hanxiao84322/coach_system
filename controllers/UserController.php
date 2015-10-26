@@ -42,6 +42,14 @@ class UserController extends \yii\web\Controller
 
     public function actionIndex()
     {
+        $levelList = Level::getAll();
+        $districtList = [
+            '朝阳区' => '朝阳区',
+            '东城区' => '东城区',
+            '海淀区' => '海淀区',
+            '西城区' => '西城区',
+            '昌平区' => '昌平区',
+        ];
         $userCount = Users::getAllCount();
         $coachA = Users::getCountUserByLevelId(2,9);
         $coachB = Users::getCountUserByLevelId(3,9);
@@ -53,6 +61,8 @@ class UserController extends \yii\web\Controller
         $newsList = News::getNewsByCategory(5, 12);
 
         $data = [
+            'levelList' => $levelList,
+            'districtList' => $districtList,
             'userCount' => $userCount,
             'coachA' => $coachA,
             'coachB' => $coachB,
@@ -123,7 +133,6 @@ class UserController extends \yii\web\Controller
                 $userLevelModel->user_id = $usersModel->id;
                 $userLevelModel->train_id = $trainId;
                 $userLevelModel->level_id = 2;
-                $userLevelModel->district = '';
                 $userLevelModel->credentials_number = '';
                 if (!$userLevelModel->save()) {
                     $transaction->rollBack();
@@ -206,7 +215,7 @@ class UserController extends \yii\web\Controller
             $infoInfo = $infoParams;
 
             if ($modelInfo->load($infoInfo) && $modelInfo->save()) {
-                Users::updateAll(['username'=>$infoInfo['UsersInfo']['name'], 'status' => 1],['id' => $userId]);
+                Users::updateAll(['username'=>$infoInfo['UsersInfo']['name'],'district' => $infoParams['UsersInfo']['district'], 'status' => 1, 'email' => $infoParams['UsersInfo']['email'], 'phone_auth' => 1],['id' => $userId]);
                 //更新级别信息的信息
                 $result = UsersLevel::updateAll(['credentials_number' => $modelInfo['credentials_number']], ['user_id' => $userId]);
                 if (!$result) {
@@ -434,7 +443,7 @@ class UserController extends \yii\web\Controller
                 throw new ServerErrorHttpException('系统错误,原因：没有您的注册信息，谢谢');
             } else {
                 $levelOrder = Level::getOrderById($result['level_id']);
-                if ($levelOrder != Yii::$app->user->identity->level_order+1) {
+                if ($levelOrder != Yii::$app->user->identity->level_order) {
                     throw new ServerErrorHttpException('您没有当前级别的注册信息，谢谢');
                 } else {
                     if ($result['status'] == 0) {
@@ -464,8 +473,8 @@ class UserController extends \yii\web\Controller
     public function actionRegisterCoachSuccess()
     {
         $userName = Yii::$app->user->identity->username;
-        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id+1);//级别加一
-        $userLevelInfo = UsersLevel::findOne(['user_id' => Yii::$app->user->id, 'level_id' => Yii::$app->user->identity->level_id+1]);
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $userLevelInfo = UsersLevel::findOne(['user_id' => Yii::$app->user->id, 'level_id' => Yii::$app->user->identity->level_id]);
         $newRegNews = News::getNewsByCategory(8, 5);
         $regComment = Pages::getContentById(4);
         $data = [
@@ -512,16 +521,14 @@ class UserController extends \yii\web\Controller
                 $session->remove('time');
                 $msg =  '验证码已过期，请重新获取！';
             } else {
-                $checkNum = '验证码已经发送到手机'.$phone . '，请注意查收。';
-
                 $content = "尊敬的学员，您的注册验证码是".$checkNum.",次验证码于一分钟后过期，请尽快完成注册，谢谢！【教练系统】";
                 $smsModel = Sms::getInstance(Yii::$app->params['smsUserName'],Yii::$app->params['smsPassword']);
 
-                $result = $smsModel->pushMt($phone,time().$checkNum, $content, 0);
+                $result = $smsModel->pushMt($phone, time(), $content, 0);
                 if ($result == '0') {
-                    $msg = '发送成功，请注意查收！';
+                    $msg = '验证码已经发送到手机'.$phone . '，请注意查收。';
                 } else {
-                    $msg = $checkNum;
+                    $msg = $result;
                 }
             }
         } else {

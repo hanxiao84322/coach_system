@@ -7,22 +7,22 @@
                     <ul class="picList">
                         <li>
                             <div class="pic">
-                                <a href=""><img src="/images/banner.jpg" /></a>
+                                <a href=""><img src="/images/banner.png" /></a>
                             </div>
                         </li>
                         <li>
                             <div class="pic">
-                                <a href=""><img src="/images/banner.jpg" /></a>
+                                <a href=""><img src="/images/banner.png" /></a>
                             </div>
                         </li>
                         <li>
                             <div class="pic">
-                                <a href=""><img src="/images/banner.jpg" /></a>
+                                <a href=""><img src="/images/banner.png" /></a>
                             </div>
                         </li>
                         <li>
                             <div class="pic">
-                                <a href=""><img src="/images/banner.jpg" /></a>
+                                <a href=""><img src="/images/banner.png" /></a>
                             </div>
                         </li>
                     </ul>
@@ -50,8 +50,6 @@
 <!--content-->
 <div class="content_box">
     <div class="con_set">
-        <img src="/images/people1.jpg" class="people1" />
-        <img src="/images/people2.jpg" class="people2" />
         <div class="one_set">
             <ul>
                 <li>
@@ -74,10 +72,58 @@
                 </li>
             </ul>
         </div>
+        <script type="text/javascript">
+$(function(){
+var len = $(".num > li").length;
+    var index = 0;  //图片序号
+    var adTimer;
+    $(".num li").mouseover(function() {
+        index = $(".num li").index(this);  //获取鼠标悬浮 li 的index
+        showImg(index);
+    }).eq(0).mouseover();
+    //滑入停止动画，滑出开始动画.
+    $('#scrollPics').hover(function() {
+        clearInterval(adTimer);
+    }, function() {
+        adTimer = setInterval(function() {
+            showImg(index)
+            index++;
+            if (index == len) {       //最后一张图片之后，转到第一张
+                index = 0;
+            }
+        }, 5000);
+    }).trigger("mouseleave");
+
+    function showImg(index) {
+        var adHeight = $("#scrollPics>ul>li:first").height();
+        $(".slider").stop(true, false).animate({
+            "marginTop": -adHeight * index + "px"    //改变 marginTop 属性的值达到轮播的效果
+        }, 1000);
+        $(".num li").removeClass("on")
+            .eq(index).addClass("on");
+    }
+
+})
+</script>
         <div class="two_set">
             <div class="two_top">
                 <div class="fl tt_left">
-                    <img src="/images/pic.jpg" />
+                    <div id="scrollPics">
+                        <ul class="slider" >
+                            <li><a href="javascript:;"><img src="/images/pic.jpg" /><span>中国足协2015年D级教练员培训班-正式结业</span></a></li>
+                            <li><a href="javascript:;"><img src="/images/pic.jpg" /><span>中国足协2015年D级教练员培训班-正式结业</span></a></li>
+                            <li><a href="javascript:;"><img src="/images/pic.jpg" /><span>中国足协2015年D级教练员培训班-正式结业</span></a></li>
+                            <li><a href="javascript:;"><img src="/images/pic.jpg" /><span>中国足协2015年D级教练员培训班-正式结业</span></a></li>
+                            <li><a href="javascript:;"><img src="/images/pic.jpg" /><span>中国足协2015年D级教练员培训班-正式结业</span></a></li>
+                        </ul>
+                        <ul class="num" >
+                            <li class="on">1</li>
+                            <li>2</li>
+                            <li>3</li>
+                            <li>4</li>
+                            <li>5</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="fl tt_middle">
                     <h3 class="news_title">最新动态</h3>
@@ -95,7 +141,7 @@
                     联&nbsp;&nbsp;系&nbsp;人：陈老师、张老师<br />联系电话：010 89898787<br />开课日期：2015年05月10日<br />培训地址：北京市宣武区先浓痰体育场
                 </div>
             </div>
-            <div class="two_middle">
+           <div class="two_middle">
                 <h3 class="jjfc">教练员风采</h3>
                 <div class="krakatoa" data-settings="{ items : 4, autoplay : true, loop : true }">
                     <?php if (!empty($data['newsB'])) {?>
@@ -104,11 +150,13 @@
                         <?php endforeach;?>
                     <?php }?>
                 </div>
-                <script>
-                    $(window).on('load',function(){
-                        $('.krakatoa').krakatoa( { width: '960px', height: 'auto' });
-                    });
+               <script src="/js/jquery.krakatoa.js"></script>
+               <script>
+                    window.onload = function() {
+                            $('.krakatoa').krakatoa( { width: '960px', height: 'auto' });
+                        };
                 </script>
+
             </div>
             <div class="two_bottom">
                 <div class="fl tb_left">
@@ -122,11 +170,11 @@
                     </ul>
                 </div>
                 <div class="fl tb_left1">
-                    <h3 class="titlebj"><span>最新注册</span><a href="<?= \yii\helpers\Url::to(['/news/category/', 'category_id' => 8])?>"><img src="/images/more.png" /></a></h3>
+                    <h3 class="titlebj"><span>最新注册</span><a href="<?= \yii\helpers\Url::to(['/user/index/', 'category_id' => 8])?>"><img src="/images/more.png" /></a></h3>
                     <ul class="ul_list">
                         <?php if (!empty($data['newsD'])) {?>
                             <?php foreach ($data['newsD'] as $key => $val) :?>
-                                <li><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a><span><?= date('m-d', strtotime($val['create_time']))?></span></li>
+                                <li><a href="<?= \yii\helpers\Url::to(['/user/view/', 'id' => $val['id']])?>"><?= $val['title']?></a><span><?= date('m-d', strtotime($val['create_time']))?></span></li>
                             <?php endforeach;?>
                         <?php }?>
                     </ul>

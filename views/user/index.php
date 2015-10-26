@@ -40,15 +40,27 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'id'=>'register',
         'enableAjaxValidation' => false,
-        'action' => \yii\helpers\Url::to('/user/search')
+        'action' => \yii\helpers\Url::to('/search/index')
     ]); ?>
     <table cellpadding="0" cellspacing="0">
         <tr>
             <td style="padding-right:0;">教练员高级搜索：</td>
             <td><input type="text" value="请输入教练员姓名或教练证书编号" class="w240" name="certificate_number" /></td>
-            <td><select class="w188" name="area_base"><option>全部区域</option></select></td>
-            <td><select class="w80" name="level"><option>全部等级</option></select></td>
-            <td><select class="w90" name="sex"><option>不限性别</option></select></td>
+            <td><select class="w188" name="area_base">
+                    <?php if (!empty($data['districtList'])) {?>
+                        <?php foreach ($data['districtList'] as $key => $val) :?>
+                            <option value="<?= $val?>"><?= $val?></option>
+                        <?php endforeach;?>
+                    <?php }?>
+            </select></td>
+            <td><select class="w80" name="level">
+                    <option value="" selected>不限级别</option>
+                    <?php if (!empty($data['levelList'])) {?>
+                        <?php foreach ($data['levelList'] as $key => $val) :?>
+                            <option value="<?= $val['id']?>"><?= $val['name']?></option>
+                        <?php endforeach;?>
+                    <?php }?>            </select></td>
+            <td><select class="w90" name="sex"><option value="">不限性别</option><option value="1">男</option><option value="2">女</option></select></td>
             <td><input type="submit" value="搜索"></td>
         </tr>
     </table>
@@ -106,7 +118,7 @@ use yii\widgets\ActiveForm;
                                 <a href="<?= \yii\helpers\Url::to(['/user/view','id' => $val['id']])?>">
                                     <span><img src="/upload/images/users_info/photo/<?= $val['photo']?>" width="71" height="99"/></span>
                                     <p>
-                                        姓名：<?= $val['name']?><br />年龄：<?= date('Y', time()) - date('Y', strtotime($val['birthday']))?><br />职称：<?= \app\models\Level::getOneLevelNameById($val['level_id'])?><br />评分：<img src="images/xx.jpg" /><img src="images/xx.jpg" /><img src="images/xx.jpg" /><img src="images/xx.jpg" /><img src="images/xx.jpg" />
+                                        姓名：<?= $val['name']?><br />年龄：<?= date('Y', time()) - date('Y', strtotime($val['birthday']))?><br />职称：<?= \app\models\Level::getOneLevelNameById($val['level_id'])?><br />评分：<img src="/images/xx.jpg" /><img src="/images/xx.jpg" /><img src="/images/xx.jpg" /><img src="/images/xx.jpg" /><img src="/images/xx.jpg" />
                                     </p>
                                 </a>
                             </div>

@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'category',
                 'value' => function($searchModel){
-                    return app\models\Train::getCategoryName($searchModel->category);
+                    return app\models\TrainCategory::getNameById($searchModel->category);
                 }
             ],
             [

@@ -3,10 +3,13 @@
 namespace app\controllers\Admin;
 
 use Yii;
+use app\models\ActivityProcess;
+use app\models\ActivityUsers;
 use app\models\Activity;
 use app\models\ActivitySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 
 /**
  * ActivityController implements the CRUD actions for Activity model.
@@ -69,8 +72,23 @@ class ActivityController extends Controller
     {
         $model = new Activity();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+            $postInfo = Yii::$app->request->post();
+            if (strtotime($postInfo['Activity']['end_time']) <= strtotime($postInfo['Activity']['begin_time'])) {
+                throw new ServerErrorHttpException('更新状态失败，原因：开始时间不能大于结束时间！');
+            }
+            if (strtotime($postInfo['Activity']['sign_up_end_time']) <= strtotime($postInfo['Activity']['sign_up_begin_time'])) {
+                throw new ServerErrorHttpException('更新状态失败，原因：注册开始时间不能大于注册结束时间！');
+            }
+            if (strtotime($postInfo['Activity']['begin_time']) <= strtotime($postInfo['Activity']['sign_up_end_time'])) {
+                throw new ServerErrorHttpException('更新状态失败，原因：注册结束时间不能大于开始时间！');
+            }
+            $postInfo['Activity']['code'] = date('Ymd', time());
+            if ($model->load($postInfo) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                throw new ServerErrorHttpException('更新状态失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE) . '！');
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -87,10 +105,42 @@ class ActivityController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $transaction = Yii::$app->db->beginTransaction();
+        if (Yii::$app->request->isPost) {
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                //课程开始
+                if ($model->status == Activity::DOING) {
+                    //获取该课程下已录取的学员
+                    $ActivityUsers = ActivityUsers::getApprovedActivityUsersByActivityId($model->id);
+                    if (!empty($ActivityUsers)) {
+                        //根据课程id，用户id更新用户状态为正在进行
+                        ActivityUsers::updateActivityUsersStatusByActivityId(ActivityUsers::DOING, $model->id);
+                        foreach ($ActivityUsers as $key => $val) {
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
+                            //创建考勤信息
+                            for ($i = strtotime($model->begin_time); $i < strtotime($model->end_time); $i += 86400) {
+                                $day = date('Y-m-d H:i:s', $i);
+                                $isExist = ActivityProcess::findOne(['activity_id' => $model->id, 'user_id' => $val['user_id'], 'day' => $day]);
+                                if (empty($isExist)) {
+                                    $attendance = [
+                                        'activity_id' => $model->id,
+                                        'user_id' => $val['user_id'],
+                                        'day' => $day,
+                                    ];
+                                    ActivityProcess::add($attendance);
+                                }
+                            }
+                        }
+                    } else {
+                        $transaction->rollBack();
+                        throw new ServerErrorHttpException('更新状态失败，原因：该培训课程下没有学员！');
+                    }
+                }
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+        else {
             return $this->render('update', [
                 'model' => $model,
             ]);

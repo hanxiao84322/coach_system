@@ -131,7 +131,7 @@ AppAsset::register($this);
                 ],
                 [
                     'label' => '发布信息管理',
-                    'url' => ['/Admin/users/news']
+                    'url' => ['/Admin/news']
                 ],
                 [
                     'label' => '晋升管理',
@@ -139,7 +139,7 @@ AppAsset::register($this);
                 ],
                 [
                     'label' => '暂停学员',
-                    'url' => ['/Admin/users/stop']
+                    'url' => ['/Admin/users/stop?UsersSearch[status]=2']
                 ]
             ]
         ],
@@ -160,11 +160,11 @@ AppAsset::register($this);
                 ],
                 [
                     'label' => '发布信息管理',
-                    'url' => ['/Admin/teachers/news']
+                    'url' => ['/Admin/news']
                 ],
                 [
                     'label' => '暂停讲师',
-                    'url' => ['/Admin/teachers/stop']
+                    'url' => ['/Admin/teachers/stop?TeachersSearch[status]=2']
                 ]
             ]
         ],
@@ -180,12 +180,16 @@ AppAsset::register($this);
                     'url' => ['/Admin/train-category']
                 ],
                 [
-                    'label' => '培训地管理',
-                    'url' => ['/Admin/train-land']
-                ],
-                [
                     'label' => '培训课程管理',
                     'url' => ['/Admin/train']
+                ],
+                [
+                    'label' => '添加培训课程',
+                    'url' => ['/Admin/train/create']
+                ],
+                [
+                    'label' => '培训地管理',
+                    'url' => ['/Admin/news']
                 ],
                 [
                     'label' => '考勤管理',
@@ -205,12 +209,16 @@ AppAsset::register($this);
                     'url' => ['/Admin/activity-category']
                 ],
                 [
-                    'label' => '活劢地管理',
-                    'url' => ['/Admin/activity-land']
-                ],
-                [
                     'label' => '活劢管理',
                     'url' => ['/Admin/activity']
+                ],
+                [
+                    'label' => '添加活劢',
+                    'url' => ['/Admin/activity/create']
+                ],
+                [
+                    'label' => '活劢地管理',
+                    'url' => ['/Admin/news']
                 ],
                 [
                     'label' => '活劢评分管理',

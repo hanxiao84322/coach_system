@@ -21,8 +21,8 @@ use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UploadedFile;
 use yii\data\Pagination;
-
-
+use yii\filters\VerbFilter;
+use app\models\Sms;
 
 class UserCenterController extends \yii\web\Controller
 {
@@ -34,17 +34,38 @@ class UserCenterController extends \yii\web\Controller
             'access' => [
                 'class' => \yii\filters\AccessControl::className(),
                 'user' => 'user',
-                'only' => ['index','train-index', 'update-train-user-status','user-info', 'user-education', 'user-train', 'user-vocational', 'user-level-up','user-level-info'],
+                'only' => ['index','train-index', 'update-train-user-status','user-info', 'user-education', 'user-train', 'user-vocational', 'user-level-up','user-level-info','change-password'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','train-index', 'update-train-user-status','user-info', 'user-education', 'user-train', 'user-vocational','user-level-up','user-level-info'],
+                        'actions' => ['index','train-index', 'update-train-user-status','user-info', 'user-education', 'user-train', 'user-vocational','user-level-up','user-level-info','change-password'],
                         'roles' => ['@'],
                     ]
                 ],
             ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
         ];
     }
+
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class' => 'yii\captcha\CaptchaAction',
+                'maxLength' => 5,
+                'minLength' => 5
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $isPage = \Yii::$app->request->get('is_page');
@@ -224,23 +245,9 @@ class UserCenterController extends \yii\web\Controller
             } else {
                 $infoParams['UsersInfo']['credentials_photo'] = '';
             }
-
-
             $infoParams['UsersInfo']['user_id'] = Yii::$app->user->id;
-
             $infoInfo = $infoParams;
             if ($model->load($infoInfo) && $model->save()) {
-                $userModel = Users::findOne(['id'=>Yii::$app->user->id]);
-                $userModel->username = $model->name;
-                if (!empty($infoParams['Users']['mobile_phone'])) {
-                    $userModel->mobile_phone = $infoParams['Users']['mobile_phone'];
-                }
-                if (!empty($infoParams['Users']['email'])) {
-                    $userModel->email = $infoParams['Users']['email'];
-                }
-                if (!$userModel->save()) {
-                    throw new ServerErrorHttpException('系统错误,原因：' . json_encode($userModel->errors, JSON_UNESCAPED_UNICODE));
-                }
                 return $this->redirect('/user-center/user-info');
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
@@ -252,16 +259,25 @@ class UserCenterController extends \yii\web\Controller
             $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
             $userModel = Users::findOne(['id'=>Yii::$app->user->id]);
+            $userEducation = UsersEducation::findAll(['user_id' => Yii::$app->user->id]);
+            $userTrain = UsersTrain::findAll(['user_id' => Yii::$app->user->id]);
+            $userVocational = UsersVocational::findAll(['user_id' => Yii::$app->user->id]);
+            $userPlayers = UsersPlayers::findAll(['user_id' => Yii::$app->user->id]);
+
             $data = [
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
                 'photo' => $photo,
-                'messageCount' => $messageCount
+                'messageCount' => $messageCount,
             ];
             return $this->render('user-info',[
                 'userModel' => $userModel,
                 'data' => $data,
                 'model' => $model,
+                'userEducation' => $userEducation,
+                'userTrain' => $userTrain,
+                'userVocational' => $userVocational,
+                'userPlayers' => $userPlayers,
             ]);
         }
     }
@@ -279,14 +295,14 @@ class UserCenterController extends \yii\web\Controller
             $infoInfo = $infoParams;
             $model = new UsersEducation();
             if ($model->load($infoInfo) && $model->save()) {
-                return $this->redirect('/user-center/user-education');
+                return $this->redirect('/user-center/user-info');
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
 
         } else if (Yii::$app->request->get('id')) {
             UsersEducation::findOne(Yii::$app->request->get('id'))->delete();
-            return $this->redirect('/user-center/user-education');
+            return $this->redirect('/user-center/user-info');
         } else {
             $model = UsersEducation::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
@@ -318,14 +334,14 @@ class UserCenterController extends \yii\web\Controller
             $infoInfo = $infoParams;
             $model = new UsersTrain();
             if ($model->load($infoInfo) && $model->save()) {
-                return $this->redirect('/user-center/user-train');
+                return $this->redirect('/user-center/user-info');
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
 
         } else if (Yii::$app->request->get('id')) {
             UsersTrain::findOne(Yii::$app->request->get('id'))->delete();
-            return $this->redirect('/user-center/user-train');
+            return $this->redirect('/user-center/user-info');
         } else {
             $model = UsersTrain::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
@@ -358,14 +374,14 @@ class UserCenterController extends \yii\web\Controller
             $infoInfo = $infoParams;
             $model = new UsersVocational();
             if ($model->load($infoInfo) && $model->save()) {
-                return $this->redirect('/user-center/user-vocational');
+                return $this->redirect('/user-center/user-info');
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
 
         } else if (Yii::$app->request->get('id')) {
             UsersVocational::findOne(Yii::$app->request->get('id'))->delete();
-            return $this->redirect('/user-center/user-vocational');
+            return $this->redirect('/user-center/user-info');
         } else {
             $model = UsersVocational::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
@@ -397,14 +413,14 @@ class UserCenterController extends \yii\web\Controller
             $infoInfo = $infoParams;
             $model = new UsersPlayers();
             if ($model->load($infoInfo) && $model->save()) {
-                return $this->redirect('/user-center/user-players');
+                return $this->redirect('/user-center/user-info');
             } else {
                 throw new ServerErrorHttpException('系统错误,原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
 
         } else if (Yii::$app->request->get('id')) {
             UsersPlayers::findOne(Yii::$app->request->get('id'))->delete();
-            return $this->redirect('/user-center/user-players');
+            return $this->redirect('/user-center/user-info');
         } else {
             $model = UsersPlayers::findAll(['user_id' => Yii::$app->user->id]);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
@@ -427,14 +443,41 @@ class UserCenterController extends \yii\web\Controller
     public function actionUserLevelUp()
     {
         if (Yii::$app->request->isPost) {
+
         } else {
-            $model = usersLevel::getLevelUpInfoByUserIdOrder(Yii::$app->user->id, Yii::$app->user->identity->level_order+1);
             $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
             $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
             $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
             $currentTrain = TrainUsers::getTrainByUserId(Yii::$app->user->id);
+
+
+            $levelInfo = Level::findOne(['id' => Yii::$app->user->identity->level_id + 1]);
+
+            $loginDuration = Users::getLoginDuration(Yii::$app->user->id);
+            $scoreDiff = $levelInfo['score'] - Yii::$app->user->identity->score;
+            $creditDiff = $levelInfo['credit'] - Yii::$app->user->identity->credit;
+            $loginDurationDiff = $levelInfo['login_duration'] - $loginDuration;
+            $levelNameNext = $levelInfo['name'];
+
+            if ($scoreDiff <= 0 && $creditDiff <= 0 && $loginDurationDiff <= 0) {
+                $buttonStyle = 'true';
+            }
+
+                $levelUpInfo = [
+                    'scoreCurrent' => Yii::$app->user->identity->score - 60,
+                    'creditCurrent' => Yii::$app->user->identity->credit,
+                    'loginDurationCurrent' => $loginDuration,
+                    'levelCurrent' => $levelName,
+                    'scoreDiff' => $scoreDiff,
+                    'creditDiff' => $creditDiff,
+                    'loginDurationDiff' => $loginDurationDiff,
+                    'levelNameNext' => $levelNameNext,
+                    'buttonStyle' => $buttonStyle
+                ];
+
             $data = [
-                'model' => $model,
+                'levelUpInfo' => $levelUpInfo,
+                'loginDuration' => $loginDuration,
                 'levelName' => $levelName,
                 'currentTrain' => $currentTrain,
                 'photo' => $photo,
@@ -508,22 +551,18 @@ class UserCenterController extends \yii\web\Controller
 
     public function actionActivity()
     {
-        $levelId = \Yii::$app->request->get('levelId') ? \Yii::$app->request->get('levelId') : 2;
 
-        $query = Activity::find()->where(['level_id' => $levelId]);
-        $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count()]);
-        $models = $query->offset($pages->offset)
-            ->limit($pages->limit)
-            ->all();
-        if (!empty($models)) {
-            foreach ($models as $key => $val) {
-                $val->begin_time = date('Y-m-d', strtotime($val->begin_time));
-                //录取人数
-                $countResult = \app\models\ActivityUsers::find()->where(['train_id' => $val->id, 'status' => [ActivityUsers::APPROVED,ActivityUsers::DOING,ActivityUsers::END]]);
-                $val->already_recruit_count  = $countResult->count();
-            }
-        }
+        $levelId = \Yii::$app->request->get('levelId') ? \Yii::$app->request->get('levelId') : 2;
+        $userId = \Yii::$app->user->id;
+
+        $activityListA = $this->getActivityListByLevelId(2);
+        $activityListB = $this->getActivityListByLevelId(3);
+        $activityListC = $this->getActivityListByLevelId(4);
+        $activityListD = $this->getActivityListByLevelId(5);
+        $activityListE = $this->getActivityListByLevelId(6);
+        $activityListF = $this->getActivityListByLevelId(7);
+
+
         $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
         $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
         $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
@@ -533,11 +572,14 @@ class UserCenterController extends \yii\web\Controller
             'currentTrain' => $currentTrain,
             'photo' => $photo,
             'messageCount' => $messageCount,
-            'models' => $models,
-            'pages' => $pages,
-            'levelId' => $levelId
+            'activityListA' => $activityListA,
+            'activityListB' => $activityListB,
+            'activityListC' => $activityListC,
+            'activityListD' => $activityListD,
+            'activityListE' => $activityListE,
+            'activityListF' => $activityListF,
         ];
-        return $this->render('activity', [
+        return $this->render('activity-index', [
             'data' => $data
         ]);
     }
@@ -643,5 +685,278 @@ class UserCenterController extends \yii\web\Controller
         } else {
             return $this->redirect('/user-center/system-comment');
         }
+    }
+
+    public function actionLoginInfo()
+    {
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+        $phone = Yii::$app->user->identity->mobile_phone;
+        $phoneHidden = substr_replace($phone, '****', 4, 4);
+        $email = Yii::$app->user->identity->email;
+        $emailHidden = substr_replace($email, '****', 4, 4);
+        $data = [
+            'phoneHidden' => $phoneHidden,
+            'emailHidden' => $emailHidden,
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('login-info',['data' => $data]);
+
+    }
+
+    public function actionChangePassword()
+    {
+        $model = Users::findOne(Yii::$app->user->id);
+        $step = Yii::$app->request->get('step');
+
+        if (Yii::$app->request->isPost) {
+            if ($step == 1) {
+                $verifyCode = Yii::$app->request->post('verifyCode');
+                $checkNum = Yii::$app->request->post('check_num');
+                $session = Yii::$app->session;
+
+                if ($checkNum != $session['checkNum']) {
+                    throw new ServerErrorHttpException('短信验证码输入错误，请重新输入！');
+                }
+                if (!empty($_SESSION['__captcha/site/captcha'])) {
+                    if ($_SESSION['__captcha/site/captcha'] != $verifyCode) {
+                        throw new ServerErrorHttpException('验证码输入错误，请重新输入！');
+                    }
+                }
+
+                return $this->redirect(['/user-center/change-password', 'step' => 2]);
+            } elseif($step == 2) {
+                $password = Yii::$app->request->post('password');
+                $password_confirm = Yii::$app->request->post('password_confirm');
+                if (!empty($_SESSION['__captcha/site/captcha'])) {
+                    $verifyCode = Yii::$app->request->post('verifyCode');
+                    if ($_SESSION['__captcha/site/captcha'] != $verifyCode) {
+                        throw new ServerErrorHttpException('验证码输入错误，请重新输入！');
+                    }
+                }
+                if ($password != $password_confirm) {
+                    throw new ServerErrorHttpException('两次输入密码不一致，请重新输入！');
+                }
+                $password = md5($password);
+                Users::updateAll(['password' => $password], ['id' => Yii::$app->user->id]);
+                return $this->redirect(['/user-center/change-password', 'step' => 3]);
+            }
+        }
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+        $phone = Yii::$app->user->identity->mobile_phone;
+        $phoneHidden = substr_replace($phone, '****', 4, 4);
+        $data = [
+            'step' => $step,
+            'phoneHidden' => $phoneHidden,
+            'phone' => $phone,
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('change-password',['data' => $data,'model' => $model]);
+    }
+
+    public function actionChangeEmail()
+    {
+        $model = Users::findOne(Yii::$app->user->id);
+        $step = Yii::$app->request->get('step');
+
+        if (Yii::$app->request->isPost) {
+            if ($step == 1) {
+                $verifyCode = Yii::$app->request->post('verifyCode');
+                $checkNum = Yii::$app->request->post('check_num');
+                $session = Yii::$app->session;
+
+                if ($checkNum != $session['checkNum']) {
+                    throw new ServerErrorHttpException('短信验证码输入错误，请重新输入！');
+                }
+                if (!empty($_SESSION['__captcha/site/captcha'])) {
+                    if ($_SESSION['__captcha/site/captcha'] != $verifyCode) {
+                        throw new ServerErrorHttpException('验证码输入错误，请重新输入！');
+                    }
+                }
+
+                return $this->redirect(['/user-center/change-email', 'step' => 2]);
+            } elseif($step == 2) {
+                $email = Yii::$app->request->post('email');
+                if (!empty($_SESSION['__captcha/site/captcha'])) {
+                    $verifyCode = Yii::$app->request->post('verifyCode');
+                    if ($_SESSION['__captcha/site/captcha'] != $verifyCode) {
+                        throw new ServerErrorHttpException('验证码输入错误，请重新输入！');
+                    }
+                }
+
+                Users::updateAll(['email' => $email], ['id' => Yii::$app->user->id]);
+                return $this->redirect(['/user-center/change-email', 'step' => 3]);
+            }
+        }
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+        $phone = Yii::$app->user->identity->mobile_phone;
+        $phoneHidden = substr_replace($phone, '****', 4, 4);
+        $data = [
+            'step' => $step,
+            'phoneHidden' => $phoneHidden,
+            'phone' => $phone,
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('change-email',['data' => $data,'model' => $model]);
+    }
+    public function actionChangePhone()
+    {
+        $model = Users::findOne(Yii::$app->user->id);
+        $step = Yii::$app->request->get('step');
+
+        if (Yii::$app->request->isPost) {
+            if ($step == 1) {
+                $verifyCode = Yii::$app->request->post('verifyCode');
+                $checkNum = Yii::$app->request->post('check_num');
+                $session = Yii::$app->session;
+
+                if ($checkNum != $session['checkNum']) {
+                    throw new ServerErrorHttpException('短信验证码输入错误，请重新输入！');
+                }
+                if (!empty($_SESSION['__captcha/site/captcha'])) {
+                    if ($_SESSION['__captcha/site/captcha'] != $verifyCode) {
+                        throw new ServerErrorHttpException('验证码输入错误，请重新输入！');
+                    }
+                }
+
+                return $this->redirect(['/user-center/change-phone', 'step' => 2]);
+            } elseif($step == 2) {
+                $phone = Yii::$app->request->post('phone');
+                if (!empty($_SESSION['__captcha/site/captcha'])) {
+                    $verifyCode = Yii::$app->request->post('verifyCode');
+                    if ($_SESSION['__captcha/site/captcha'] != $verifyCode) {
+                        throw new ServerErrorHttpException('验证码输入错误，请重新输入！');
+                    }
+                }
+
+                Users::updateAll(['mobile_phone' => $phone], ['id' => Yii::$app->user->id]);
+                return $this->redirect(['/user-center/change-phone', 'step' => 3]);
+            }
+        }
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+        $phone = Yii::$app->user->identity->mobile_phone;
+        $phoneHidden = substr_replace($phone, '****', 4, 4);
+        $data = [
+            'step' => $step,
+            'phoneHidden' => $phoneHidden,
+            'phone' => $phone,
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('change-phone',['data' => $data,'model' => $model]);
+    }
+
+
+    public function actionCheckEmail()
+    {
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+
+        $data = [
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('check-email',['data' => $data]);
+
+    }
+
+    public function actionCheckPhone()
+    {
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+
+        $data = [
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('check-phone',['data' => $data]);
+
+    }
+
+    public function actionOrders()
+    {
+        $levelName = Level::getOneLevelNameById(Yii::$app->user->identity->level_id);
+        $photo = UsersInfo::getPhotoByUserId(\Yii::$app->user->id);
+        $messageCount = MessagesUsers::getCountByUserIdAndType(\Yii::$app->user->id);
+
+        $data = [
+            'levelName' => $levelName,
+            'photo' => $photo,
+            'messageCount' => $messageCount
+        ];
+        return $this->render('orders',['data' => $data]);
+
+    }
+
+
+    public function actionGetCheckNum()
+    {
+        $phone = Yii::$app->request->get('phone');
+        $checkNum = rand(100000,999999);
+        $session = Yii::$app->session;
+
+        if (!isset($session['time']))//判断缓存时间
+        {
+            $session['time'] = date("Y-m-d H:i:s");
+        }
+        $session['checkNum'] = $checkNum;//将content的值保存在session中
+        if (!empty($phone)) {
+            if ((strtotime($session['time']) + 60) < time()) {//将获取的缓存时间转换成时间戳加上60秒后与当前时间比较，小于当前时间即为过期
+                session_destroy();
+                $session->remove('time');
+                $msg =  '验证码已过期，请重新获取！';
+            } else {
+                return $checkNum;
+                $content = "尊敬的学员，您的注册验证码是".$checkNum.",次验证码于一分钟后过期，请尽快完成注册，谢谢！【教练系统】";
+                $smsModel = Sms::getInstance(Yii::$app->params['smsUserName'],Yii::$app->params['smsPassword']);
+
+                $result = $smsModel->pushMt($phone, time(), $content, 0);
+                if ($result == '0') {
+                    $msg = '验证码已经发送到手机'.$phone . '，请注意查收。';
+                } else {
+                    $msg = $result;
+                }
+            }
+        } else {
+            $msg =  '发送失败，请再次尝试！';
+        }
+        return $msg;
+    }
+
+    public function getActivityListByLevelId($levelId)
+    {
+        $query = Activity::find()->where(['level_id' => $levelId]);
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count()]);
+        $models = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
+        if (!empty($models)) {
+            foreach ($models as $key => $val) {
+                $val->begin_time = date('Y-m-d', strtotime($val->begin_time));
+                //录取人数
+                $countResult = ActivityUsers::find()->where(['activity_id' => $val->id, 'status' => [ActivityUsers::APPROVED,ActivityUsers::DOING,ActivityUsers::END]]);
+                $val->already_recruit_count  = $countResult->count();
+            }
+        }
+        return $models;
     }
 }

@@ -168,7 +168,7 @@ use yii\jui\DatePicker;
                                                 </tr>
                                                 <tr>
                                                     <td></td>
-                                                    <td><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to('/user-center/user-vocational')?>">添加执教信息</a></td>
+                                                    <td><input type="submit" value="保 存" class="fixe_btn"/></td>
                                                 </tr>
                                             </table>
                                             <?php ActiveForm::end(); ?>

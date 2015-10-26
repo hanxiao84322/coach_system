@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\ActivityUsersSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Activity Users';
+$this->title = '分值管理';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="activity-users-index">
@@ -15,9 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Activity Users', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

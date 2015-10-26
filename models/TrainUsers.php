@@ -282,9 +282,9 @@ class TrainUsers extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public static function getAppraiseResultByUserIdAndLevelId($train_id = '', $user_id)
+    public static function getAppraiseResultByUserIdAndLevelId($userId, $levelId)
     {
-        $result = Yii::$app->db->createCommand('SELECT appraise_result FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND train_id=:train_id', [':user_id' => $user_id,':train_id' => $train_id])->queryScalar();
+        $result = Yii::$app->db->createCommand('SELECT appraise_result FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id', [':user_id' => $userId,':level_id' => $levelId])->queryScalar();
         return $result;
     }
 

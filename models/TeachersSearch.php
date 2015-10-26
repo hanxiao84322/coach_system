@@ -18,7 +18,7 @@ class TeachersSearch extends Teachers
     public function rules()
     {
         return [
-            [['id', 'sex', 'age', 'level', 'lesson'], 'integer'],
+            [['id', 'sex', 'age', 'level', 'lesson','status'], 'integer'],
             [['name', 'create_time', 'create_user', 'update_time', 'update_user'], 'safe'],
         ];
     }
@@ -59,6 +59,7 @@ class TeachersSearch extends Teachers
             'id' => $this->id,
             'sex' => $this->sex,
             'age' => $this->age,
+            'status' => $this->status,
             'level' => $this->level,
             'lesson' => $this->lesson,
             'create_time' => $this->create_time,

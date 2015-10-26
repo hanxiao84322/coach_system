@@ -33,7 +33,7 @@ class SearchController extends \yii\web\Controller
 
         if (preg_match("/^[\x7f-\xff]+$/", $keyword)) {
             $userName = $keyword;
-        } else if (strlen($keyword) == 18) {
+        } else if (strlen($keyword) > 10) {
             $credentialsNumber = $keyword;
         } else {
             $certificateNumber = $keyword;
@@ -61,10 +61,10 @@ class SearchController extends \yii\web\Controller
             $query->andFilterWhere(['like', 'name', $userName]);
         }
         if (!empty($certificateNumber)) {
-            $query->andFilterWhere(['like', 'certificateNumber', $certificateNumber]);
+            $query->andFilterWhere(['like', 'certificate_number', $certificateNumber]);
         }
         if (!empty($credentialsNumber)) {
-            $query->andFilterWhere(['like', 'credentialsNumber', $credentialsNumber]);
+            $query->andFilterWhere(['like', 'credentials_number', $credentialsNumber]);
         }
 
         $pages = new Pagination([

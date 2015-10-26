@@ -37,7 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'level',
                 'value' => function($searchModel){
-                    return app\models\Teachers::getLevelName($searchModel->level);
+                    return app\models\TeachersLevel::getNameById($searchModel->level);
+                }
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function($searchModel){
+                    return app\models\Teachers::getStatusName($searchModel->status);
                 }
             ],
             // 'lesson',

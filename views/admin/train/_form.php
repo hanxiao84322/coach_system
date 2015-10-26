@@ -20,7 +20,7 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'name')->textInput(['style'=>'width:300px']) ?>
 
-    <?= $form->field($model, 'category')->dropDownList(\app\models\Train::$categoryList,['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'category')->dropDownList(\app\models\TrainCategory::getAll(),['style'=>'width:300px']) ?>
 
     <?= $form->field($model, 'level_id')->dropDownList(ArrayHelper::map(\app\models\Level::getAll(),'id', 'name'),['style'=>'width:100px']) ?>
 
@@ -46,7 +46,7 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
     <?php }?>
     <?php if  ($model->status == \app\models\Train::DOING) {?>
-    <?= $form->field($model, 'status')->dropDownList([\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:200px']) ?>
+    <?= $form->field($model, 'status')->dropDownList([\app\models\Train::DOING => \app\models\Train::$statusList[\app\models\Train::DOING],\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:200px']) ?>
     <?php  } elseif  ($model->status == \app\models\Train::END) { ?>
         <?= $form->field($model, 'status')->dropDownList([\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:200px']) ?>
     <?php } else {?>

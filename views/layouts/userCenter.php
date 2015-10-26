@@ -2,6 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
+<?php $this->beginPage() ?>
+
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
@@ -16,6 +18,7 @@ use yii\helpers\Url;
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=2c327dae2b9abd9727b0e8da3d988040"></script>
 </head>
 <body>
+<?php $this->beginBody() ?>
 
 <div class="user_box">
     <div class="user_top">
@@ -32,5 +35,7 @@ use yii\helpers\Url;
     </div>
 </div>
 <?= $content ?>
+<?php $this->endBody() ?>
 </body>
 </html>
+<?php $this->endPage() ?>

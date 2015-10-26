@@ -118,7 +118,7 @@ class UsersInfo extends \yii\db\ActiveRecord
         return [
             [['name', 'credentials_type', 'height', 'weight', 'disease_history', 'clothes_size', 't_shirt_size', 'shorts_size' ], 'required'],
             [['birthday'], 'safe'],
-            [['user_id'], 'integer'],
+            [['user_id','sex'], 'integer'],
             [['name', 'photo', 'credentials_photo'], 'string', 'max' => 45],
             [['credentials_number'], 'string', 'max' => 25],
             [['account_location', 'telephone', 'company_contact_phone'], 'string', 'max' => 20],

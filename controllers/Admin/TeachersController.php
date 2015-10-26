@@ -115,6 +115,9 @@ class TeachersController extends Controller
                 } else {
                     $teacherInfo['Teachers']['photo'] = $fileName;
                 }
+            } else {
+                $teacher = Teachers::findOne($id);
+                $teacherInfo['Teachers']['photo'] = $teacher->photo;
             }
             if ($model->load($teacherInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -155,5 +158,16 @@ class TeachersController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionStop()
+    {
+        $searchModel = new TeachersSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('stop', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

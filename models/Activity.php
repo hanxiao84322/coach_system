@@ -20,7 +20,7 @@ use Yii;
  * @property integer $status
  * @property string $content
  * @property integer $lesson
- * @property integer $integration
+ * @property integer $score
  * @property string $address
  * @property string $launch
  * @property string $organizers
@@ -45,23 +45,22 @@ class Activity extends \yii\db\ActiveRecord
         self::DAILY => '日常班'
     ];
 
-    //报名状态
+    //课程状态
     const NEW_ADD = 1;
     const BEGIN_SIGN_UP = 2;
     const END_SIGN_UP = 3;
+    const DOING = 4;
+    const END = 5;
 
-    static public $signUpStatusList = [
+    static public $statusList = [
         self::NEW_ADD => '未开始报名',
         self::BEGIN_SIGN_UP => '报名开始',
         self::END_SIGN_UP => '报名结束',
+        self::DOING => '进行中',
+        self::END => '结束',
     ];
 
-    static public $statusList = [
-        self::NEW_ADD => '未开始',
-        self::BEGIN_SIGN_UP => '进行中',
-        self::END_SIGN_UP => '结束',
-    ];
-
+    public $already_recruit_count;
 
     /**
      * @inheritdoc
@@ -77,7 +76,7 @@ class Activity extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson', 'integration'], 'integer'],
+            [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson', 'score'], 'integer'],
             [['sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['content'], 'string'],
             [['name', 'create_user', 'update_user'], 'string', 'max' => 45],
@@ -96,15 +95,15 @@ class Activity extends \yii\db\ActiveRecord
             'category' => '分类',
             'level_id' => '级别',
             'recruit_count' => '招收人数',
-            'sign_up_begin_time' => '注册开始时间',
-            'sign_up_end_time' => '注册结束时间',
-            'sign_up_status' => '注册状态',
+            'sign_up_begin_time' => '报名开始时间',
+            'sign_up_end_time' => '报名结束时间',
+            'sign_up_status' => '报名状态',
             'begin_time' => '开始时间',
             'end_time' => '结束时间',
             'status' => '状态',
             'lesson' => '课时',
             'address' => '地址',
-            'integration' => '活动积分',
+            'score' => '活动积分',
             'launch' => '发起者',
             'organizers' => '主办方',
             'join_teams' => '参训着',
@@ -147,7 +146,6 @@ class Activity extends \yii\db\ActiveRecord
     {
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
-
 
     public function beforeSave($insert = '')
     {

@@ -82,7 +82,9 @@ use yii\widgets\ActiveForm;
                         </div>
                     </li>
                 <?php endforeach;?>
-            <?php }?>
+            <?php } else {?>
+                没有符合条件的学员
+            <?php } ?>
         </ul>
         <!--number-->
         <div class="number_box" style="margin:0 auto;width:520px">

@@ -120,7 +120,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function saveLoginInfo($lastLoginTime, $ipAddress)
     {
         $model = new UsersLogin();
-        print_r(\Yii::$app->user->identity);exit;
         $model->user_id = \Yii::$app->user->identity;
         $model->login_time = $lastLoginTime;
         $model->ip_address = $ipAddress;

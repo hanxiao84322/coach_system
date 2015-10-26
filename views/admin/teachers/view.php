@@ -39,7 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'level',
                 'label'=>'级别',
-                'value'=> app\models\Teachers::getLevelName($model->level)
+                'value'=> app\models\TeachersLevel::getNameById($model->level)
+            ],
+            [
+                'attribute' => 'status',
+                'value'=> app\models\Users::getStatusName($model->status)
             ],
             'lesson',
             [

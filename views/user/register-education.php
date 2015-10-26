@@ -115,7 +115,7 @@ use yii\jui\DatePicker;
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><input name="train_id" type="hidden" value="<?= $train_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to(['/user/register-train', 'train_id' => $train_id])?>">下一步，添加培训信息</a><a href="<?= \yii\helpers\Url::to(['/train/apply', 'id' => $train_id])?>">填写完成</a></td>
+                                    <td><input name="train_id" type="hidden" value="<?= $train_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to(['/user/register-train', 'train_id' => $train_id])?>">下一步，添加培训信息</a></td>
                                 </tr>
                             </table>
                             <?php ActiveForm::end(); ?>

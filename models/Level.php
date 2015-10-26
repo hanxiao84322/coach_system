@@ -41,7 +41,7 @@ class Level extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['score', 'login_duration','order'], 'integer'],
+            [['score', 'login_duration','order','lesson'], 'integer'],
             [[ 'score', 'login_duration'], 'default', 'value' => 0],
             ['register_fee', 'default', 'value' => 0.00],
 
@@ -64,6 +64,8 @@ class Level extends \yii\db\ActiveRecord
             'code' => '编码',
             'order' => '类别排序（越大级别越高，系统自动生成）',
             'score' => '升级所需积分',
+            'lesson' => '升级所需课时',
+            'credit' => '升级所需评分',
             'login_duration' => '升级所需注册时长单位月',
             'register_fee' => '注册费单位元',
             'content' => '录取条件',

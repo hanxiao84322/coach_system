@@ -43,7 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'recruit_count',
             'sign_up_begin_time',
             'sign_up_end_time',
-            'sign_up_status',
             'begin_time',
             'end_time',
             [
@@ -53,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'content:ntext',
             'lesson',
-            'integration',
+            'score',
             'address',
             'launch',
             'organizers',

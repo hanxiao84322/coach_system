@@ -44,7 +44,6 @@ use yii\widgets\ActiveForm;
 <div class="bjsj_register">
     <div class="div_register">
         <p class="login_infro"><span>注册</span></p>
-        <p class="dl_check"><a href="<?= \yii\helpers\Url::to(['/user/register', 'type' => 'email', 'train_id' => $train_id])?>" class="hover">用邮箱注册</a><a href="<?= \yii\helpers\Url::to(['/user/register', 'type' => 'mobile_phone', 'train_id' => $train_id])?>">用手机号码注册</a></p>
         <table cellpadding="0" cellspacing="0" class="table_login">
             <?php if ($type == 'email') {?>
             <tr>

@@ -84,4 +84,11 @@ class UsersPlayers extends \yii\db\ActiveRecord
     {
         return '高级';
     }
+
+    public static  function getCountByUserId($userId)
+    {
+        $sql = "SELECT count(id) as count FROM " . self::tableName() . " WHERE user_id =:user_id";
+        $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId])->queryScalar();
+        return $result;
+    }
 }

@@ -32,6 +32,87 @@ use yii\data\SqlDataProvider;
  */
 class ActivityUsers extends \yii\db\ActiveRecord
 {
+
+    const SIGN = 1; // 已报名
+    const APPROVED = 2; // 审核中
+    const ENROLL = 3; // 已录取
+    const DOING = 4; // 进行中
+    const END = 5; // 结束
+    const NO_APPROVED = 6; // 审核未通过
+    const CANCEL = 7; // 取消
+    const PASS = 8; // 通过
+    const NO_PASS = 9; // 未通过
+
+
+    // 状态
+    static public $statusList = [
+        self::SIGN => '已报名',
+        self::APPROVED => '审核中',
+        self::ENROLL => '已录取',
+        self::DOING => '进行中',
+        self::END => '结束',
+        self::NO_APPROVED => '审核未通过',
+        self::CANCEL => '取消',
+        self::PASS => '通过',
+        self::NO_PASS => '未通过',
+    ];
+
+    //成绩评价结果
+    const RECOMMEND = 1;
+    const PRACTICE = 2;
+    const CURRENT = 4;
+    const PASSING = 5;
+    const NO_PASSING = 3;
+
+    static public $performanceList = [
+        self::RECOMMEND => '推荐晋级',
+        self::PRACTICE => '实践1年推荐晋级',
+        self::CURRENT => '仅限当前级',
+        self::PASSING => '通过',
+        self::NO_PASSING => '未通过'
+    ];
+
+
+    //评估结果适用于考勤
+    const EXCELLENT = 1;
+    const GOOD = 2;
+    const ERROR = 3;
+
+    static public   $assessList = [
+        self::EXCELLENT => '优',
+        self::GOOD => '良',
+        self::ERROR => '差',
+    ];
+
+    static public $assessRules = [
+        self::EXCELLENT => [
+            'small' => 79,
+            'big' => 100
+        ],
+        self::GOOD => [
+            'small' => 59,
+            'big' => 79
+        ],
+        self::ERROR => [
+            'small' => 0,
+            'big' => 59
+        ],
+    ];
+
+    static public $statusRules = [
+        self::PASS => [
+            'small' => 59,
+            'big' => 100
+        ],
+        self::NO_PASS => [
+            'small' => 0,
+            'big' => 59
+        ]
+    ];
+
+    public $activityName;
+    public $userName;
+
     /**
      * @inheritdoc
      */
@@ -59,23 +140,24 @@ class ActivityUsers extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'activity_id' => 'Activity ID',
-            'user_id' => 'User ID',
-            'status' => 'Status',
-            'practice_score' => 'Practice Score',
-            'theory_score' => 'Theory Score',
-            'rule_score' => 'Rule Score',
-            'score_appraise' => 'Score Appraise',
-            'attendance_appraise' => 'Attendance Appraise',
-            'practice_comment' => 'Practice Comment',
-            'theory_comment' => 'Theory Comment',
-            'rule_comment' => 'Rule Comment',
-            'total_comment' => 'Total Comment',
-            'result_comment' => 'Result Comment',
-            'create_time' => 'Create Time',
-            'create_user' => 'Create User',
-            'update_time' => 'Update Time',
-            'update_user' => 'Update User',
+            'activity_id' => '活动',
+            'user_id' => '教练员',
+            'status' => '状态',
+            'practice_score' => '实践成绩',
+            'theory_score' => '理论得分',
+            'rule_score' => '规则得分',
+            'score_appraise' => '活动积分',
+            'appraise_result' => '获得积分',
+            'attendance_appraise' => '活动进程',
+            'practice_comment' => '实践评估',
+            'theory_comment' => '理论评估',
+            'rule_comment' => '规则评估',
+            'total_comment' => '总评',
+            'result_comment' => '最终评分',
+            'create_time' => '创建时间',
+            'create_user' => '创建人',
+            'update_time' => '更新时间',
+            'update_user' => '更新人',
         ];
     }
 
@@ -110,5 +192,17 @@ class ActivityUsers extends \yii\db\ActiveRecord
         $models = $dataProvider->getModels();
         return $models;
 
+    }
+
+    public static function getApprovedActivityUsersByActivityId($activityId = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . '  WHERE activity_id=:activity_id AND status in ("' . self::ENROLL . '","' . self::DOING . '")', [':activity_id' => $activityId])->queryAll();
+        return $result;
+    }
+
+
+    public static function updateActivityUsersStatusByActivityId($status, $activityId)
+    {
+        return Yii::$app->db->createCommand('UPDATE ' . self::tableName() . ' SET status =:status WHERE train_id=:train_id AND status != '.self::CANCEL, [':status' => $status,':activity_id' => $activityId])->execute();
     }
 }

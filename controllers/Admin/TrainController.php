@@ -112,9 +112,6 @@ class TrainController extends Controller
                     //获取该课程下已录取的学员
                     $trainUsers = TrainUsers::getApprovedTrainUsersByTrainId($model->id);
                     if (!empty($trainUsers)) {
-                        if ($model->sign_up_status != Train::END_SIGN_UP) {
-                            throw new ServerErrorHttpException('更新状态失败，原因：该培训课程的报名状态不为' . Train::$signUpStatusList[Train::END_SIGN_UP] . '！');
-                        }
                         //根据课程id，用户id更新用户状态为正在进行
                         TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::DOING, $model->id);
                         foreach ($trainUsers as $key => $val) {

@@ -1,6 +1,6 @@
 <td width="220" valign="top">
     <div class="left_nav">
-        <img src="<?php if (!empty($data['photo'])) {?><?= '/upload/images/users_info/photo/' .$data['photo']?><?php } else { ?>/images/4.jpg<?php }?>" width="71" height="99" />
+        <img src="<?php if (!empty($data['photo'])) {?><?= '/upload/images/users_info/photo/' .$data['photo']?><?php } else { ?>/images/user/4.jpg<?php }?>" width="71" height="99" />
         Hi, <b class="green"><?= Yii::$app->user->identity->username?></b><br/>（<?= $data['levelName']?>）<span>消息（<a href="<?= \yii\helpers\Url::to('/user-center/system-comment')?>"><b><?= $data['messageCount']?></b></a>）</span>
     </div>
     <div class="left_navbox">
@@ -8,8 +8,8 @@
             <li>
                 <h1 class="hover"><a href="javascript:;">个人设置</a></h1>
                 <div class="second_div" style="display:block;">
-                    <a href="javascript:;"><span>登录信息</span></a>
-                    <a href="javascript:;"><span>修改登录密码</span></a>
+                    <a href="<?= \yii\helpers\Url::to('/user-center/login-info')?>"><span>登录信息</span></a>
+                    <a href="<?= \yii\helpers\Url::to(['/user-center/change-password', 'step'=>1])?>"><span>修改登录密码</span></a>
                 </div>
             </li>
             <li>
@@ -27,7 +27,9 @@
                     <?php if (\app\models\ActivityUsers::findAll(['user_id' => Yii::$app->user->id])) {?>
                     <a href="<?= \yii\helpers\Url::to('/user-center/my-activity')?>"><span>我的活动</span></a>
                     <?php } ?>
+                    <?php if (Yii::$app->user->identity->level_id > 1) {?>
                     <a href="<?= \yii\helpers\Url::to('/user-center/user-level-up')?>"><span>晋升管理</span></a>
+                    <?php } ?>
                 </div>
             </li>
             <li>
@@ -40,7 +42,7 @@
             <li>
                 <h1><a href="javascript:;">缴费管理</a></h1>
                 <div class="second_div">
-                    <a href="javascript:;"><span>缴费记录</span></a>
+                    <a href="<?= \yii\helpers\Url::to('/user-center/orders')?>"><span>缴费记录</span></a>
                 </div>
             </li>
         </ul>

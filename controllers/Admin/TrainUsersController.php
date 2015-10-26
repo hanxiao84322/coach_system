@@ -5,6 +5,7 @@ namespace app\controllers\Admin;
 use app\models\Attendance;
 use app\models\Level;
 use app\models\Pages;
+use app\models\Sms;
 use app\models\Train;
 use app\models\Users;
 use app\models\UsersInfo;
@@ -63,7 +64,7 @@ class TrainUsersController extends Controller
     {
         $model = $this->findModel($id);
         $model->trainName = Train::getOneTrainNameById($model->train_id);
-        $model->userName = \app\models\Users::getOneUserNameById($model->user_id);
+        $model->userName = Users::getOneUserNameById($model->user_id);
         return $this->render('view', [
             'model' => $model
         ]);
@@ -98,7 +99,8 @@ class TrainUsersController extends Controller
         $model = $this->findModel($id);
 
         $trainInfo = Train::findOne(['id',$model->train_id]);
-        $model->userName = \app\models\Users::getOneUserNameById($model->user_id);
+        $userInfo = Users::findOne($model->user_id);
+        $model->userName = $userInfo['username'];
         $model->trainName = $trainInfo->name;
         if (Yii::$app->request->isPost) {
 
@@ -127,10 +129,19 @@ class TrainUsersController extends Controller
                         //如果通过更新晋级信息
                         if ($model->status == TrainUsers::PASS) {
                             $trainCode = $trainInfo['code'];
-                            $levelCode = Level::getOneCodeById($model->level_id);
-                            $certificateNumber = $this->getCertificateNumber($trainCode, sprintf("%04d", $model->orders), $levelCode);
-                            $res = UsersLevel::updateAll(['status'=>1, 'certificate_number' => $certificateNumber, 'update_time' => date('Y-m-d H:i:s', time()), 'update_user' => Yii::$app->admin->identity->username, 'level_id' => $model->level_id], ['user_id' => $model->user_id, 'train_id' => $model->train_id]);
+                            $levelInfo = Level::findOne($model->level_id);
+                            $certificateNumber = $this->getCertificateNumber($trainCode, sprintf("%04d", $model->orders), $levelInfo['code']);
+                            $res = UsersLevel::updateAll(['status'=>1, 'certificate_number' => $certificateNumber, 'update_time' => date('Y-m-d H:i:s', time()), 'update_user' => Yii::$app->admin->identity->username, 'level_id' => $levelInfo['id']], ['user_id' => $model->user_id, 'train_id' => $model->train_id]);
                             if ($res) {
+                                //更新用户表信息
+                                Users::updateAll(['level_id' => $levelInfo['id'],'level_order' => $levelInfo['order']],['id' => $model->user_id]);
+                                //通过发短信
+                                $content = "尊敬的学员，您已经被成功通过培训考试，证书号是" . $certificateNumber . "，请缴费，谢谢！【教练系统】";
+                                $smsModel = Sms::getInstance(Yii::$app->params['smsUserName'],Yii::$app->params['smsPassword']);
+                                $result = $smsModel->pushMt($userInfo['phone'], time(), $content, 0);
+                                if ($result != '0') {
+                                    throw new ServerErrorHttpException('更新状态错误，原因：' . $result . '！');
+                                }
                                 $transaction->commit();
                                 return $this->redirect(['view', 'id' => $model->id]);
                             } else {
@@ -155,6 +166,14 @@ class TrainUsersController extends Controller
 
                     if ($model->save()) {
                         $transaction->commit();
+                        //录取发短信
+//                        $userInfo = UsersInfo::findOne(['user_id' => $model->user_id]);
+                        $content = "尊敬的学员，您已经被成功录取，序号为" . $trainUsersOrder . "，请缴费，谢谢！【教练系统】";
+                        $smsModel = Sms::getInstance(Yii::$app->params['smsUserName'],Yii::$app->params['smsPassword']);
+                        $result = $smsModel->pushMt($userInfo['phone'], time(), $content, 0);
+                        if ($result != '0') {
+                            throw new ServerErrorHttpException('更新状态错误，原因：' . $result . '！');
+                        }
                         Yii::$app->getSession()->setFlash('success', '更新成功！');
                         return $this->redirect(['view', 'id' => $model->id]);
                     } else {
@@ -321,7 +340,8 @@ class TrainUsersController extends Controller
 
     public function getCertificateNumber($trainCode, $userOrder, $levelCode)
     {
-        $certificateNumber = 'BJ' . $levelCode . $trainCode . $userOrder;
+        $date = date('Ymd', time());
+        $certificateNumber = 'BJ' . $levelCode . $trainCode . $date . $userOrder;
         return $certificateNumber;
     }
 

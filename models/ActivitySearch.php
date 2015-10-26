@@ -18,7 +18,7 @@ class ActivitySearch extends Activity
     public function rules()
     {
         return [
-            [['id', 'category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson', 'integration'], 'integer'],
+            [['id', 'category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson', 'score'], 'integer'],
             [['name', 'sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'content', 'address', 'launch', 'organizers', 'join_teams', 'create_time', 'create_user', 'update_time', 'update_user'], 'safe'],
         ];
     }
@@ -67,7 +67,7 @@ class ActivitySearch extends Activity
             'end_time' => $this->end_time,
             'status' => $this->status,
             'lesson' => $this->lesson,
-            'integration' => $this->integration,
+            'score' => $this->score,
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
         ]);
