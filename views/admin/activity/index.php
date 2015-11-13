@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => '管理',
                 'format' => 'html',
                 'value' => function($searchModel) {
-                    $url = Html::a('教练', ['Admin/ActivityUsers/', 'id' => $searchModel->id]);
+                    $url = Html::a('参与教练', ['Admin/activity-users', 'ActivityUsersSearch[activity_id]' => $searchModel->id]);
                     return $url;
                 }
             ],

@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\jui\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TrainSearch */
@@ -15,15 +17,16 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'name')->textInput(['style'=>'width:200px']) ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'begin_date')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
+    <?= $form->field($model, 'end_date')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
 
-    <?= $form->field($model, 'category') ?>
+    <?= $form->field($model, 'level_id')->dropDownList(ArrayHelper::map(\app\models\Level::getAllByEnd(),'id', 'name'),['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'period_num')->dropDownList(\app\models\Train::getPeriodNum(),['style'=>'width:100px']) ?>
 
-    <?= $form->field($model, 'level_id') ?>
-
-    <?= $form->field($model, 'recruit_count') ?>
+    <?= $form->field($model, 'status')->dropDownList(ArrayHelper::merge(['' => '请选择状态'],\app\models\Train::$statusList),['style'=>'width:200px']) ?>
+    <?php // echo $form->field($model, 'sign_up_begin_time') ?>
 
     <?php // echo $form->field($model, 'sign_up_begin_time') ?>
 

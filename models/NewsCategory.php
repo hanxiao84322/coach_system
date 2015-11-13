@@ -79,6 +79,12 @@ class NewsCategory extends \yii\db\ActiveRecord
         return $row['name'];
     }
 
+    public static function getAllByFilter()
+    {
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName())->queryAll();
+        return $result;
+    }
+
     /*
  * get sex name
  */

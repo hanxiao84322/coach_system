@@ -15,7 +15,7 @@ use pjkui\kindeditor\KindEditor;
 
     <?= $form->field($model, 'title')->textInput(['style'=>'width:300px']) ?>
 
-    <?= $form->field($model, 'content')->widget('pjkui\kindeditor\Kindeditor',['clientOptions'=>['allowFileManager'=>'true','allowUpload'=>'true']])  ?>
+    <?= $form->field($model, 'content')->widget(KindEditor::className(),['clientOptions'=>['allowFileManager'=>'true','allowUpload'=>'true']])  ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '创建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

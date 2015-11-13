@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'code',
             'score',
+            'credit',
             'login_duration',
             'register_fee',
             'content',

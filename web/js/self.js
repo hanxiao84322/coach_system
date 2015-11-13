@@ -7,6 +7,9 @@ $(function(){
 		$(this).parent().siblings().find(".second_div").slideUp();
 
 	});
+	$(".nav li a").click(function(){
+		$(this).addClass("hover");
+	})
 
 	$(".nrset_set li h1").click(function(){
 		$(this).addClass('hover')
@@ -45,5 +48,13 @@ $(function(){
 			$(this).parent().siblings(".tab_son").eq(nnum).addClass("nodis");
 
 		});	
+		
+		$(".fixed_information").find(".btnBoxset").click(function(){
+			$(".fixed_information").hide();
+		})
+		
+		$(".go_add").click(function(){
+			$(".fixed_information1").show();
+		})
 
 })

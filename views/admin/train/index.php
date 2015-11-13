@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TrainSearch */
@@ -13,18 +14,23 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="train-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a('创建培训课程', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
+    <?php $form = ActiveForm::begin(['action'=>\yii\helpers\Url::to('/Admin/train/del')]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'header' => Html::checkBox('selection_all', false, [
+                    'class' => 'select-on-check-all',
+                ]),
+            ],
             'name',
             [
                 'attribute' => 'category',
@@ -32,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return app\models\TrainCategory::getNameById($searchModel->category);
                 }
             ],
+            'period_num',
             [
                 'attribute' => 'level_id',
                 'value'=> function ($searchModel) {
@@ -73,5 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
+    <input name="update_status" type="submit" value="删除">
+    <?php ActiveForm::end(); ?>
 </div>

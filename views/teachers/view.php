@@ -14,7 +14,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b><a href="<?= \yii\helpers\Url::to('/teachers/index')?>">讲师</a><b>></b><?= $data['name']?>
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>" style="color:#008000;">首页</a><b>></b><a href="<?= \yii\helpers\Url::to('/teachers/index')?>">讲师</a><b>></b><?= $data['name']?>
     </div>
 </div>
 <!--注册人数-->

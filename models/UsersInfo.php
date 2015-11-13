@@ -62,23 +62,38 @@ class UsersInfo extends \yii\db\ActiveRecord
     ];
 
     //外语
-    const ENGLISH = 1; // 英语
-    const GERMAN = 2; // 德语
+    const ENGLISH = 1;
+    const GERMAN = 2;
+    const FRENCH = 3;
+    const RUSSIAN = 4;
+    const SPANISH = 5;
+    const PORTUGUESE = 6;
+    const KOREAN = 7;
+    const JAPANESE = 8;
+    const OTHER = 9;
 
     public static $languageList = [
         self::ENGLISH => '英语',
-        self::GERMAN => '德语',
+        self::FRENCH => '法语',
+        self::RUSSIAN => '俄语',
+        self::SPANISH => '西班牙语',
+        self::PORTUGUESE => '葡萄牙语',
+        self::KOREAN => '韩语',
+        self::JAPANESE => '日语',
+        self::OTHER => '其他',
     ];
 
     //会话,写作能力
-    const PROFICIENT = 1; // 精通
-    const GOOD = 2; // 良好
-    const GENERAL = 3; //一般
+    const NOT = 1;
+    const BAD = 2;
+    const GENERAL = 3;
+    const GOOD = 4;
 
     public static $abilityList = [
-        self::PROFICIENT => '精通',
-        self::GOOD => '良好',
+        self::NOT => '无',
+        self::BAD => '差',
         self::GENERAL => '一般',
+        self::GOOD => '良好',
 
     ];
 
@@ -116,7 +131,7 @@ class UsersInfo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'credentials_type', 'height', 'weight', 'disease_history', 'clothes_size', 't_shirt_size', 'shorts_size' ], 'required'],
+            [['name', 'credentials_number', 'height', 'weight', 'disease_history', 'clothes_size', 't_shirt_size', 'shorts_size','photo', 'credentials_photo'], 'required'],
             [['birthday'], 'safe'],
             [['user_id','sex'], 'integer'],
             [['name', 'photo', 'credentials_photo'], 'string', 'max' => 45],
@@ -201,7 +216,11 @@ class UsersInfo extends \yii\db\ActiveRecord
     {
         return isset(self::$abilityList[$ability]) ? self::$abilityList[$ability] : $ability;
     }
+    public static function addInfo($data)
+    {
+        return Yii::$app->db->createCommand()->insert(self::tableName(),$data);
 
+    }
 
     public static function getCredentialsNumberByUserId($userId)
     {
@@ -217,4 +236,10 @@ class UsersInfo extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getBirthdayByUserId($userId)
+    {
+        $sql = "SELECT birthday FROM " . self::tableName() . " WHERE user_id='" . $userId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        return $result;
+    }
 }

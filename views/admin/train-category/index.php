@@ -23,10 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'name',
+            [
+                'attribute' => 'name',
+                'format' => 'html',
+                'value' => function($searchModel){
+                    return "<a href='/Admin/train?TrainSearch[category]=" . $searchModel->id . "' target='_blank'>" . $searchModel->name . "</a>";
+                }
+            ],
             'create_time',
             'create_user',
             'update_time',

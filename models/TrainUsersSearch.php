@@ -78,6 +78,7 @@ class TrainUsersSearch extends TrainUsers
             ->andFilterWhere(['like', 'create_user', $this->create_user])
             ->andFilterWhere(['like', 'update_user', $this->update_user])
             ->andFilterWhere(['<>', 'status', TrainUsers::CANCEL]);
+        $query->orderBy(' id desc ');
 
         return $dataProvider;
     }

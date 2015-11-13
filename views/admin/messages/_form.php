@@ -16,7 +16,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'content')->textarea(['style'=>'width:600px']) ?>
 
-    <?= $form->field($model, 'type')->dropDownList(\app\models\Messages::$typeList,['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'type')->dropDownList(\app\models\Messages::$typeList,['style'=>'width:200px']) ?>
+
+    <?= $form->field($model, 'status')->dropDownList(\app\models\Messages::$statusList,['style'=>'width:100px']) ?>
 
 
     <div class="form-group">

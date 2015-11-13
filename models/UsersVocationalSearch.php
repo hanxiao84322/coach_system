@@ -18,8 +18,8 @@ class UsersVocationalSearch extends UsersVocational
     public function rules()
     {
         return [
-            [['id', 'user_id', 'post'], 'integer'],
-            [['team', 'begin_time', 'end_time', 'address', 'witness', 'witness_phone', 'description', 'create_time', 'update_time', 'update_user'], 'safe'],
+            [['id', 'user_id'], 'integer'],
+            [['team', 'begin_time', 'end_time', 'address', 'witness', 'witness_phone', 'description', 'create_time', 'update_time', 'update_user', 'post'], 'safe'],
         ];
     }
 

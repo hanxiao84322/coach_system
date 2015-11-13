@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\MessagesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '站内消息管理';
+$this->title = '模板管理';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="messages-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('创建站内消息', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('创建模板', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -25,13 +25,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'title',
             'content',
             [
                 'attribute' => 'type',
                 'value' => function($searchModel){
                     return app\models\Messages::$typeList[$searchModel->type];
+                }
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function($searchModel){
+                    return app\models\Messages::$statusList[$searchModel->status];
                 }
             ],
              'create_time',

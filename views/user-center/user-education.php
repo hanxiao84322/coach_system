@@ -1,81 +1,8 @@
+<script language="javascript" type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
 <?php
 use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
-
 ?>
-<script>
-    $(function () {
-        var ok1 = false;
-        var ok2 = false;
-        var ok3 = false;
-        var ok4 = false;
-
-        //验证地点
-        $('input[name="UsersEducation[address]"]').focus(function () {
-            $(this).next().text('填写地点').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok1 = true;
-            } else {
-                $(this).next().text('地点格式错误').removeClass('state1').addClass('state3');
-            }
-
-        });
-
-        //验证学校名称
-        $('input[name="UsersEducation[school]"]').focus(function () {
-            $(this).next().text('填写学校名称').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 40 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok2 = true;
-            } else {
-                $(this).next().text('学校名称错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证证明人
-        $('input[name="UsersEducation[witness]"]').focus(function () {
-            $(this).next().text('填写证明人').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok3 = true;
-            } else {
-                $(this).next().text('证明人格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证描述
-        $('input[name="UsersEducation[description]"]').focus(function () {
-            $(this).next().text('填写描述').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok4 = true;
-            } else {
-                $(this).next().text('描述格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-
-        //提交按钮,所有验证通过方可提交
-
-        $('input[name="submit"]').click(function () {
-            if (ok1 && ok2 && ok3 && ok4) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-    });
-</script>
-
 <div class="content_user">
     <div class="max_width">
         <table cellpadding="0" cellspacing="0" width="100%">
@@ -105,7 +32,7 @@ use yii\jui\DatePicker;
                                                             <td><?= $key+1?></td>
                                                             <td><?= $val['school'] ?></td>
                                                             <td><?= date('Y-m-d',strtotime($val['begin_time']))?> - <?= date('Y-m-d',strtotime($val['end_time']))?></td>
-                                                            <td><?= ($val['educational_background'] == 1) ? '专科' : '本科'?></td>
+                                                            <td><?= $val['educational_background']?></td>
                                                             <td><a href="<?= \yii\helpers\Url::to(['user-center/user-education', 'user_education_id' => $val['id']])?>">编辑</a> | <a href="<?= \yii\helpers\Url::to(['user-center/user-education', 'id' => $val['id']])?>">删除</a></td>
                                                         </tr>
                                                     <?php endforeach;?>
@@ -123,22 +50,8 @@ use yii\jui\DatePicker;
                                             <table cellpadding="0" cellspacing="0" class="fixed_information">
                                                 <tr>
                                                     <td align="right"><em>*</em>时间：</td>
-                                                    <td><?= DatePicker::widget([
-                                                            'attribute' => 'begin_time',
-                                                            'name' => 'UsersEducation[begin_time]',
-                                                            'clientOptions' => [
-                                                                'autoclose' => true,
-                                                                'format' => 'dd-M-yyyy',
-                                                            ],
-                                                        ]);?> 至 <?= DatePicker::widget([
-                                                            'attribute' => 'end_time',
-                                                            'name' => 'UsersEducation[end_time]',
-                                                            'clientOptions' => [
-                                                                'autoclose' => true,
-                                                                'format' => 'dd-M-yyyy',
-                                                            ],
-                                                        ]);?>（不填表示至今）
-                                                    </td>
+                                                    <td><input type="text" id="d221" name="UsersEducation[begin_time]" onFocus="WdatePicker({startDate:'<?= date('Y-m-d', strtotime('-1 year'))?>'})" /> 至 <input type="text" id="d221" name="UsersEducation[end_time]" onFocus="WdatePicker({startDate:'<?= date('Y-m-d', time())?>'})"/>（不填表示至今）</td>
+
                                                 </tr>
                                                 <tr>
                                                     <td align="right"><em>*</em>地点：</td>
@@ -151,8 +64,13 @@ use yii\jui\DatePicker;
                                                 <tr>
                                                     <td align="right"><em>*</em>学历/学位：</td>
                                                     <td><select class="w78" name="UsersEducation[educational_background]">
-                                                            <option value="1">大专</option>
-                                                            <option value="2">本科</option>
+                                                            <option value="博士">博士</option>
+                                                            <option value="硕士">硕士</option>
+                                                            <option value="本科">本科</option>
+                                                            <option value="专科">专科</option>
+                                                            <option value="高中">高中</option>
+                                                            <option value="初中">初中</option>
+                                                            <option value="小学">小学</option>
                                                         </select></td>
                                                 </tr>
                                                 <tr>

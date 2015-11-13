@@ -34,8 +34,8 @@ class News extends \yii\db\ActiveRecord
     const APPROVED = 1; // 已审核
 
     static public $statusList = [
-        self::NEW_ADD => '已审核',
-        self::APPROVED => '进行中'
+        self::APPROVED => '已审核',
+        self::NEW_ADD => '待审核'
     ];
 
     /**
@@ -52,7 +52,7 @@ class News extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'category_id', 'status', 'is_recommend'], 'integer'],
+            [['user_id', 'category_id', 'status', 'is_recommend', 'is_pic'], 'integer'],
             [['title', 'content'], 'required'],
             [['thumb'], 'file', 'extensions' => 'png, jpg, gif'],
             [['title', 'create_user', 'update_user'], 'string', 'max' => 45],
@@ -112,6 +112,13 @@ class News extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getOnePicIndexNewsByCategory($categoryId)
+    {
+        $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "' AND is_recommend = 1 AND is_pic = 1 ORDER BY id desc LIMIT 0,1";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result;
+    }
+
     public static function getAboutNewsByCategory($categoryId)
     {
         $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "'  ORDER BY id desc LIMIT 0,5";
@@ -150,6 +157,13 @@ class News extends \yii\db\ActiveRecord
     public static function getNewsByCategory($categoryId, $count)
     {
         $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "'  ORDER BY id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
+    }
+
+    public static function getRecommendNewsByCategory($categoryId, $count)
+    {
+        $sql = "SELECT * FROM `news` WHERE category_id = '" . $categoryId . "' ORDER BY id desc LIMIT 0," . $count;
         $result = Yii::$app->db->createCommand($sql)->queryAll();
         return $result;
     }

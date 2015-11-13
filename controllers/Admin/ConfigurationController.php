@@ -156,12 +156,12 @@ class ConfigurationController extends Controller
 
     public function actionAllSetting()
     {
-        $model = $this->findModel(1);
+        $model = $this->findModel(2);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            return $this->render('all-setting', [
                 'model' => $model,
             ]);
         }
@@ -169,25 +169,12 @@ class ConfigurationController extends Controller
 
     public function actionWebSetting()
     {
-        $model = $this->findModel(1);
+        $model = $this->findModel(2);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    public function actionLoginSetting()
-    {
-        $model = $this->findModel(1);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
+            return $this->render('web-setting', [
                 'model' => $model,
             ]);
         }

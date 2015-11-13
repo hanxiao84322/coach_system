@@ -12,7 +12,7 @@ use yii\data\Pagination;
 
 class ActivityController extends \yii\web\Controller
 {
-    public $layout = 'main';
+    public $layout = 'user';
 
     public function actionIndex()
     {

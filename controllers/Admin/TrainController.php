@@ -10,6 +10,8 @@ use app\models\TrainSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\filters\AccessControl;
 
 /**
  * TrainController implements the CRUD actions for Train model.
@@ -22,7 +24,7 @@ class TrainController extends Controller
     {
         return [
             'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => AccessControl::className(),
                 'user' => 'admin',
                 'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
@@ -70,6 +72,11 @@ class TrainController extends Controller
      */
     public function actionCreate()
     {
+//        if (Yii::$app->admin->can('create-train')) {
+//            /*你的原有代码*/
+//        }else{
+//            throw new ForbiddenHttpException("You don't have permission to");
+//        }
         $model = new Train();
         if (Yii::$app->request->isPost) {
             $postInfo = Yii::$app->request->post();
@@ -82,7 +89,7 @@ class TrainController extends Controller
             if (strtotime($postInfo['Train']['begin_time']) <= strtotime($postInfo['Train']['sign_up_end_time'])) {
                 throw new ServerErrorHttpException('更新状态失败，原因：注册结束时间不能大于开始时间！');
             }
-            $postInfo['Train']['code'] = date('Ymd', time());
+            $postInfo['Train']['code'] = date('Ymd', strtotime($postInfo['Train']['begin_time']));
             if ($model->load($postInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -90,7 +97,7 @@ class TrainController extends Controller
             }
         } else {
             return $this->render('create', [
-                'model' => $model,
+                'model' => $model
             ]);
         }
     }
@@ -106,14 +113,18 @@ class TrainController extends Controller
         $model = $this->findModel($id);
         $transaction = Yii::$app->db->beginTransaction();
         if (Yii::$app->request->isPost) {
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $postInfo = Yii::$app->request->post();
+            if (!empty($postInfo['Train']['begin_time'])) {
+                $postInfo['Train']['code'] = date('Ymd', strtotime($postInfo['Train']['begin_time']));
+            }
+            if ($model->load($postInfo) && $model->save()) {
                 //课程开始
                 if ($model->status == Train::DOING) {
                     //获取该课程下已录取的学员
                     $trainUsers = TrainUsers::getApprovedTrainUsersByTrainId($model->id);
                     if (!empty($trainUsers)) {
                         //根据课程id，用户id更新用户状态为正在进行
-                        TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::DOING, $model->id);
+//                        TrainUsers::updateTrainUsersStatusByTrainId(TrainUsers::DOING, $model->id);
                         foreach ($trainUsers as $key => $val) {
 
                             //创建考勤信息
@@ -173,5 +184,16 @@ class TrainController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionDel()
+    {
+        $idList = Yii::$app->request->post('selection');
+        if (!empty($idList)) {
+            foreach($idList as $key => $val) {
+                $this->findModel($val)->delete();
+            }
+        }
+        return $this->redirect(['index']);
     }
 }

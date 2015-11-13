@@ -16,25 +16,16 @@ use Yii;
 class ActivityProcess extends \yii\db\ActiveRecord
 {
 
-    const NORMAL = 1;
-    const LATER = 2;
-    const EARLY = 3;
-    const ABSENCES = 4;
-    const LEAVE = 5;
+    const FINISH = 1;
+    const NO_FINISH = 2;
 
     public static $statusList = [
-        self::NORMAL => '正常',
-        self::LATER => '迟到',
-        self::EARLY => '早退',
-        self::ABSENCES => '旷课',
-        self::LEAVE => '请假'
+        self::FINISH => '完成',
+        self::NO_FINISH => '未完成'
     ];
 
     //扣分
-    const LATER_SOURCE = 20;
-    const EARLY_SOURCE = 20;
-    const ABSENCES_SOURCE = 50;
-    const LEAVE_SOURCE = 10;
+    const NO_FINISH_SOURCE = 20;
 
     //评估结果
     const EXCELLENT = 1;
@@ -67,7 +58,7 @@ class ActivityProcess extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'attendance';
+        return 'activity_process';
     }
 
     /**
@@ -103,14 +94,14 @@ class ActivityProcess extends \yii\db\ActiveRecord
 
     static public function getCount($activityId, $userId, $status)
     {
-        $count = Yii::$app->db->createCommand('SELECT count(*) FROM  ' . self::tableName() . '  WHERE activity_id=:activity_id AND user_id=:user_id AND status=:status', [':activity_id' => $activityId, ':user_id' => $userId, 'status' => $status])->queryScalar();
+        $count = Yii::$app->db->createCommand('SELECT count(*) as count FROM  ' . self::tableName() . '  WHERE activity_id=:activity_id AND user_id=:user_id AND status=:status', [':activity_id' => $activityId, ':user_id' => $userId, 'status' => $status])->queryScalar();
         if (empty($count)) {
             $count = 0;
         }
         return $count;
     }
 
-    static public function getAllByactivityIdAndUserId($activityId, $userId)
+    static public function getAllByActivityIdAndUserId($activityId, $userId)
     {
         $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . '  WHERE activity_id=:activity_id AND user_id=:user_id', [':activity_id' => $activityId, ':user_id' => $userId])->queryAll();
         return $result;

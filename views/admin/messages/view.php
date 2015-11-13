@@ -35,6 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'type',
                 'value' =>  \app\models\Messages::$typeList[$model->type]
             ],
+            [
+                'attribute' => 'status',
+                'value' =>  \app\models\Messages::$statusList[$model->status]
+            ],
             'create_time',
             'create_user',
             'update_time',

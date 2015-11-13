@@ -3,78 +3,6 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 
 ?>
-<script>
-    $(function () {
-        var ok1 = false;
-        var ok2 = false;
-        var ok3 = false;
-        var ok4 = false;
-
-        //验证地点
-        $('input[name="UsersPlayers[address]"]').focus(function () {
-            $(this).next().text('填写地点').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok1 = true;
-            } else {
-                $(this).next().text('地点格式错误').removeClass('state1').addClass('state3');
-            }
-
-        });
-
-        //验证学校名称
-        $('input[name="UsersPlayers[team]"]').focus(function () {
-            $(this).next().text('填写球队名称').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 40 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok2 = true;
-            } else {
-                $(this).next().text('球队名称错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证证明人
-        $('input[name="UsersPlayers[witness]"]').focus(function () {
-            $(this).next().text('填写证明人').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok3 = true;
-            } else {
-                $(this).next().text('证明人格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证描述
-        $('input[name="UsersPlayers[description]"]').focus(function () {
-            $(this).next().text('填写描述').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok4 = true;
-            } else {
-                $(this).next().text('描述格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-
-        //提交按钮,所有验证通过方可提交
-
-        $('input[name="submit"]').click(function () {
-            if (ok1 && ok2 && ok3 && ok4) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-    });
-</script>
 
 <div class="content_user">
     <div class="max_width">
@@ -105,7 +33,7 @@ use yii\jui\DatePicker;
                                                             <td><?= $key+1?></td>
                                                             <td><?= $val['team'] ?></td>
                                                             <td><?= date('Y-m-d',strtotime($val['begin_time']))?> - <?= date('Y-m-d',strtotime($val['end_time']))?></td>
-                                                            <td><?= ($val['level'] == 1) ? '高级' : '中级'?></td>
+                                                            <td><?= $val['level']?></td>
                                                             <td><a href="<?= \yii\helpers\Url::to(['user-center/user-players', 'user_players_id' => $val['id']])?>">编辑</a> | <a href="<?= \yii\helpers\Url::to(['user-center/user-players', 'id' => $val['id']])?>">删除</a></td>
                                                         </tr>
                                                     <?php endforeach;?>
@@ -150,8 +78,17 @@ use yii\jui\DatePicker;
                                                 <tr>
                                                     <td align="right"><em>*</em>任职：</td>
                                                     <td><select class="w78" name="UsersPlayers[level]">
-                                                            <option value="1">高级</option>
-                                                            <option value="2">中级</option>
+                                                            <option value="无">无</option>
+                                                            <option value="中锋">中锋</option>
+                                                            <option value="边锋">边锋</option>
+                                                            <option value="前腰">前腰</option>
+                                                            <option value="边前卫">边前卫</option>
+                                                            <option value="中前卫">中前卫</option>
+                                                            <option value="后腰">后腰</option>
+                                                            <option value="边后卫">边后卫</option>
+                                                            <option value="中后卫">中后卫</option>
+                                                            <option value="清道夫">清道夫</option>
+                                                            <option value="门将">门将</option>
                                                         </select></td>
                                                 </tr>
                                                 <tr>

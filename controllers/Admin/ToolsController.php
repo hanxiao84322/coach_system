@@ -2,11 +2,10 @@
 
 namespace app\controllers\Admin;
 
+use app\models\DBManager;
 use Yii;
-use app\models\Activity;
-use app\models\ActivitySearch;
+
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
 /**
  * ActivityController implements the CRUD actions for Activity model.
@@ -44,7 +43,13 @@ class ToolsController extends Controller
 
     public function actionBackup()
     {
-        return $this->render('backup');
+        $result = '';
+        if (Yii::$app->request->isPost) {
+            $db = new DBManager('localhost', 'root', '', 'coach_system', 'utf-8' );
+            $result = $db->backup ('',Yii::$app->basePath . '/web/db_backup/', '200000');   //全部备份用这个
+        }
+
+        return $this->render('backup',['result' => $result]);
     }
 
     public function actionAttachments()

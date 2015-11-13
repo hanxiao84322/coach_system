@@ -36,6 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=> app\models\TrainCategory::getNameById($model->category)
             ],
             [
+                'attribute' => 'train_land_id',
+                'label'=>'培训地',
+                'value'=> app\models\TrainLand::getNameById($model->train_land_id)
+            ],
+            [
                 'attribute' => 'level_id',
                 'label'=>'级别',
                 'value'=> app\models\Level::getOneLevelNameById($model->level_id)
@@ -52,10 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=> app\models\Train::getStatusName($model->status)
             ],
             'district',
-            'address',
-            'bus',
-            'near_site',
-            'content:ntext',
+            'period_num',
             'create_time',
             'create_user',
             'update_time',

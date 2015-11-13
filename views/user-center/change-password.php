@@ -58,7 +58,7 @@ use yii\captcha\Captcha;
                                             <td><b><?= $data['phoneHidden'] ?></b></td>
                                         </tr>
                                         <tr>
-                                            <td align="right" width="120">请填写手机校验码：</td>
+                                            <td align="right" width="120" valign="top" style="line-height:26px;">请填写手机校验码：</td>
                                             <td><input type="text" class="w188" name="check_num"/><input type="button"
                                                                                                          value="获取短信校验码"
                                                                                                          id="get_check_num"
@@ -68,12 +68,7 @@ use yii\captcha\Captcha;
                                             </td>
                                         </tr>
                                         <tr>
-                                            <?= $form->field($model, 'verifyCode', [
-                                                'options' => ['class' => 'form-group form-group-lg'],
-                                            ])->widget(Captcha::className(), [
-                                                'template' => '<td align="right">验证码：</td><td><input type="text" class="w188" name="verifyCode" /><div class="col-lg-3">{image}</div></td>',
-                                                'imageOptions' => ['alt' => '验证码'],
-                                            ]); ?>
+
                                         </tr>
                                         <tr>
                                             <td></td>

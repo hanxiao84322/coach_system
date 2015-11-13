@@ -67,32 +67,15 @@ class MessagesController extends Controller
     {
         $model = new Messages();
         if (Yii::$app->request->isPost) {
-            $transaction = Yii::$app->db->beginTransaction();
             if ($model->load(Yii::$app->request->post())) {
                 $result = $model->save();
                 if ($result) {
-                    $users = Users::getAllId();
-                    if (!empty($users)) {
-                        foreach($users as $key => $val) {
-                            $messagesUsersModel = new MessagesUsers();
-                            $messagesUsersModel->messages_id = $model->primaryKey;
-                            $messagesUsersModel->users_id = $val['id'];
-                            $messagesUsersModel->status = 0;
-                            if (!$messagesUsersModel->save()){
-                                $transaction->rollBack();
-                                throw new ServerErrorHttpException('添加站内消息失败，原因：' . json_encode($messagesUsersModel->errors, JSON_UNESCAPED_UNICODE));
-                            }
-                        }
-                    }
-                    $transaction->commit();
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
-                    $transaction->rollBack();
-                    throw new ServerErrorHttpException('添加站内消息失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
+                    throw new ServerErrorHttpException('添加站内消息模板失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
                 }
             } else {
-                $transaction->rollBack();
-                throw new ServerErrorHttpException('添加站内消息失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
+                throw new ServerErrorHttpException('添加站内消息模板失败，原因：' . json_encode($model->errors, JSON_UNESCAPED_UNICODE));
             }
         } else {
             return $this->render('create', [
@@ -147,5 +130,13 @@ class MessagesController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionGetContent()
+    {
+        $id = Yii::$app->request->get('id');
+        $content = Messages::getContent($id);
+        echo $content;
+
     }
 }

@@ -1,3 +1,75 @@
+<?php
+use yii\widgets\ActiveForm;
+use yii\helpers\Url;
+?>
+<?php $this->beginBody() ?>
+
+<!--top-->
+<div class="top">
+    <div class="time_login">
+        <p class="fl" id="time">
+            <script language=JavaScript>
+                var d, s = "";
+                var x = new Array("星期日", "星期一", "星期二","星期三","星期四", "星期五","星期六");
+                d = new Date();
+                s+=d.getFullYear()+"年"+(d.getMonth() + 1)+"月"+d.getDate()+"日　";
+                s+=x[d.getDay()];
+                document.writeln(s);
+            </script>
+        </p>
+        <p class="fr login_box"><?php if (Yii::$app->user->isGuest) {?><a href="<?= Url::to('/login/login')?>">登录</a><?php } else { ?><a href="<?= Url::to('/user-center/index')?>">会员中心</a> | <a href="<?= Url::to('/user/logout')?>">登出</a><?php }?> | <a href="javascript:;">加入收藏</a></p>
+    </div>
+</div>
+<!--top-->
+<!--logo search-->
+<?php $form = ActiveForm::begin([
+    'id'=>'registerInfo',
+    'enableAjaxValidation' => false,
+    'action' => \yii\helpers\Url::to('/search/index'),
+    'method' => 'get'
+]); ?>
+<div class="logo_search">
+    <h1 class="fl"><a href="javascript:;"><img src="/images/logo.jpg" /></a></h1>
+    <div class="fr search">
+        <span>教练员搜索：</span><input type="text" name="keyword" class="input_set" placeholder="输入教练员姓名、身份证号或证书编号" /><input type="submit" value="搜索"  class="search_btn" /><a href="<?= Url::to('/top-search/index')?>" class="top_search">高级搜索</a>
+    </div>
+</div>
+<?php ActiveForm::end(); ?>
+<!--logo search-->
+<!--nav-->
+<div class="nav_box">
+    <ul class="nav">
+        <li><a href="<?= Url::to('/home/index')?>">首页</a></li>
+        <li><a href="<?= Url::to('/news/index')?>">最新动态</a></li>
+        <li><a href="<?= Url::to('/train/index')?>">培训报名</a></li>
+        <li><a href="<?= Url::to(['/news/train','level_id' => 2])?>">培训风采</a></li>
+        <li><a href="<?= Url::to('/user/register-coach')?>">教练员注册</a></li>
+        <li><a href="<?= Url::to('/user/index')?>" class="hover">教练员专区</a></li>
+        <li><a href="<?= Url::to(['/news/list', 'category_id' => 10])?>" >政策法规</a></li>
+        <li><a href="http://www.bj-fa.org.cn/" target="_blank">足协官网</a></li>
+    </ul>
+</div>
+<!--nav-->
+<script language="javascript">
+    // JavaScript Document
+    $(function(){
+        //tab
+        $(".tabs .title_h43 a:first-child").addClass("hover");
+        $(".tabs").each(function(){
+            $(".tab_son",this).eq(0).addClass("nodis");
+        });
+        $(".tabs .title_h43 a").click(function(){
+            var nnum = $(this).index();
+            $(this).siblings().removeClass("hover");
+            $(this).addClass("hover");
+            var nnum = $(this).index();
+            $(this).parent().siblings(".tab_son").removeClass("nodis");
+            $(this).parent().siblings(".tab_son").eq(nnum).addClass("nodis");
+
+        });
+
+    })
+</script>
 <!--banner-->
 <div class="jly_set">
 </div>
@@ -5,7 +77,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b><a href="javascript:;">学员</a><b>></b><?= $data['name']?>
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>"  style="color:#008000;">首页</a><b>></b><a href="<?= \yii\helpers\Url::to('/user/index')?>">教练员</a><b>></b><?= $data['name']?>
     </div>
 </div>
 <!--注册人数-->
@@ -14,14 +86,18 @@
     <div class="con_set">
         <div class="news_con1">
             <div class="city_title1">
-                学院（<?= $data['name']?>）基本信息
+            <?php if ($userModel['level_id'] > 1) {?>
+                <?= \app\models\Level::getOneLevelNameById($userModel['level_id'])?>教练员（<?= $data['name']?>）基本信息
+            <?php } else {?>
+                <?= \app\models\Level::getOneLevelNameById($userModel['level_id'])?>（<?= $data['name']?>）基本信息
+            <?php }?>
             </div>
             <div class="js_infromation">
-                <p class="fl js_header"><img src="/upload/images/users_info/photo/<?= $data['photo']?>" width="198" height="219" /></p>
+                <p class="fl js_header"><img src="/upload/images/users_info/photo/<?= \app\models\UsersInfo::getPhotoByUserId($data['user_id'])?>" width="198" height="219" /></p>
                 <div class="fl w250">
                     <table cellpadding="0" cellspacing="0" class="table_s361">
                         <tr>
-                            <th colspan="2">学院基本信息</th>
+                            <th colspan="2">学员基本信息</th>
                         </tr>
                         <tr>
                             <td>姓 名</td>
@@ -29,7 +105,7 @@
                         </tr>
                         <tr>
                             <td>性 别</td>
-                            <td><?= \app\models\Teachers::$sexList[$data['sex']]?></td>
+                            <td><?= empty(\app\models\UsersInfo::$sexList[$data['sex']]) ? '' :\app\models\UsersInfo::$sexList[$data['sex']] ?></td>
                         </tr>
                         <tr>
                             <td>年 龄</td>
@@ -53,8 +129,8 @@
                     <h3 class="jsjj_box1">教练员互动信息</h3>
                     <table cellpadding="0" cellspacing="0" class="press_box1">
                         <tr>
-                            <td width="142">注册积分</td>
-                            <td style="border-right:none;">（<b>60</b>）分</td>
+                            <td width="142">注册状态</td>
+                            <td style="border-right:none;"><?= \app\models\UsersLevel::getStatusByUserIdAndLevelId($userModel['id'], $userModel['level_id'])?></td>
                         </tr>
                         <tr>
                             <td width="87">活动积分</td>

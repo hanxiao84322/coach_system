@@ -57,6 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
     <h2>基本信息</h2>
+    <?php if (!empty($modelInfo)) {?>
+
     <?= DetailView::widget([
         'model' => $modelInfo,
         'attributes' => [
@@ -120,6 +122,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ]
         ],
     ]) ?>
+    <?php } else {?>
+        没有基本信息
+    <?php }?>
+
     <h2>教育经历</h2>
     <?php if (!empty($modelEducation)) {?>
         <?php foreach ($modelEducation as $key => $val) :?>
@@ -145,6 +151,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
 
         <?php endforeach;?>
+    <?php } else {?>
+        没有教育经历
     <?php }?>
     <h2>培训经历</h2>
     <?php if (!empty($modelTrain)) {?>
@@ -171,6 +179,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
 
         <?php endforeach;?>
+    <?php } else {?>
+        没有培训经历
     <?php }?>
     <h2>执教经历</h2>
     <?php if (!empty($modelVocational)) {?>
@@ -197,6 +207,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
 
         <?php endforeach;?>
+    <?php } else {?>
+        没有执教经历
     <?php }?>
     <h2>球员经历</h2>
     <?php if (!empty($modelPlayers)) {?>
@@ -223,5 +235,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
 
         <?php endforeach;?>
+    <?php } else {?>
+        没有球员经历
     <?php }?>
 </div>

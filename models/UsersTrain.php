@@ -40,11 +40,11 @@ class UsersTrain extends \yii\db\ActiveRecord
     {
         return [
             [['address', 'begin_time', 'end_time', 'witness_phone', 'witness', 'description'], 'required'],
-            [['user_id', 'level'], 'integer'],
+            [['user_id'], 'integer'],
             [['begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['credentials_number'], 'string', 'max' => 25],
             [['address'], 'string', 'max' => 100],
-            [['witness', 'update_user'], 'string', 'max' => 45],
+            [['witness', 'update_user', 'level'], 'string', 'max' => 45],
             [['witness_phone'], 'string', 'max' => 20],
             [['description'], 'string', 'max' => 255]
         ];
@@ -91,5 +91,22 @@ class UsersTrain extends \yii\db\ActiveRecord
         $sql = "SELECT count(id) as count FROM " . self::tableName() . " WHERE user_id =:user_id";
         $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId])->queryScalar();
         return $result;
+    }
+
+    public function beforeSave($insert = '')
+    {
+        if (parent::beforeSave($this->isNewRecord)) {
+            if ($this->isNewRecord) {
+                $this->create_time = date('Y-m-d H:i:s', time());
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            } else {
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

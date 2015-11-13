@@ -74,6 +74,9 @@ class NewsSearch extends News
             ->andFilterWhere(['like', 'create_user', $this->create_user])
             ->andFilterWhere(['like', 'update_user', $this->update_user]);
 
+        $query->orderBy(' id desc ');
+
+
         return $dataProvider;
     }
 }

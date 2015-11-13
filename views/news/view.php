@@ -5,7 +5,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b><?= \app\models\NewsCategory::getOneCategoryNameById($newInfo['category_id'])?>
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>" style="color:#008000;">首页</a><b>></b><a href="<?= \yii\helpers\Url::to(['/news/list','category_id'=>$newInfo['category_id']])?>"><?= \app\models\NewsCategory::getOneCategoryNameById($newInfo['category_id'])?></a><b>></b><?= $newInfo['title']?>
     </div>
 </div>
 <!--注册人数-->
@@ -21,6 +21,9 @@
                 <?php if (!empty($newInfo['thumb'])) {?>
                 <img src="/upload/images/news/thumb/<?= $newInfo['thumb']?>" />
                 <?php }?>
+                <div class="pic_congset">
+                    <?= $newInfo['content']?>
+                </div>
             </div>
             <div class="xiangguan_set">
                 <h3 class="xgnews">相关新闻</h3>

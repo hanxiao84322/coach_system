@@ -24,7 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'name',
+            [
+                'attribute' => 'name',
+                'format' => 'html',
+                'value' => function($searchModel){
+                    return "<a href='/Admin/news?NewsSearch[category_id]=" . $searchModel->id . "' target='_blank'>" . $searchModel->name . "</a>";
+                }
+            ],
             'create_time',
             'create_user',
             'update_time',

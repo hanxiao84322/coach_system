@@ -54,6 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'lesson',
             'score',
             'address',
+            'bus',
+            'near_site',
             'launch',
             'organizers',
             'join_teams',

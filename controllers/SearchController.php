@@ -2,31 +2,31 @@
 
 namespace app\controllers;
 
+use app\models\Train;
 use app\models\Users;
 use app\models\UsersInfo;
-use app\models\UsersInfoSearch;
 use app\models\UsersLevel;
 use app\models\Level;
 use Yii;
 use yii\data\Pagination;
+use yii\web\ServerErrorHttpException;
 
 class SearchController extends \yii\web\Controller
 {
+    public $layout = 'user';
+
     public function actionIndex()
     {
-        $keyword = Yii::$app->request->get('keyword');
-        $levelId = Yii::$app->request->get('level_id');
-        $district = Yii::$app->request->get('district');
-        $sex = Yii::$app->request->get('sex');
+        $keyword = Yii::$app->request->get('keyword', '');
+        $levelId = Yii::$app->request->get('level_id', '');
+        $district = Yii::$app->request->get('district', '');
+        $sex = Yii::$app->request->get('sex', '');
 
+        if (empty($keyword) && empty($levelId) && empty($district) && empty($sex)) {
+            throw new ServerErrorHttpException('请输入关键字！');
+        }
         $levelList = Level::getAll();
-        $districtList = [
-            '朝阳区' => '朝阳区',
-            '东城区' => '东城区',
-            '海淀区' => '海淀区',
-            '西城区' => '西城区',
-            '昌平区' => '昌平区',
-        ];
+        $districtList = Train::$districtList;
         $userName = '';
         $certificateNumber = '';
         $credentialsNumber = '';
@@ -41,18 +41,20 @@ class SearchController extends \yii\web\Controller
 
         $order = Yii::$app->request->get('order');
 
-        $query = UsersInfoSearch::find()->from(UsersInfo::tableName() . ' ui')->select("ui.*,ul.level_id as level_id")->leftJoin(UsersLevel::tableName() . ' ul', ' ui.user_id = ul.user_id')->leftJoin(Users::tableName() . ' u', ' u.id = ui.user_id');
+        $query = Users::find()->from(Users::tableName() . ' u')->select("u.*,ui.account_location,ui.sex")->leftJoin(UsersLevel::tableName() . ' ul', ' u.id = ul.user_id')->leftJoin(UsersInfo::tableName() . ' ui', ' u.id = ui.user_id');
 
         if (!empty($order)) {
             $query->orderBy($order);
         }
 
+        $query->andFilterWhere(['!=', 'u.level_id', '1']);
+
         if (!empty($levelId)) {
-            $query->andFilterWhere(['ul.level_id' => $levelId]);
+            $query->andFilterWhere(['u.level_id' => $levelId]);
         }
 
         if (!empty($district)) {
-            $query->andFilterWhere(['district' => $district]);
+            $query->andFilterWhere(['account_location' => $district]);
         }
         if (!empty($sex)) {
             $query->andFilterWhere(['sex' => $sex]);
@@ -74,13 +76,27 @@ class SearchController extends \yii\web\Controller
         $models = $query->offset($pages->offset)
             ->limit($pages->limit)
             ->all();
+        $result = [];
+        if (!empty($models)) {
+            foreach ($models as $key => $val) {
+                $result[$key]['name'] = $val['username'];
+                $result[$key]['photo'] = UsersInfo::getPhotoByUserId($val['id']);
+                $result[$key]['birthday'] = UsersInfo::getBirthdayByUserId($val['id']);
+                $result[$key]['level_id'] = $val['level_id'];
+                $result[$key]['user_id'] = $val['id'];
+            }
+        }
 
         $data = [
-            'models' => $models,
+            'models' => $result,
             'pages' => $pages,
             'count' =>  $query->count(),
             'levelList' => $levelList,
-            'districtList' => $districtList
+            'districtList' => $districtList,
+            'keyword' => empty($keyword)? '' : $keyword,
+            'levelId' => empty($levelId) ? '' : $levelId,
+            'district' => empty($district) ? '' : $district,
+            'sex' => empty($sex)  ? '' : $sex,
         ];
 
         return $this->render('index', [

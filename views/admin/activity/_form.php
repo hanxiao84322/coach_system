@@ -62,6 +62,9 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'join_teams')->textInput(['style'=>'width:300px']) ?>
 
+    <?= $form->field($model, 'bus')->textInput(['style'=>'width:500px']) ?>
+    <?= $form->field($model, 'near_site')->textInput(['style'=>'width:500px']) ?>
+
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '创建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

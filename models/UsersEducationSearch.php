@@ -18,8 +18,8 @@ class UsersEducationSearch extends UsersEducation
     public function rules()
     {
         return [
-            [['id', 'user_id', 'educational_background'], 'integer'],
-            [['school', 'begin_time', 'end_time', 'address', 'witness', 'witness_phone', 'description', 'create_time', 'update_time', 'update_user'], 'safe'],
+            [['id', 'user_id'], 'integer'],
+            [['school', 'begin_time', 'end_time', 'address', 'witness', 'witness_phone', 'description', 'create_time', 'update_time', 'update_user', 'educational_background'], 'safe'],
         ];
     }
 

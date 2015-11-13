@@ -40,9 +40,9 @@ class UsersEducation extends \yii\db\ActiveRecord
     {
         return [
             [['school', 'begin_time', 'end_time', 'witness_phone', 'witness', 'description'], 'required'],
-            [['user_id', 'educational_background'], 'integer'],
+            [['user_id'], 'integer'],
             [['begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
-            [['school', 'witness', 'update_user'], 'string', 'max' => 45],
+            [['school', 'witness', 'update_user', 'educational_background'], 'string', 'max' => 45],
             [['address'], 'string', 'max' => 100],
             [['witness_phone'], 'string', 'max' => 20],
             [['description'], 'string', 'max' => 255]

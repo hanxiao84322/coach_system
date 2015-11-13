@@ -73,14 +73,19 @@ class TeachersController extends Controller
                 throw new ServerErrorHttpException('已经存在的讲师姓名！');
             }
             $model->photo = UploadedFile::getInstance($model, 'photo');
-            $fileName = time() . '.' . $model->photo->extension;
-            $model->photo->saveAs('upload/images/teachers/photo/' . $fileName, true);
+            if (!empty($model->photo)) {
+                $fileName = time() . '.' . $model->photo->extension;
+                $model->photo->saveAs('upload/images/teachers/photo/' . $fileName, true);
 
-            if ($model->hasErrors('file')) {
-                throw new ServerErrorHttpException($model->getErrors('file'));
+                if ($model->hasErrors('file')) {
+                    throw new ServerErrorHttpException($model->getErrors('file'));
+                } else {
+                    $teachersInfo['Teachers']['photo'] = $fileName;
+                }
             } else {
-                $teachersInfo['Teachers']['photo'] = $fileName;
+                throw new ServerErrorHttpException('请上传头像！');
             }
+
             if ($model->load($teachersInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
@@ -169,5 +174,16 @@ class TeachersController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionDel()
+    {
+        $idList = Yii::$app->request->post('selection');
+        if (!empty($idList)) {
+            foreach($idList as $key => $val) {
+                $this->findModel($val)->delete();
+            }
+        }
+        return $this->redirect(['index']);
     }
 }

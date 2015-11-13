@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'train_id',
                 'value'=> function ($searchModel) {
-                    return app\models\Train::getOneTrainNameById($searchModel->id);
+                    return app\models\Train::getOneTrainNameById($searchModel->train_id);
                 }
             ],
             [

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TrainUsersSearch */
@@ -15,15 +16,11 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'train_id')->dropDownList(ArrayHelper::merge([''=>'选择课程'],ArrayHelper::map(\app\models\Train::getAll(),'id', 'name')),['style'=>'width:300px']) ?>
 
-    <?= $form->field($model, 'train_id') ?>
+    <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::merge([''=>'选择用户'],ArrayHelper::map(\app\models\Users::getAll(),'id', 'username')),['style'=>'width:200px']) ?>
 
-    <?= $form->field($model, 'user_id') ?>
-
-    <?= $form->field($model, 'status') ?>
-
-    <?= $form->field($model, 'practice_score') ?>
+    <?= $form->field($model, 'status')->dropDownList(ArrayHelper::merge([''=>'选择状态'],\app\models\TrainUsers::$statusList),['style'=>'width:100px']) ?>
 
     <?php // echo $form->field($model, 'theory_score') ?>
 
@@ -52,8 +49,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'update_user') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

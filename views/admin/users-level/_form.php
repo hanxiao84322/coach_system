@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use \app\models\UsersLevel;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\UsersLevel */
@@ -25,7 +26,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group field-trainusers-username">
         <label class="control-label" for="trainusers-username">晋升级别:</label>
-        <?= \app\models\Level::getOneLevelNameById($model->level_id)?></a>
+        <?= \app\models\Level::getOneLevelNameById($model->level_id+1)?></a>
         <div class="help-block"></div>
     </div>
 
@@ -53,8 +54,8 @@ use yii\widgets\ActiveForm;
         <div class="help-block"></div>
     </div>
 
-    <?php if ($model->status == \app\models\UsersLevel::PAY) {?>
-    <?= $form->field($model, 'status')->dropDownList([\app\models\UsersLevel::PAY=>\app\models\UsersLevel::$statusList[\app\models\UsersLevel::PAY],\app\models\UsersLevel::SEND_CARD=>\app\models\UsersLevel::$statusList[\app\models\UsersLevel::SEND_CARD]],['style'=>'width:100px']) ?>
+    <?php if (($model->status == UsersLevel::PAY) || ($model->status == UsersLevel::REG)) {?>
+    <?= $form->field($model, 'status')->dropDownList([UsersLevel::REG=>UsersLevel::$statusList[UsersLevel::REG],UsersLevel::PAY=>UsersLevel::$statusList[UsersLevel::PAY],UsersLevel::SEND_CARD=>UsersLevel::$statusList[UsersLevel::SEND_CARD]],['style'=>'width:100px']) ?>
     <?php } else {?>
         <div class="form-group field-trainusers-username">
             <label class="control-label" for="trainusers-username">状态:</label>
@@ -64,23 +65,26 @@ use yii\widgets\ActiveForm;
     <?php }?>
     <div class="form-group field-trainusers-username">
         <label class="control-label" for="trainusers-username">形象照:</label>
-        <?php if (!empty($model->photo)) {?>
-        <img src="/upload/images/users_level/photo/<?= $model->photo?>" width="157" height="210">
+        <?php if (!empty($photo)) {?>
+            <img src='/upload/images/users_info/photo/<?= $photo?>' width=157 height='210'>
         <?php } else {?>
         无
         <?php }?>
         <div class="help-block"></div>
     </div>
-    <?= $form->field($model, 'credentials_photo')->fileInput(['style'=>'width:500px']) ?>
-
-    <?php if (!empty($model->credentials_photo)) {?>
-        <img src="/upload/images/users_level/credentials_photo/<?= $model->credentials_photo?>" width="600" height="300">
+    <?php if (($model->status == UsersLevel::LEVEL_UP) || ($model->status == UsersLevel::SEND_CARD)) {?>
+        <div class="form-group field-trainusers-username">
+            <label class="control-label" for="trainusers-username">到期时间:</label>
+            <?= date('Y-m-d', strtotime($model->end_date))?></a>
+            <div class="help-block"></div>
+        </div>
     <?php }?>
 
-
+    <?php if (($model->status != UsersLevel::SEND_CARD) && ($model->status != UsersLevel::LEVEL_UP)) {?>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '新建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
+    <?php }?>
 
     <?php ActiveForm::end(); ?>
 

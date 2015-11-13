@@ -18,8 +18,8 @@ class UsersTrainSearch extends UsersTrain
     public function rules()
     {
         return [
-            [['id', 'user_id', 'level'], 'integer'],
-            [['credentials_number', 'begin_time', 'end_time', 'address', 'witness', 'witness_phone', 'description', 'create_time', 'update_time', 'update_user'], 'safe'],
+            [['id', 'user_id'], 'integer'],
+            [['credentials_number', 'begin_time', 'end_time', 'address', 'witness', 'witness_phone', 'description', 'create_time', 'update_time', 'update_user', 'level'], 'safe'],
         ];
     }
 

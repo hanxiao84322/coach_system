@@ -20,11 +20,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'email')->textInput(['style'=>'width:300px']) ?>
 
-    <?= $form->field($model, 'lesson')->textInput(['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'lesson')->textInput(['style'=>'width:100px','value' => '0']) ?>
 
-    <?= $form->field($model, 'credit')->textInput(['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'credit')->textInput(['style'=>'width:100px','value' => '0']) ?>
 
-    <?= $form->field($model, 'score')->textInput(['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'score')->textInput(['style'=>'width:100px','value' => '0']) ?>
 
 
     <div class="form-group">

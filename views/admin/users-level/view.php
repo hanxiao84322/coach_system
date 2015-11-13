@@ -38,21 +38,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=> \app\models\Users::getOneUserNameById($model->user_id)
             ],
             [
-                'attribute' => 'level_id',
-                'value'=> \app\models\Level::getOneLevelNameById($model->level_id)
-            ],
-            [
                 'attribute' => 'status',
                 'value'=> \app\models\UsersLevel::getStatusName($model->status)
             ],
             'certificate_number',
+            [
+                'attribute' => 'end_date',
+                'value'=> date('Y-m-d', strtotime($model->end_date))
+            ],
             'district',
             'receive_address',
             'postcode',
             [
                 'attribute' => 'photo',
                 'format' => 'html',
-                'value'=> "<img src='/upload/images/users_level/photo/".  $model->photo . "' width=157 height='210'>"
+                'value'=> "<img src='/upload/images/users_info/photo/".  \app\models\UsersInfo::getPhotoByUserId($model->user_id) . "' width=157 height='210'>"
             ],
             [
                 'attribute' => 'credentials_photo',
@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'level_id',
-                'value'=> \app\models\Level::getOneLevelNameById($model->level_id)
+                'value'=> \app\models\Level::getOneLevelNameById($model->level_id+1)
             ],
             'create_time',
             'update_time',

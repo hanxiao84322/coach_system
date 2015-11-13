@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Level */
 
-$this->title = '创建级别';
-$this->params['breadcrumbs'][] = ['label' => '级别管理', 'url' => ['index']];
+$this->title = '创建学员等级';
+$this->params['breadcrumbs'][] = ['label' => '学员等级设置', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="level-create">

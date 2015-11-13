@@ -41,8 +41,8 @@ class Level extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['score', 'login_duration','order','lesson'], 'integer'],
-            [[ 'score', 'login_duration'], 'default', 'value' => 0],
+            [['score', 'login_duration','order','lesson','credit'], 'integer'],
+            [[ 'score', 'login_duration','credit'], 'default', 'value' => 0],
             ['register_fee', 'default', 'value' => 0.00],
 
             [['register_fee'], 'number'],
@@ -63,9 +63,9 @@ class Level extends \yii\db\ActiveRecord
             'name' => '名称',
             'code' => '编码',
             'order' => '类别排序（越大级别越高，系统自动生成）',
-            'score' => '升级所需积分',
+            'score' => '升级所需一般活动积分',
             'lesson' => '升级所需课时',
-            'credit' => '升级所需评分',
+            'credit' => '升级所需公益活动积分',
             'login_duration' => '升级所需注册时长单位月',
             'register_fee' => '注册费单位元',
             'content' => '录取条件',
@@ -119,6 +119,21 @@ class Level extends \yii\db\ActiveRecord
         return $rows;
     }
 
+    //获取级别
+    public static function getAllByEnd()
+    {
+        $rows = (new \yii\db\Query())
+            ->select(['id', 'name'])
+            ->from(self::tableName())
+            ->all();
+        $first[''] = [
+            'id' => '',
+            'name'=>'选择级别'
+        ];
+        array_unshift($rows,$first);
+        return $rows;
+    }
+
 
     public static function getOneLevelNameById($levelId)
     {
@@ -157,6 +172,11 @@ class Level extends \yii\db\ActiveRecord
         return $result;
     }
 
+    public static function getIdByName($name)
+    {
+        $result = Yii::$app->db->createCommand('SELECT id FROM  ' . self::tableName() . ' WHERE name=:name', [':name' => $name])->queryScalar();
+        return $result;
+    }
 
 
     public function beforeSave($insert = '')

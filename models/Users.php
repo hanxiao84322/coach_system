@@ -69,8 +69,7 @@ class Users extends \yii\db\ActiveRecord
             [['password', 'update_user'], 'string', 'max' => 45],
             [['mobile_phone'], 'string', 'max' => 20],
             [['email', 'authKey', 'accessToken'], 'string', 'max' => 100],
-            ['verifyCode', 'required'],
-            ['verifyCode', 'captcha'],
+//            ['verifyCode', 'captcha'],
         ];
     }
 
@@ -178,7 +177,7 @@ class Users extends \yii\db\ActiveRecord
 
     public static function getAllCount()
     {
-        $sql = "SELECT count(id) as count FROM `users`";
+        $sql = "SELECT count(id) as count FROM `users` where level_id != 1";
         $result = Yii::$app->db->createCommand($sql)->queryScalar();
         return $result;
     }
@@ -218,6 +217,44 @@ class Users extends \yii\db\ActiveRecord
 
         $loginDuration = (time() - strtotime($createTime))/(3600*24*30);
         return floor($loginDuration);
+
+    }
+
+    public static function isExist($value = '',$type = 'phone')
+    {
+        if ($type == 'phone') {
+            $sql = "SELECT * FROM `users` WHERE mobile_phone='" . $value . "'";
+            $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        } elseif ($type == 'email') {
+            $sql = "SELECT * FROM `users` WHERE email='" . $value . "'";
+            $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        } elseif ($type == 'username') {
+            $sql = "SELECT * FROM `users` WHERE username='" . $value . "'";
+            $result = Yii::$app->db->createCommand($sql)->queryScalar();
+        }
+        return !empty($result);
+    }
+
+    public static function getAll()
+    {
+        $sql = "SELECT * FROM " . self::tableName() . " WHERE status = 1 order by id asc ";
+        $data = Yii::$app->db->createCommand($sql)->queryAll();
+        return $data;
+    }
+
+    public static function getIdByName($name)
+    {
+        $sql = "SELECT id FROM " . self::tableName() . " WHERE username=:name ";
+        $id = Yii::$app->db->createCommand($sql, [':name' => $name])->queryScalar();
+        return $id;
+
+    }
+
+    public static function getLevelIdById($user_id)
+    {
+        $sql = "SELECT level_id FROM " . self::tableName() . " WHERE id=:id ";
+        $id = Yii::$app->db->createCommand($sql, [':id' => $user_id])->queryScalar();
+        return $id;
 
     }
 

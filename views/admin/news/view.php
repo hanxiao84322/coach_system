@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\News */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => '新闻管理', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '信息发布', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="news-view">
@@ -15,8 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('更新新闻', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('删除新闻', ['delete', 'id' => $model->id], [
+        <?= Html::a('继续添加', ['create', 'category_id' => $model->category_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('更新文章', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('删除文章', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => '确认删除吗?',

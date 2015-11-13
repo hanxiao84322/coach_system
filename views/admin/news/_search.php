@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\NewsSearch */
@@ -15,15 +16,9 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'title')->textInput(['style'=>'width:200px']) ?>
 
-    <?= $form->field($model, 'title') ?>
-
-    <?= $form->field($model, 'content') ?>
-
-    <?= $form->field($model, 'user_id') ?>
-
-    <?= $form->field($model, 'category_id') ?>
+    <?= $form->field($model, 'category_id')->dropDownList(ArrayHelper::merge(['' => '请选择类别'],ArrayHelper::map(\app\models\NewsCategory::getAll(),'id', 'name')),['style'=>'width:400px']) ?>
 
     <?php // echo $form->field($model, 'status') ?>
 
@@ -46,8 +41,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'update_user') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

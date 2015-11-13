@@ -76,7 +76,20 @@ class TeachersLevel extends \yii\db\ActiveRecord
         $sql = "SELECT name FROM " . self::tableName() . " WHERE id=" . $id;
         return Yii::$app->db->createCommand($sql)->queryScalar();
     }
-
+    //获取级别
+    public static function getAllByEnd()
+    {
+        $rows = (new \yii\db\Query())
+            ->select(['id', 'name'])
+            ->from(self::tableName())
+            ->all();
+        $first[''] = [
+            'id' => '',
+            'name'=>'选择级别'
+        ];
+        array_unshift($rows,$first);
+        return $rows;
+    }
     public function beforeSave($insert = '')
     {
         if (parent::beforeSave($this->isNewRecord)) {

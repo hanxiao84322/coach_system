@@ -78,7 +78,7 @@ class Activity extends \yii\db\ActiveRecord
         return [
             [['category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson', 'score'], 'integer'],
             [['sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
-            [['content'], 'string'],
+            [['content','bus','near_site'], 'string'],
             [['name', 'create_user', 'update_user'], 'string', 'max' => 45],
             [['address', 'launch', 'organizers', 'join_teams'], 'string', 'max' => 50]
         ];
@@ -108,6 +108,8 @@ class Activity extends \yii\db\ActiveRecord
             'organizers' => '主办方',
             'join_teams' => '参训着',
             'content' => '内容',
+            'bus' => '公交路线',
+            'near_site' => '周边站点',
             'create_time' => '创建时间',
             'create_user' => '创建人',
             'update_time' => '更新时间',
@@ -131,6 +133,15 @@ class Activity extends \yii\db\ActiveRecord
         return $this->hasMany(ActivityUsers::className(), ['activity_id' => 'id']);
     }
 
+    public static function getAll()
+    {
+        $rows = (new \yii\db\Query())
+            ->select(['id', 'name'])
+            ->from(self::tableName())
+            ->where(['status'=>'1'])
+            ->all();
+        return $rows;
+    }
 
     public static function getCategoryName($category)
     {
@@ -146,6 +157,14 @@ class Activity extends \yii\db\ActiveRecord
     {
         return isset(self::$statusList[$status]) ? self::$statusList[$status] : $status;
     }
+
+    public static  function getOneActivityNameById($activityId)
+    {
+        $sql = "SELECT name FROM `activity` WHERE id='" . $activityId . "'";
+        $result = Yii::$app->db->createCommand($sql)->queryOne();
+        return $result['name'];
+    }
+
 
     public function beforeSave($insert = '')
     {

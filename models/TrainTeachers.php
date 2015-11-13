@@ -82,6 +82,7 @@ class TrainTeachers extends \yii\db\ActiveRecord
             if ($this->isNewRecord) {
                 $this->title = 1;
                 $this->create_time = date('Y-m-d H:i:s', time());
+                $this->create_user = 'admin';
                 $this->update_time = date('Y-m-d H:i:s', time());
                 $this->update_user = 'admin';
             } else {

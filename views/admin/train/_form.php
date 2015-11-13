@@ -20,19 +20,37 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'name')->textInput(['style'=>'width:300px']) ?>
 
+    <?= $form->field($model, 'period_num')->dropDownList(\app\models\Train::getPeriodNum(),['style'=>'width:100px']) ?>
+
     <?= $form->field($model, 'category')->dropDownList(\app\models\TrainCategory::getAll(),['style'=>'width:300px']) ?>
+    <?php if (!$model->isNewRecord) {?>
+    <div class="form-group field-train-category required">
+        <label for="train-category" class="control-label">培训班次</label>
+        <input type="text" style="width:300px" value="<?= $model['code']?>" name="Train[name]" disabled class="form-control" id="train-name">
+        <div class="help-block"></div>
+    </div>
+    <?php }?>
+    <?= $form->field($model, 'train_land_id')->dropDownList(\app\models\TrainLand::getAll(),['style'=>'width:300px']) ?>
 
     <?= $form->field($model, 'level_id')->dropDownList(ArrayHelper::map(\app\models\Level::getAll(),'id', 'name'),['style'=>'width:100px']) ?>
 
-    <?= $form->field($model, 'recruit_count')->textInput(['style'=>'width:100px']) ?>
+    <?= $form->field($model, 'recruit_count')->dropDownList(\app\models\Train::getRecruitCount(),['style'=>'width:100px']) ?>
+
     <?php if ($model->isNewRecord) {?>
     <?= $form->field($model, 'sign_up_begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
 
     <?= $form->field($model, 'sign_up_end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
     <?php } else {?>
-    <?= $form->field($model, 'sign_up_begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+        <?php if ($model->status == \app\models\Train::NEW_ADD) {?>
+            <?= $form->field($model, 'sign_up_begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
 
-    <?= $form->field($model, 'sign_up_end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+            <?= $form->field($model, 'sign_up_end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
+        <?php } else {?>
+            <?= $form->field($model, 'sign_up_begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+
+            <?= $form->field($model, 'sign_up_end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+        <?php }?>
+
     <?php }?>
     <?= $form->field($model, 'district')->dropDownList(\app\models\Train::$districtList,['style'=>'width:100px']) ?>
 
@@ -41,9 +59,16 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
     <?php } else {?>
-    <?= $form->field($model, 'begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+        <?php if ($model->status == \app\models\Train::NEW_ADD) {?>
+            <?= $form->field($model, 'begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
 
-    <?= $form->field($model, 'end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+            <?= $form->field($model, 'end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px']]) ?>
+        <?php } else {?>
+            <?= $form->field($model, 'begin_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+
+            <?= $form->field($model, 'end_time')->widget(DatePicker::className(), ['dateFormat' => 'yyyy-MM-dd', 'options' => ['style' => '500px','disabled' => 'disabled']]) ?>
+        <?php }?>
+
     <?php }?>
     <?php if  ($model->status == \app\models\Train::DOING) {?>
     <?= $form->field($model, 'status')->dropDownList([\app\models\Train::DOING => \app\models\Train::$statusList[\app\models\Train::DOING],\app\models\Train::END => \app\models\Train::$statusList[\app\models\Train::END]],['style'=>'width:200px']) ?>
@@ -54,13 +79,6 @@ use yii\helpers\ArrayHelper;
     <?php }?>
 
     <?= $form->field($model, 'lesson')->textInput(['style'=>'width:100px']) ?>
-
-    <?= $form->field($model, 'address')->textInput(['style'=>'width:500px']) ?>
-    <?= $form->field($model, 'bus')->textInput(['style'=>'width:500px']) ?>
-    <?= $form->field($model, 'near_site')->textInput(['style'=>'width:500px']) ?>
-
-    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
-
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '创建' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

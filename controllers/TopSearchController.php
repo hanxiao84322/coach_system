@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Level;
+use app\models\Train;
 use app\models\UsersInfo;
 use app\models\UsersInfoSearch;
 use app\models\UsersLevel;
@@ -17,13 +18,7 @@ class TopSearchController extends \yii\web\Controller
     public function actionIndex()
     {
         $levelList = Level::getAll();
-        $districtList = [
-            '朝阳区' => '朝阳区',
-            '东城区' => '东城区',
-            '海淀区' => '海淀区',
-            '西城区' => '西城区',
-            '昌平区' => '昌平区',
-        ];
+        $districtList = Train::$districtList;
         $data = [
             'levelList' => $levelList,
             'districtList' => $districtList

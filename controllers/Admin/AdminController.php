@@ -71,9 +71,13 @@ class AdminController extends Controller
     public function actionCreate()
     {
         $model = new Admin();
+        if (Yii::$app->request->isPost) {
+            $adminInfo = Yii::$app->request->post();
+            $adminInfo['Admin']['group_id'] = implode(',',$adminInfo['Admin']['group_id']);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($adminInfo) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -90,9 +94,14 @@ class AdminController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (Yii::$app->request->isPost) {
+            $adminInfo = Yii::$app->request->post();
+            if (!empty($adminInfo['Admin']['group_id'])) {
+                $adminInfo['Admin']['group_id'] = implode(',', $adminInfo['Admin']['group_id']);
+            }
+            if ($model->load($adminInfo) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,

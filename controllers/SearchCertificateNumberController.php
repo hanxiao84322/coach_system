@@ -30,4 +30,14 @@ class SearchCertificateNumberController extends \yii\web\Controller
             return $this->render('index');
         }
     }
+
+    public function actionView()
+    {
+        $result = UsersLevel::findOne(['user_id' => Yii::$app->user->id, 'level_id' => Yii::$app->user->identity->level_id]);
+
+        return $this->render('view', [
+            'data' => $result
+        ]);
+    }
+
 }

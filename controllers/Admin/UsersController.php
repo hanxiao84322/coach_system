@@ -12,7 +12,8 @@ use app\models\Users;
 use app\models\UsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\ServerErrorHttpException;
+;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -89,7 +90,15 @@ class UsersController extends Controller
 
             $postInfo = Yii::$app->request->post();
             if (!empty($postInfo)) {
+                $postInfo['Users']['password'] = md5('111111');
                 if ($model->load($postInfo) && $model->save()) {
+                    $userInfo = [
+                        'name' => $model->username,
+                        'name' => $model->name,
+                        'name' => $model->name,
+
+                    ];
+                    UsersInfo::addInfo();
                     Yii::$app->getSession()->setFlash('success', '添加成功！');
                     return $this->redirect(['view', 'id' => $model->id]);
                 } else {
@@ -164,5 +173,25 @@ class UsersController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionDel()
+    {
+        $idList = Yii::$app->request->post('selection');
+        if (!empty($idList)) {
+            foreach($idList as $key => $val) {
+                $this->findModel($val)->delete();
+            }
+        }
+        return $this->redirect(['index']);
+    }
+
+    public function actionChangePassword()
+    {
+        $userId = Yii::$app->request->get('user_id');
+
+        Users::updateAll(['password' => md5(111111)],['id' => $userId]);
+        header("Content-type:text/html;charset=utf-8");
+        echo "<script language='javascript'>alert('该用户密码已经成功修改为111111');location.href='/Admin/users/index';</script>";
     }
 }

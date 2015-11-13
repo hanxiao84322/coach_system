@@ -45,6 +45,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'value'=> app\models\Users::getStatusName($model->status)
             ],
+            'phone',
+            'email',
             'lesson',
             [
                 'attribute' => 'photo',

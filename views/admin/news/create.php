@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\News */
 
-$this->title = '创建新闻';
-$this->params['breadcrumbs'][] = ['label' => '新闻', 'url' => ['index']];
+$this->title = '添加文章';
+$this->params['breadcrumbs'][] = ['label' => '文章列表操作', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="news-create">

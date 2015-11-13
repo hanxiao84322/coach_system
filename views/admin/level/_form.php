@@ -20,6 +20,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'score')->textInput(['style'=>'width:100px']) ?>
 
+    <?= $form->field($model, 'credit')->textInput(['style'=>'width:100px']) ?>
+
     <?= $form->field($model, 'login_duration')->textInput(['style'=>'width:100px']) ?>
 
     <?= $form->field($model, 'register_fee')->textInput(['style'=>'width:100px']) ?>

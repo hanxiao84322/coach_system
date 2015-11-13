@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\UsersSearch */
@@ -15,21 +17,15 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'username')->textInput(['style'=>'width:200px']) ?>
 
-    <?= $form->field($model, 'username') ?>
-
-    <?= $form->field($model, 'password') ?>
-
-    <?= $form->field($model, 'level_id') ?>
-
-    <?= $form->field($model, 'level_order') ?>
+    <?= $form->field($model, 'level_id')->dropDownList(ArrayHelper::map(\app\models\Level::getAllByEnd(),'id', 'name'),['style'=>'width:100px']) ?>
 
     <?php // echo $form->field($model, 'email_auth') ?>
 
     <?php // echo $form->field($model, 'phone_auth') ?>
 
-    <?php // echo $form->field($model, 'status') ?>
+    <?= $form->field($model, 'status')->dropDownList(ArrayHelper::merge([''=>'选择状态'],\app\models\Users::$statusList),['style'=>'width:100px']) ?>
 
     <?php // echo $form->field($model, 'mobile_phone') ?>
 
@@ -52,8 +48,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'update_user') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('搜索', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('重置', ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

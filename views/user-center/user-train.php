@@ -3,78 +3,6 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 
 ?>
-<script>
-    $(function () {
-        var ok1 = false;
-        var ok2 = false;
-        var ok3 = false;
-        var ok4 = false;
-
-        //验证地点
-        $('input[name="UsersTrain[address]"]').focus(function () {
-            $(this).next().text('填写地点').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok1 = true;
-            } else {
-                $(this).next().text('地点格式错误').removeClass('state1').addClass('state3');
-            }
-
-        });
-
-        //验证学校名称
-        $('input[name="UsersTrain[credentials_number]"]').focus(function () {
-            $(this).next().text('输入证书编号').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 10 && $(this).val().length <= 40 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok2 = true;
-            } else {
-                $(this).next().text('证书格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证证明人
-        $('input[name="UsersTrain[witness]"]').focus(function () {
-            $(this).next().text('填写证明人').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok3 = true;
-            } else {
-                $(this).next().text('证明人格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证描述
-        $('input[name="UsersTrain[description]"]').focus(function () {
-            $(this).next().text('填写描述').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok4 = true;
-            } else {
-                $(this).next().text('描述格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-
-        //提交按钮,所有验证通过方可提交
-
-        $('input[name="submit"]').click(function () {
-            if (ok1 && ok2 && ok3 && ok4) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-    });
-</script>
 
 <div class="content_user">
     <div class="max_width">
@@ -105,7 +33,7 @@ use yii\jui\DatePicker;
                                                             <td><?= $key+1?></td>
                                                             <td><?= $val['credentials_number'] ?></td>
                                                             <td><?= date('Y-m-d',strtotime($val['begin_time']))?> - <?= date('Y-m-d',strtotime($val['end_time']))?></td>
-                                                            <td><?= ($val['level'] == 1) ? '高级' : '中级'?></td>
+                                                            <td><?= $val['level']?></td>
                                                             <td><a href="<?= \yii\helpers\Url::to(['user-center/user-train', 'user_train_id' => $val['id']])?>">编辑</a> | <a href="<?= \yii\helpers\Url::to(['user-center/user-train', 'id' => $val['id']])?>">删除</a></td>
                                                         </tr>
                                                     <?php endforeach;?>
@@ -150,8 +78,13 @@ use yii\jui\DatePicker;
                                                 <tr>
                                                     <td align="right"><em>*</em>等级：</td>
                                                     <td><select class="w78" name="UsersTrain[level]">
-                                                            <option value="1">高级</option>
-                                                            <option value="2">中级</option>
+                                                            <option value="无">无</option>
+                                                            <option value="市级">市级</option>
+                                                            <option value="D级">D级</option>
+                                                            <option value="C级">C级</option>
+                                                            <option value="B级">B级</option>
+                                                            <option value="A级">A级</option>
+                                                            <option value="职业级">职业级</option>
                                                         </select></td>
                                                 </tr>
                                                 <tr>

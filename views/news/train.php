@@ -5,7 +5,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b>培训风采
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>" style="color:#008000;">首页</a><b>></b>培训风采
     </div>
 </div>
 <!--注册人数-->
@@ -82,7 +82,8 @@
 <!--讲师团队-->
 <!--培训风采-->
 <div class="tabs martop">
-<h3 class="title_h42"><a href="<?= \yii\helpers\Url::to(['/news/train','level_id' => '2'])?>" <?php if ($data['levelId'] == 2) {?>class="hover"<?php }?>>北京市市级教练员培训</a><a href="<?= \yii\helpers\Url::to(['/news/train','level_id' => '3'])?>" <?php if ($data['levelId'] == 3) {?>class="hover"<?php }?>>D级教练员培训</a><a href="<?= \yii\helpers\Url::to(['/news/train','level_id' => '4'])?>" <?php if ($data['levelId'] == 4) {?>class="hover"<?php }?>>C级教练员培训</a><span class="pxke_Set">培训风采</span></h3>
+    <h3 class="title_h44"><a href="<?= \yii\helpers\Url::to(['/news/train', 'level_id' => '2']) ?>" <?php if ($data['levelId'] == 2):?> class="hover" <?php endif;?>>市级班</a><a href="<?= \yii\helpers\Url::to(['/news/train', 'level_id' => '3']) ?>" <?php if ($data['levelId'] == 3):?> class="hover" <?php endif;?>>D级班</a><a href="<?= \yii\helpers\Url::to(['/news/train', 'level_id' => '4']) ?>" <?php if ($data['levelId'] == 4):?> class="hover" <?php endif;?>>C级班</a><a href="<?= \yii\helpers\Url::to(['/news/train', 'level_id' => '5']) ?>" <?php if ($data['levelId'] == 5):?> class="hover" <?php endif;?>>B级班</a><a href="<?= \yii\helpers\Url::to(['/news/train', 'level_id' => '6']) ?>" <?php if ($data['levelId'] == 6):?> class="hover" <?php endif;?>>A级班</a><a href="<?= \yii\helpers\Url::to(['/news/train', 'level_id' => '7']) ?>" <?php if ($data['levelId'] == 7):?> class="hover" <?php endif;?>>职业级班</a><span class="pxke_Set">培训风采</span></h3>
+
 <!--北京市市级教练员培训-->
 <div class="tab_son">
     <p class="sjbtn_p"><span class="fl">截止到<?= date('Y年m月d日', time())?>,共有（<b><?= $data['trainCount']?></b>）期 市级 教练员培训班</span><a href="javascript:;">查看全部>></a></p>
@@ -95,17 +96,14 @@
             <?php }?>
         <?php endforeach;?>
     </ul>
-    <h3 class="jjfc_set1"><span class="fl">培训地点</span><span class="fr span_set"><a href="<?= \yii\helpers\Url::to(['/news/list', 'category_id' => 9])?>">查看全部>></a></span></h3>
+    <h3 class="jjfc_set1"><span class="fl">培训地点</span><span class="fr span_set"><a href="<?= \yii\helpers\Url::to('/train-land/index')?>">查看全部>></a></span></h3>
     <ul class="ClearFix h200">
-        <?php foreach ($data['newsPlace'] as $key => $val) :?>
+        <?php foreach ($data['trainLand'] as $key => $val) :?>
         <?php if ((($key+1)%4 == 0)) {?>
-                <li class="mro"><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><img src="/upload/images/news/thumb/<?= $val['thumb']?>" width="219" height="146" /></a><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a></li>
+                <li class="mro"><a href="<?= \yii\helpers\Url::to(['/train-land/view/', 'id' => $val['id']])?>"><img src="/upload/images/train_land/thumb/<?= $val['thumb']?>" width="219" height="146" /></a><a href="<?= \yii\helpers\Url::to(['/train-land/view/', 'id' => $val['id']])?>"><?= $val['name']?></a></li>
             <?php } else  {?>
-                <li><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><img src="/upload/images/news/thumb/<?= $val['thumb']?>" width="219" height="146" /></a><a href="<?= \yii\helpers\Url::to(['/news/view/', 'id' => $val['id']])?>"><?= $val['title']?></a></li>
-
+                <li><a href="<?= \yii\helpers\Url::to(['/train-land/view/', 'id' => $val['id']])?>"><img src="/upload/images/train_land/thumb/<?= $val['thumb']?>" width="219" height="146" /></a><a href="<?= \yii\helpers\Url::to(['/train-land/view/', 'id' => $val['id']])?>"><?= $val['name']?></a></li>
             <?php }?>
-
-
         <?php endforeach;?>
     </ul>
 </div>

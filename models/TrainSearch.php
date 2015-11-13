@@ -12,14 +12,15 @@ use app\models\Train;
  */
 class TrainSearch extends Train
 {
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson'], 'integer'],
-            [['name', 'sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'address', 'content', 'create_time', 'create_user', 'update_time', 'update_user'], 'safe'],
+            [['id', 'category', 'level_id', 'recruit_count', 'sign_up_status', 'status', 'lesson','period_num'], 'integer'],
+            [['name', 'sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'address', 'content', 'create_time', 'create_user', 'update_time', 'update_user','begin_date','end_date'], 'safe'],
         ];
     }
 
@@ -60,23 +61,24 @@ class TrainSearch extends Train
             'category' => $this->category,
             'level_id' => $this->level_id,
             'recruit_count' => $this->recruit_count,
-            'sign_up_begin_time' => $this->sign_up_begin_time,
-            'sign_up_end_time' => $this->sign_up_end_time,
-            'sign_up_status' => $this->sign_up_status,
-            'begin_time' => $this->begin_time,
-            'end_time' => $this->end_time,
             'status' => $this->status,
+            'period_num' => $this->period_num,
             'lesson' => $this->lesson,
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
         ]);
+
+        if (!empty($this->begin_date) && !empty($this->end_date)) {
+            $query->andFilterWhere(['>', 'begin_time', $this->begin_date])
+            ->andFilterWhere(['<', 'begin_time', $this->end_date]);
+        }
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'create_user', $this->create_user])
             ->andFilterWhere(['like', 'update_user', $this->update_user]);
-
+        $query->orderBy('id desc');
         return $dataProvider;
     }
 }

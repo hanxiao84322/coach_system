@@ -129,7 +129,7 @@ class ActivityUsers extends \yii\db\ActiveRecord
         return [
             [['activity_id', 'user_id', 'status', 'practice_score', 'theory_score', 'rule_score'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['score_appraise', 'attendance_appraise', 'practice_comment', 'theory_comment', 'rule_comment', 'total_comment', 'result_comment', 'create_user', 'update_user'], 'string', 'max' => 45]
+            [['attendance_appraise', 'practice_comment', 'theory_comment', 'rule_comment', 'total_comment', 'create_user', 'update_user'], 'string', 'max' => 45]
         ];
     }
 
@@ -143,7 +143,7 @@ class ActivityUsers extends \yii\db\ActiveRecord
             'activity_id' => '活动',
             'user_id' => '教练员',
             'status' => '状态',
-            'practice_score' => '实践成绩',
+            'practice_score' => '实践得分',
             'theory_score' => '理论得分',
             'rule_score' => '规则得分',
             'score_appraise' => '活动积分',
@@ -182,7 +182,7 @@ class ActivityUsers extends \yii\db\ActiveRecord
         $count = Yii::$app->db->createCommand('SELECT (au.id) as count FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id', [':user_id' => $userId])->queryScalar();
 
         $dataProvider = new SqlDataProvider([
-            'sql' => 'SELECT au.id as id,au.activity_id,a.name,a.category,a.create_time,a.address,a.recruit_count,au.status,a.begin_time FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id',
+            'sql' => 'SELECT au.id as id,au.activity_id,a.name,a.category,a.create_time,a.address,a.lesson,a.score,au.status,a.begin_time,a.recruit_count FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id',
             'params' => [':user_id' => $userId],
             'totalCount' => $count,
             'pagination' => [
@@ -203,6 +203,111 @@ class ActivityUsers extends \yii\db\ActiveRecord
 
     public static function updateActivityUsersStatusByActivityId($status, $activityId)
     {
-        return Yii::$app->db->createCommand('UPDATE ' . self::tableName() . ' SET status =:status WHERE train_id=:train_id AND status != '.self::CANCEL, [':status' => $status,':activity_id' => $activityId])->execute();
+        return Yii::$app->db->createCommand('UPDATE ' . self::tableName() . ' SET status =:status WHERE activity_id=:activity_id AND status != '.self::CANCEL, [':status' => $status,':activity_id' => $activityId])->execute();
+    }
+
+    public function getEnrollCountByActivityId($activity_id)
+    {
+        $result = Yii::$app->db->createCommand('SELECT count(*) as count FROM  ' . self::tableName() . '  WHERE activity_id=:activity_id AND status in ("' . self::ENROLL . '","' . self::DOING . '")', [':activity_id' => $activity_id])->queryScalar();
+        return $result;
+    }
+
+    public function getPassCountByActivityId($activity_id)
+    {
+        $result = Yii::$app->db->createCommand('SELECT count(*) as count FROM  ' . self::tableName() . '  WHERE activity_id=:activity_id AND status  = "' . self::DOING . '"', [':activity_id' => $activity_id])->queryScalar();
+        return $result;
+    }
+
+    public function getAllInfoById($activityId) {
+        $result = Yii::$app->db->createCommand('SELECT u.username,u.score,uf.birthday,u.level_id,uf.photo FROM  ' . self::tableName() . ' au LEFT JOIN ' . UsersInfo::tableName() . ' uf ON au.user_id = uf.id LEFT JOIN ' . Users::tableName() . ' u ON au.user_id = u.id WHERE au.activity_id=:activity_id', [':activity_id' => $activityId])->queryAll();
+        return $result;
+    }
+
+    public static function getUserIsExistActivityStatus($userId, $LevelId)
+    {
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id AND status not in (' . ActivityUsers::NO_APPROVED . ',' . ActivityUsers::NO_PASS . ',' . ActivityUsers::CANCEL . ')', [':user_id' => $userId,':level_id' => $LevelId])->queryAll();
+        return $result;
+
+    }
+
+    public static function getActivityUsersOrder($userId = '', $activity_id = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT max(orders) as max_order FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND activity_id=:activity_id', [':user_id' => $userId,':activity_id' => $activity_id])->queryScalar();
+        return $result;
+    }
+
+    public static function getMaxSignUpOrder($activity_id = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT count(id) as max_count FROM  ' . self::tableName() . ' WHERE activity_id=:activity_id', [':activity_id' => $activity_id])->queryScalar();
+        return $result;
+    }
+
+
+    public static function getActivityByUserId($userId = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT au.activity_id,a.name,au.status,a.begin_time,au.id FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id AND au.status != ' . self::CANCEL, [':user_id' => $userId])->queryOne();
+        return $result;
+    }
+
+    public static function getAllActivityByUserIdAndLevel($userId = '', $LevelId = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT *,au.status as user_status,au.id as activity_user_id FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.user_id=:user_id AND au.level_id=:level_id', [':user_id' => $userId,':level_id' => $LevelId])->queryAll();
+        return $result;
+    }
+
+
+    public static function getActivityInfoById($id = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT *,au.status as user_status FROM  ' . self::tableName() . ' au LEFT JOIN ' . Activity::tableName() . ' a ON au.activity_id = a.id WHERE au.activity_id=:id', [':id' => $id])->queryOne();
+        return $result;
+    }
+
+    public static function getAllUsersByActivityId($activityId)
+    {
+        $result = Yii::$app->db->createCommand('SELECT au.activity_id,u.name,u.photo,u.sex,au.user_id,au.score_appraise FROM  ' . self::tableName() . ' tu LEFT JOIN ' . UsersInfo::tableName() . ' u ON au.user_id = u.id WHERE au.activity_id=:activity_id', [':activity_id' => $activityId])->queryAll();
+        return $result;
+    }
+
+    /*
+     * 获取已结业的数
+     */
+    public static function getPassCount($activityId)
+    {
+        $count = Yii::$app->db->createCommand('SELECT count(*) FROM  ' . self::tableName() . '  WHERE activity_id=:id AND status = ' . self::PASS, [':id' => $activityId])->queryScalar();
+        if (empty($count)) {
+            $count = 0;
+        }
+        return $count;
+    }
+
+
+    /*
+     * 获取已录取的数
+     */
+    public static function getRecruitCount($activityId)
+    {
+        $count = Yii::$app->db->createCommand('SELECT count(*) FROM  ' . self::tableName() . '  WHERE activity_id=:id AND status in ('. self::ENROLL .',' . self::APPROVED . ',' . self::DOING . ',' . self::END . ',' . self::PASS . ',' . self::NO_PASS . ')', [':id' => $activityId])->queryScalar();
+        if (empty($count)) {
+            $count = 0;
+        }
+        return $count;
+    }
+
+    public function beforeSave($insert = '')
+    {
+        if (parent::beforeSave($this->isNewRecord)) {
+            if ($this->isNewRecord) {
+                $this->create_time = date('Y-m-d H:i:s', time());
+                $this->create_user = 'admin';
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            } else {
+                $this->update_time = date('Y-m-d H:i:s', time());
+                $this->update_user = 'admin';
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

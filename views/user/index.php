@@ -1,3 +1,55 @@
+<?php
+use yii\widgets\ActiveForm;
+use yii\helpers\Url;
+?>
+<?php $this->beginBody() ?>
+
+<!--top-->
+<div class="top">
+    <div class="time_login">
+        <p class="fl" id="time">
+            <script language=JavaScript>
+                var d, s = "";
+                var x = new Array("星期日", "星期一", "星期二","星期三","星期四", "星期五","星期六");
+                d = new Date();
+                s+=d.getFullYear()+"年"+(d.getMonth() + 1)+"月"+d.getDate()+"日　";
+                s+=x[d.getDay()];
+                document.writeln(s);
+            </script>
+        </p>
+        <p class="fr login_box"><?php if (Yii::$app->user->isGuest) {?><a href="<?= Url::to('/login/login')?>">登录</a><?php } else { ?><a href="<?= Url::to('/user-center/index')?>">会员中心</a> | <a href="<?= Url::to('/user/logout')?>">登出</a><?php }?> | <a href="javascript:;">加入收藏</a></p>
+    </div>
+</div>
+<!--top-->
+<!--logo search-->
+<?php $form = ActiveForm::begin([
+    'id'=>'registerInfo',
+    'enableAjaxValidation' => false,
+    'action' => \yii\helpers\Url::to('/search/index'),
+    'method' => 'get'
+]); ?>
+<div class="logo_search">
+    <h1 class="fl"><a href="javascript:;"><img src="/images/logo.jpg" /></a></h1>
+    <div class="fr search">
+        <span>教练员搜索：</span><input type="text" name="keyword" class="input_set" placeholder="输入教练员姓名、身份证号或证书编号" /><input type="submit" value="搜索"  class="search_btn" /><a href="<?= Url::to('/top-search/index')?>" class="top_search">高级搜索</a>
+    </div>
+</div>
+<?php ActiveForm::end(); ?>
+<!--logo search-->
+<!--nav-->
+<div class="nav_box">
+    <ul class="nav">
+        <li><a href="<?= Url::to('/home/index')?>">首页</a></li>
+        <li><a href="<?= Url::to('/news/index')?>">最新动态</a></li>
+        <li><a href="<?= Url::to('/train/index')?>">培训报名</a></li>
+        <li><a href="<?= Url::to(['/news/train','level_id' => 2])?>">培训风采</a></li>
+        <li><a href="<?= Url::to('/user/register-coach')?>">教练员注册</a></li>
+        <li><a href="<?= Url::to('/user/index')?>" class="hover">教练员专区</a></li>
+        <li><a href="<?= Url::to(['/news/list', 'category_id' => 10])?>" >政策法规</a></li>
+        <li><a href="http://www.bj-fa.org.cn/" target="_blank">足协官网</a></li>
+    </ul>
+</div>
+<!--nav-->
 <script language="javascript">
     // JavaScript Document
     $(function(){
@@ -18,9 +70,7 @@
 
     })
 </script>
-<?php
-use yii\widgets\ActiveForm;
-?>
+
 <!--banner-->
 <div class="jly_set">
 </div>
@@ -28,7 +78,7 @@ use yii\widgets\ActiveForm;
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('home/index')?>">首页</a><b>></b>教练员专栏
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('home/index')?>"  style="color:#008000;">首页</a><b>></b>教练员专栏
     </div>
 </div>
 <!--注册人数-->
@@ -40,20 +90,21 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'id'=>'register',
         'enableAjaxValidation' => false,
-        'action' => \yii\helpers\Url::to('/search/index')
+        'action' => \yii\helpers\Url::to('/search/index'),
+        'method' => 'get'
     ]); ?>
     <table cellpadding="0" cellspacing="0">
         <tr>
             <td style="padding-right:0;">教练员高级搜索：</td>
-            <td><input type="text" value="请输入教练员姓名或教练证书编号" class="w240" name="certificate_number" /></td>
-            <td><select class="w188" name="area_base">
+            <td><input type="text" value="请输入教练员姓名或教练证书编号" class="w240" name="keyword" /></td>
+            <td><select class="w188" name="district">
                     <?php if (!empty($data['districtList'])) {?>
                         <?php foreach ($data['districtList'] as $key => $val) :?>
-                            <option value="<?= $val?>"><?= $val?></option>
+                            <option value="<?= $key?>"><?= $val?></option>
                         <?php endforeach;?>
                     <?php }?>
             </select></td>
-            <td><select class="w80" name="level">
+            <td><select class="w80" name="level_id">
                     <option value="" selected>不限级别</option>
                     <?php if (!empty($data['levelList'])) {?>
                         <?php foreach ($data['levelList'] as $key => $val) :?>

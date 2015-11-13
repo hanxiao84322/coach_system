@@ -12,12 +12,15 @@ use yii\data\SqlDataProvider;
  * @property integer $train_id
  * @property integer $user_id
  * @property integer $status
+ * @property integer $level_id
+ * @property integer $orders
  * @property integer $practice_score
  * @property integer $theory_score
  * @property integer $rule_score
  * @property string $score_appraise
  * @property string $attendance_appraise
  * @property string $practice_comment
+ * @property string $appraise_result
  * @property string $theory_comment
  * @property string $rule_comment
  * @property string $total_comment
@@ -33,7 +36,7 @@ use yii\data\SqlDataProvider;
 class TrainUsers extends \yii\db\ActiveRecord
 {
 
-    const SIGN = 1; // 已报名
+    const SIGN = 1; // 未完成申请
     const APPROVED = 2; // 审核中
     const ENROLL = 3; // 已录取
     const DOING = 4; // 进行中
@@ -46,7 +49,7 @@ class TrainUsers extends \yii\db\ActiveRecord
 
     // 状态
     static public $statusList = [
-        self::SIGN => '已报名',
+        self::SIGN => '未完成申请',
         self::APPROVED => '审核中',
         self::ENROLL => '已录取',
         self::DOING => '进行中',
@@ -142,7 +145,9 @@ class TrainUsers extends \yii\db\ActiveRecord
             'id' => 'ID',
             'train_id' => '培训课程',
             'user_id' => '学员',
+            'level_id' => '级别',
             'status' => '状态',
+            'orders' => '序号',
             'practice_score' => '实践评分',
             'theory_score' => '理论评分',
             'rule_score' => '规则评分',
@@ -179,10 +184,10 @@ class TrainUsers extends \yii\db\ActiveRecord
 
     public static function getAllTrainByUserId($userId = '', $isPage = true)
     {
-        $count = Yii::$app->db->createCommand('SELECT (tu.id) as count FROM  ' . self::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id', [':user_id' => $userId])->queryScalar();
+        $count = Yii::$app->db->createCommand('SELECT (tu.id) as count FROM  ' . self::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id ', [':user_id' => $userId])->queryScalar();
 
         $dataProvider = new SqlDataProvider([
-            'sql' => 'SELECT tu.id as id,tu.train_id,t.name,t.category,t.create_time,t.address,t.recruit_count,tu.status,t.begin_time FROM  ' . TrainUsers::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id',
+            'sql' => 'SELECT tu.id as id,tu.train_id,t.name,t.category,t.create_time,t.address,t.recruit_count,tu.status,t.begin_time,tu.user_id as train_user_id,t.period_num,t.train_land_id FROM  ' . TrainUsers::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id  ORDER BY id desc',
             'params' => [':user_id' => $userId],
             'totalCount' => $count,
             'pagination' => [
@@ -195,7 +200,7 @@ class TrainUsers extends \yii\db\ActiveRecord
 
     public static function getTrainByUserId($userId = '')
     {
-        $result = Yii::$app->db->createCommand('SELECT tu.train_id,t.name,tu.status,t.begin_time,tu.id FROM  ' . self::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id AND tu.status != ' . self::CANCEL, [':user_id' => $userId])->queryOne();
+        $result = Yii::$app->db->createCommand('SELECT tu.train_id,t.name,tu.status,t.begin_time,tu.id FROM  ' . self::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id AND tu.status != ' . self::CANCEL . ' ORDER BY id desc ', [':user_id' => $userId])->queryOne();
         return $result;
     }
 
@@ -211,7 +216,7 @@ class TrainUsers extends \yii\db\ActiveRecord
      */
     public static function getRecruitCount($trainId)
     {
-        $count = Yii::$app->db->createCommand('SELECT count(*) FROM  ' . self::tableName() . '  WHERE train_id=:id AND status in ('. self::ENROLL .',' . self::APPROVED . ',' . self::DOING . ',' . self::END . ',' . self::PASS . ',' . self::NO_PASS . ')', [':id' => $trainId])->queryScalar();
+        $count = Yii::$app->db->createCommand('SELECT count(*) FROM  ' . self::tableName() . '  WHERE train_id=:id AND status in ('. self::ENROLL .',' . self::DOING . ',' . self::END . ',' . self::PASS . ',' . self::NO_PASS . ')', [':id' => $trainId])->queryScalar();
         if (empty($count)) {
             $count = 0;
         }
@@ -253,26 +258,33 @@ class TrainUsers extends \yii\db\ActiveRecord
      */
     public static function getAllUsersByTrainId($trainId)
     {
-        $result = Yii::$app->db->createCommand('SELECT tu.train_id,u.name,u.photo,u.sex,tu.user_id,tu.score_appraise FROM  ' . self::tableName() . ' tu LEFT JOIN ' . UsersInfo::tableName() . ' u ON tu.user_id = u.id WHERE tu.train_id=:train_id', [':train_id' => $trainId])->queryAll();
+        $result = Yii::$app->db->createCommand('SELECT tu.train_id,u.name,u.photo,u.sex,tu.user_id,tu.score_appraise FROM  ' . self::tableName() . ' tu LEFT JOIN ' . UsersInfo::tableName() . ' u ON tu.user_id = u.user_id WHERE tu.train_id=:train_id', [':train_id' => $trainId])->queryAll();
         return $result;
     }
 
     public static function getAllTrainByUserIdAndLevel($userId = '', $LevelId = '')
     {
-        $result = Yii::$app->db->createCommand('SELECT *,tu.status as user_status,tu.id as train_user_id FROM  ' . self::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id AND tu.level_id=:level_id', [':user_id' => $userId,':level_id' => $LevelId])->queryAll();
+        $result = Yii::$app->db->createCommand('SELECT tu.id as id,tu.train_id,t.name,t.category,t.create_time,t.address,t.recruit_count,tu.status,t.begin_time,tu.user_id as train_user_id,t.period_num,t.train_land_id FROM  ' . TrainUsers::tableName() . ' tu LEFT JOIN ' . Train::tableName() . ' t ON tu.train_id = t.id WHERE tu.user_id=:user_id AND tu.level_id=:level_id  ORDER BY id desc', [':user_id' => $userId,':level_id' => $LevelId])->queryAll();
         return $result;
     }
 
     public static function getUserIsExistTrainStatus($userId, $LevelId)
     {
-        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id AND status not in (' . TrainUsers::NO_APPROVED . ',' . TrainUsers::NO_PASS . ',' . TrainUsers::CANCEL . ')', [':user_id' => $userId,':level_id' => $LevelId])->queryAll();
+        $result = Yii::$app->db->createCommand('SELECT * FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id AND status in (' . TrainUsers::APPROVED . ',' . TrainUsers::PASS . ',' . TrainUsers::ENROLL . ',' . TrainUsers::DOING . ',' . TrainUsers::END . ',' . TrainUsers::PASS . ')', [':user_id' => $userId,':level_id' => $LevelId])->queryAll();
         return $result;
 
     }
 
-    public static function getTrainUsersOrder($userId = '', $train_id = '')
+    public static function getUserIsExistTrainStatusSign($userId, $LevelId)
     {
-        $result = Yii::$app->db->createCommand('SELECT max(orders) as max_order FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND train_id=:train_id', [':user_id' => $userId,':train_id' => $train_id])->queryScalar();
+        $result = Yii::$app->db->createCommand('SELECT * FROM ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id AND status =' . self::SIGN, [':user_id' => $userId,':level_id' => $LevelId])->queryOne();
+        return $result;
+
+    }
+
+    public static function getTrainUsersOrder($user_id = '',$train_id = '')
+    {
+        $result = Yii::$app->db->createCommand('SELECT orders FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND train_id=:train_id', [':user_id' => $user_id,':train_id' => $train_id])->queryScalar();
         return $result;
     }
 
@@ -285,6 +297,13 @@ class TrainUsers extends \yii\db\ActiveRecord
     public static function getAppraiseResultByUserIdAndLevelId($userId, $levelId)
     {
         $result = Yii::$app->db->createCommand('SELECT appraise_result FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id', [':user_id' => $userId,':level_id' => $levelId])->queryScalar();
+        return $result;
+    }
+
+    public static function getAllByCount($count)
+    {
+        $sql = "SELECT * FROM " . self::tableName() . " WHERE status >= " . self::ENROLL . " ORDER BY id DESC LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
         return $result;
     }
 

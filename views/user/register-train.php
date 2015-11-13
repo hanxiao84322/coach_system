@@ -1,45 +1,48 @@
+<script language="javascript" type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
 <?php
 use yii\widgets\ActiveForm;
-use yii\jui\DatePicker;
+use yii\helpers\Url;
 
 ?>
+<?php $this->beginBody() ?>
 
-<!--content-->
-<style>
-    .rgsd_box_set{padding:30px 0 0;height:67px;}
-    .reg_mark{float:left;}
-    .reg_lc{float:right;width:774px;background:url(/images/xian.png) no-repeat center 5px;margin-top:10px;}
-    .reg_lc ul li{float:left;width:129px;text-align:center;font-size:16px;color:#666;}
-    .reg_lc ul li span{display:block;width:13px;height:13px;background:url(/images/wxz.png) no-repeat center top;margin:0 auto;padding-bottom:10px;}
-    .reg_lc ul li span.hover{display:block;width:13px;height:13px;background:url(/images/xz.png) no-repeat center top;margin:0 auto;padding-bottom:10px;}
-    .reg_lc ul li.hover{color:#438C0C;}
-</style>
+<!--top-->
+<div class="top">
+    <div class="time_login">
+        <p class="fl" id="time">
+            <script language=JavaScript>
+                var d, s = "";
+                var x = new Array("星期日", "星期一", "星期二","星期三","星期四", "星期五","星期六");
+                d = new Date();
+                s+=d.getFullYear()+"年"+(d.getMonth() + 1)+"月"+d.getDate()+"日　";
+                s+=x[d.getDay()];
+                document.writeln(s);
+            </script>
+        </p>
+        <p class="fr login_box"><?php if (Yii::$app->user->isGuest) {?><a href="<?= Url::to('/login/login')?>">登录</a><?php } else { ?><a href="<?= Url::to('/user-center/index')?>">会员中心</a> | <a href="<?= Url::to('/user/logout')?>">登出</a><?php }?> | <a href="javascript:;">加入收藏</a></p>
+    </div>
+</div>
+<!--top-->
+<!--logo search-->
+<div class="logo_search">
+    <h1 class="fl"><a href="javascript:;"><img src="/images/logo.jpg" /></a></h1>
+    <div class="fr search_system">
+        教练员管理系统
+    </div>
+</div>
+<!--logo search-->
+<div class="pxmobSet" style="background:url(/images/Npxbm.jpg) no-repeat center top;height:119px;"></div>
+
 <div class="content_box">
     <div class="con_set">
         <div class="rgsd_box_set">
-            <div class="reg_mark">
-                <img src="/images/reg.png">
-            </div>
-            <div class="reg_lc">
-                <ul>
-                    <li class="hover"><span class="hover"></span>基本信息</li>
-                    <li><span></span>教育经历</li>
-                    <li><span></span>培训经历</li>
-                    <li><span></span>执教经历</li>
-                    <li><span></span>运动经历</li>
-                    <li><span></span>提交成功</li>
-                </ul>
-            </div>
-        </div>
-        <p class="p_jbinfor">基本信息</p>
-
-        <div class="informatioin_self">
-
+            <p class="registStep" style="text-align:center;margin-top:25px;"><img src="/images/registStep3.jpg" /></p>
             <ul class="nrset_set">
                 <li>
-                    <h1><span>培训经历</span></h1>
+                    <h2 style="height:40px;background:#438e0d;color:#fff;font-size:16px;line-height:40px;text-align:center;margin:0px 0px 20px 0px;"><?= $trainName?></h2>
 
-                    <div class="form_input">
+                    <h1><span>培训经历</span></h1>
+                    <div class="form_input" style="display: block;">
                         <div class="divp_pt">
                             <table cellpadding="0" cellspacing="0" class="wans_content">
                                 <tr>
@@ -54,14 +57,14 @@ use yii\jui\DatePicker;
                                         <tr>
                                             <td><?= $key+1?></td>
                                             <td><?= $val['credentials_number'] ?></td>
-                                            <td><?= date('Y-m-d',strtotime($val['begin_time']))?> - <?= date('Y-m-d',strtotime($val['end_time']))?></td>
-                                            <td><?= ($val['level'] == 1) ? '高级' : '中级'?></td>
-                                            <td><a href="javascript:;">删除</a></td>
+                                            <td><?= date('Y-m-d',strtotime('2012-10-30 06:46:12'))?> - <?= date('Y-m-d',strtotime('2015-10-30 06:46:12'))?></td>
+                                            <td><?= $val['level']?></td>
+                                            <td><a href="<?= \yii\helpers\Url::to(['/user/register-train', 'id' => $val['id'], 'train_id' => $train_id])?>">删除</a></td>
                                         </tr>
                                     <?php endforeach;?>
                                 <?php } else {?>
                                     <tr>
-                                        <td colspan="5">请添加教育经历</td>
+                                        <td colspan="5">请添加培训经历</td>
                                     </tr>
                                 <?php }?>
                             </table>
@@ -76,22 +79,8 @@ use yii\jui\DatePicker;
                                 </tr>
                                 <tr>
                                     <td align="right"><em>*</em>时间：</td>
-                                    <td><?= DatePicker::widget([
-                                            'attribute' => 'birthday',
-                                            'name' => 'UsersTrain[begin_time]',
-                                            'clientOptions' => [
-                                                'autoclose' => true,
-                                                'format' => 'dd-M-yyyy',
-                                            ],
-                                        ]);?> 至 <?= DatePicker::widget([
-                                            'attribute' => 'birthday',
-                                            'name' => 'UsersTrain[end_time]',
-                                            'clientOptions' => [
-                                                'autoclose' => true,
-                                                'format' => 'dd-M-yyyy',
-                                            ],
-                                        ]);?>（不填表示至今）
-                                    </td>
+                                    <td><input type="text" id="d221" name="UsersTrain[begin_time]" onFocus="WdatePicker({startDate:'<?= date('Y-m-d', strtotime('-1 year'))?>'})"/> 至 <input type="text" id="d221" name="UsersTrain[end_time]" onFocus="WdatePicker({startDate:'<?= date('Y-m-d', time())?>'})"/>（不填表示至今）
+
                                 </tr>
                                 <tr>
                                     <td align="right"><em>*</em>地点：</td>
@@ -100,8 +89,14 @@ use yii\jui\DatePicker;
                                 <tr>
                                     <td align="right"><em>*</em>等级：</td>
                                     <td><select class="w78" name="UsersTrain[level]">
-                                            <option value="1">高级</option>
-                                            <option value="2">中级</option>
+                                            <option value="无">无</option>
+                                            <option value="市级">市级</option>
+                                            <option value="D级">D级</option>
+                                            <option value="C级">C级</option>
+                                            <option value="B级">B级</option>
+                                            <option value="A级">A级</option>
+                                            <option value="职业级">职业级</option>
+
                                         </select></td>
                                 </tr>
                                 <tr>
@@ -118,7 +113,7 @@ use yii\jui\DatePicker;
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td><input name="train_id" type="hidden" value="<?= $train_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to(['/user/register-vocational','train_id' => $train_id])?>">添加执教信息</a><a href="<?= \yii\helpers\Url::to(['/train/apply', 'id' => $train_id])?>">填写完成</a></td>
+                                    <td><input name="train_id" type="hidden" value="<?= $train_id?>"><input type="submit" value="保 存" class="fixe_btn"/><a href="<?= \yii\helpers\Url::to(['/user/register-vocational','train_id' => $train_id])?>">添加执教信息</a><a href="<?= \yii\helpers\Url::to(['/user/apply', 'train_id' => $train_id])?>">填写完成</a></td>
                                 </tr>
                             </table>
                             <?php ActiveForm::end(); ?>

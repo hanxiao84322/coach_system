@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\News;
 use app\models\Teachers;
 use app\models\Train;
+use app\models\TrainLand;
 use app\models\TrainTeachers;
 use Yii;
 use yii\data\Pagination;
@@ -14,8 +15,8 @@ class NewsController extends \yii\web\Controller
     public function actionIndex()
     {
         $imgNews = News::getImgRecommendNewsByCategory(2,5);
-        $newsA = News::getImgRecommendNewsByCategory(4,5);
-        $newsB = News::getImgRecommendNewsByCategory(1,5);
+        $newsA = News::getRecommendNewsByCategory(4,5);
+        $newsB = News::getRecommendNewsByCategory(1,5);
         $data = [
             'imgNews' => $imgNews,
             'newsA' => $newsA,
@@ -41,7 +42,7 @@ class NewsController extends \yii\web\Controller
         $trainCount = Train::getTrainCount();
         $trainTeachers = Teachers::getAllTeachersForNewsTrain();
         $trainWind = News::getTrainWindByLevelId($levelId,8);
-        $newsPlace = News::getImgRecommendNewsByCategory(9,4);
+        $trainLand = TrainLand::getAllDataByCount(4);
 
         $data = [
             'imgNews' => $imgNews,
@@ -50,9 +51,11 @@ class NewsController extends \yii\web\Controller
             'levelId' => $levelId,
             'trainWind' => $trainWind,
             'trainCount'=> $trainCount,
-            'newsPlace' => $newsPlace
+            'trainLand' => $trainLand
         ];
         return $this->render('train', ['data' => $data]);
+//        return $this->render('build', ['data' => $data]);
+
     }
 
     public function actionList()

@@ -78,7 +78,7 @@ class UsersSearch extends Users
             ->andFilterWhere(['like', 'authKey', $this->authKey])
             ->andFilterWhere(['like', 'accessToken', $this->accessToken])
             ->andFilterWhere(['like', 'update_user', $this->update_user]);
-
+        $query->orderBy(' id desc ');
         return $dataProvider;
     }
 }

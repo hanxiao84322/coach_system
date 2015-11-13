@@ -13,13 +13,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="users-level-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             [
                 'attribute' => 'user_id',
                 'value' => function($searchModel){
@@ -29,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'level_id',
                 'value' => function($searchModel){
-                    return app\models\level::getOneLevelNameById($searchModel->level_id);
+                    return app\models\Level::getOneLevelNameById($searchModel->level_id);
                 }
             ],
             'certificate_number',

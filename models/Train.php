@@ -12,6 +12,7 @@ use Yii;
  * @property integer $category
  * @property integer $level_id
  * @property integer $recruit_count
+ * @property integer $period_num
  * @property string $sign_up_begin_time
  * @property string $sign_up_end_time
  * @property integer $sign_up_status
@@ -81,8 +82,11 @@ class Train extends \yii\db\ActiveRecord
         '其他区' => '其他区',
     ];
 
+
     //以招收人数
     public $already_recruit_count;
+    public $begin_date;
+    public $end_date;
     /**
      * @inheritdoc
      */
@@ -97,8 +101,8 @@ class Train extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category', 'level_id', 'recruit_count', 'status', 'lesson','code'], 'integer'],
-            [['category', 'level_id', 'recruit_count', 'status', 'lesson','code'], 'required'],
+            [['category', 'level_id','period_num', 'train_land_id', 'recruit_count', 'status', 'lesson','code'], 'integer'],
+            [['category', 'level_id','period_num', 'train_land_id', 'recruit_count', 'status', 'lesson','code'], 'required'],
             [['sign_up_begin_time', 'sign_up_end_time', 'begin_time', 'end_time', 'create_time', 'update_time'], 'safe'],
             [['content', 'district'], 'string'],
             [['name', 'create_user', 'update_user','bus', 'near_site'], 'string', 'max' => 45],
@@ -115,15 +119,19 @@ class Train extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => '名称',
             'category' => '分类',
+            'train_land_id' => '培训地',
             'level_id' => '级别',
-            'code' => '编号',
+            'code' => '培训班次',
             'recruit_count' => '招收人数',
             'sign_up_begin_time' => '报名开始时间',
             'sign_up_end_time' => '报名结束时间',
             'sign_up_status' => '报名状态',
             'begin_time' => '开始时间',
+            'begin_date' => '开始日期',
+            'end_date' => '结束日止',
             'end_time' => '结束时间',
             'district' => '所在区域',
+            'period_num' => '期号',
             'status' => '状态',
             'lesson' => '课时',
             'address' => '地址',
@@ -153,6 +161,15 @@ class Train extends \yii\db\ActiveRecord
         return $this->hasMany(TrainUsers::className(), ['train_id' => 'id']);
     }
 
+    public static function getAll()
+    {
+        $rows = (new \yii\db\Query())
+            ->select(['id', 'name'])
+            ->from(self::tableName())
+            ->orderBy('id desc')
+            ->all();
+        return $rows;
+    }
     public static function getCategoryName($category)
     {
         return isset(self::$categoryList[$category]) ? self::$categoryList[$category] : $category;
@@ -179,9 +196,9 @@ class Train extends \yii\db\ActiveRecord
 
     public static  function getOneTrainNameById($trainId)
     {
-        $sql = "SELECT name FROM `train` WHERE id='" . $trainId . "'";
+        $sql = "SELECT name,period_num FROM `train` WHERE id='" . $trainId . "'";
         $result = Yii::$app->db->createCommand($sql)->queryOne();
-        return $result['name'];
+        return $result['name'] . '第' . $result['period_num'] . '期';
     }
 
     public static function getOneCodeById($trainId)
@@ -205,6 +222,25 @@ class Train extends \yii\db\ActiveRecord
         $sql = "SELECT count(*) as count FROM " . self::tableName();
         $result = Yii::$app->db->createCommand($sql)->queryScalar();
         return $result;
+    }
+
+    public static function getPeriodNum()
+    {
+        $periodNum = [];
+        for ($i=1;$i<=100;$i++) {
+            $periodNum[$i] = $i;
+        }
+        return $periodNum;
+    }
+
+
+    public static function getRecruitCount()
+    {
+        $recruitCount = [];
+        for ($i=10;$i<=100;$i++) {
+            $recruitCount[$i] = $i;
+        }
+        return $recruitCount;
     }
 
     public function beforeSave($insert = '')

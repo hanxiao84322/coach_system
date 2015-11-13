@@ -5,7 +5,7 @@
  <?= $this->render('left',['data' => $data]);?>
 <td valign="top">
     <div class="content_box">
-        <h3 class="h3_h40s">活动管理</h3>
+        <h3 class="h3_h40s">活动项目</h3>
         <div class="conbox_set">
         <div class="tabs martop">
         <h3 class="title_h43"><a href="javascript:;">市级班</a><a href="javascript:;">D级班</a><a href="javascript:;">C级班</a><a href="javascript:;">B级班</a><a href="javascript:;">A级班</a><a href="javascript:;">职业级班</a><span class="pxbxi_Set1">培训课程</span></h3>
@@ -29,7 +29,7 @@
                         <?php foreach ($data['activityListA'] as $key => $val) :?>
                             <tr>
                                 <td><?= $key+1?></td>
-                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activityId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activity_id' => $val['id']])?>"><?= $val['name']?></a></td>
                                 <td><?= \app\models\ActivityCategory::getNameById($val['category'])?></td>
                                 <td><?= $val['begin_time']?></td>
                                 <td><?= $val['address']?></td>
@@ -37,7 +37,7 @@
                                 <td><?= $val['score']?></td>
                                 <td>招<?= $val['recruit_count'] ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
                                 <?php if ($val['status'] == \app\models\Activity::BEGIN_SIGN_UP) {?>
-                                    <td><b><a href="<?= \yii\helpers\Url::to(['/activity/apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
+                                    <td><b><a href="<?= \yii\helpers\Url::to(['/user-center/activity-apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
                                 <?php } else {?>
                                     <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Activity::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Activity::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Activity::$statusList[$val->status]?></a></b></td>
                                 <?php } ?>
@@ -54,8 +54,7 @@
         <?php }?>
         <!--市级教练员-->
         <!--D级教练员-->
-        <?php if (!empty($data['trainListB'])) { ?>
-            <!--市级教练员-->
+        <?php if (!empty($data['activityListB'])) { ?>
             <div class="tab_son box_table1">
                 <div class="table_box">
                     <table cellpadding="0" cellspacing="0" class="table_set">
@@ -70,16 +69,21 @@
                             <th>参与人数</th>
                             <th>报名状态</th>
                         </tr>
-                        <?php foreach ($data['trainListB'] as $key => $val) :?>
+                        <?php foreach ($data['activityListB'] as $key => $val) :?>
                             <tr>
                                 <td><?= $key+1?></td>
-                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activityId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activity_id' => $val['id']])?>"><?= $val['name']?></a></td>
                                 <td><?= \app\models\ActivityCategory::getNameById($val['category'])?></td>
                                 <td><?= $val['begin_time']?></td>
                                 <td><?= $val['address']?></td>
                                 <td><?= $val['lesson']?></td>
                                 <td><?= $val['score']?></td>
-
+                                <td>招<?= $val['recruit_count'] ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
+                                <?php if ($val['status'] == \app\models\Activity::BEGIN_SIGN_UP) {?>
+                                    <td><b><a href="<?= \yii\helpers\Url::to(['/user-center/activity-apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
+                                <?php } else {?>
+                                    <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Activity::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Activity::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Activity::$statusList[$val->status]?></a></b></td>
+                                <?php } ?>
                             </tr>
                         <?php endforeach;?>
                     </table>
@@ -93,7 +97,7 @@
         <?php }?>
         <!--D级教练员-->
         <!--C级教练员-->
-        <?php if (!empty($data['trainListC'])) { ?>
+        <?php if (!empty($data['activityListC'])) { ?>
             <!--市级教练员-->
             <div class="tab_son box_table1">
                 <div class="table_box">
@@ -109,16 +113,21 @@
                             <th>参与人数</th>
                             <th>报名状态</th>
                         </tr>
-                        <?php foreach ($data['trainListC'] as $key => $val) :?>
+                        <?php foreach ($data['activityListC'] as $key => $val) :?>
                             <tr>
                                 <td><?= $key+1?></td>
-                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activityId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activity_id' => $val['id']])?>"><?= $val['name']?></a></td>
                                 <td><?= \app\models\ActivityCategory::getNameById($val['category'])?></td>
                                 <td><?= $val['begin_time']?></td>
                                 <td><?= $val['address']?></td>
                                 <td><?= $val['lesson']?></td>
                                 <td><?= $val['score']?></td>
-
+                                <td>招<?= $val['recruit_count'] ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
+                                <?php if ($val['status'] == \app\models\Activity::BEGIN_SIGN_UP) {?>
+                                    <td><b><a href="<?= \yii\helpers\Url::to(['/user-center/activity-apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
+                                <?php } else {?>
+                                    <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Activity::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Activity::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Activity::$statusList[$val->status]?></a></b></td>
+                                <?php } ?>
                             </tr>
                         <?php endforeach;?>
                     </table>
@@ -132,7 +141,7 @@
         <?php }?>
         <!--C级教练员-->
         <!--B级教练-->
-        <?php if (!empty($data['trainListD'])) { ?>
+        <?php if (!empty($data['activityListD'])) { ?>
             <!--市级教练员-->
             <div class="tab_son box_table1">
                 <div class="table_box">
@@ -148,16 +157,21 @@
                             <th>参与人数</th>
                             <th>报名状态</th>
                         </tr>
-                        <?php foreach ($data['trainListD'] as $key => $val) :?>
+                        <?php foreach ($data['activityListD'] as $key => $val) :?>
                             <tr>
                                 <td><?= $key+1?></td>
-                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activityId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activity_id' => $val['id']])?>"><?= $val['name']?></a></td>
                                 <td><?= \app\models\ActivityCategory::getNameById($val['category'])?></td>
                                 <td><?= $val['begin_time']?></td>
                                 <td><?= $val['address']?></td>
                                 <td><?= $val['lesson']?></td>
                                 <td><?= $val['score']?></td>
-
+                                <td>招<?= $val['recruit_count'] ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
+                                <?php if ($val['status'] == \app\models\Activity::BEGIN_SIGN_UP) {?>
+                                    <td><b><a href="<?= \yii\helpers\Url::to(['/user-center/activity-apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
+                                <?php } else {?>
+                                    <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Activity::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Activity::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Activity::$statusList[$val->status]?></a></b></td>
+                                <?php } ?>
                             </tr>
                         <?php endforeach;?>
                     </table>
@@ -171,7 +185,7 @@
         <?php }?>
         <!--B级教练-->
         <!--A级教练员-->
-        <?php if (!empty($data['trainListE'])) { ?>
+        <?php if (!empty($data['activityListE'])) { ?>
             <!--市级教练员-->
             <div class="tab_son box_table1">
                 <div class="table_box">
@@ -187,30 +201,35 @@
                             <th>参与人数</th>
                             <th>报名状态</th>
                         </tr>
-                        <?php foreach ($data['trainListE'] as $key => $val) :?>
+                        <?php foreach ($data['activityListE'] as $key => $val) :?>
                             <tr>
                                 <td><?= $key+1?></td>
-                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activityId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activity_id' => $val['id']])?>"><?= $val['name']?></a></td>
                                 <td><?= \app\models\ActivityCategory::getNameById($val['category'])?></td>
                                 <td><?= $val['begin_time']?></td>
                                 <td><?= $val['address']?></td>
                                 <td><?= $val['lesson']?></td>
                                 <td><?= $val['score']?></td>
-
+                                <td>招<?= $val['recruit_count'] ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
+                                <?php if ($val['status'] == \app\models\Activity::BEGIN_SIGN_UP) {?>
+                                    <td><b><a href="<?= \yii\helpers\Url::to(['/user-center/activity-apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
+                                <?php } else {?>
+                                    <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Activity::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Activity::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Activity::$statusList[$val->status]?></a></b></td>
+                                <?php } ?>
                             </tr>
                         <?php endforeach;?>
                     </table>
                 </div>
             </div>
             <!--市级教练员-->
-        <?php } else { ?>
+            <?php } else { ?>
             <div class="tab_son box_table1 ClearFix">
                 <p class="sorry_p"><span>对不起，未有相关活动信息(不是该级别教练员，不具备参加该级别教练员互动项目！！！)</span></p>
             </div>
         <?php }?>
         <!--A级教练员--
         <!--职业级教练员-->
-        <?php if (!empty($data['trainListF'])) { ?>
+        <?php if (!empty($data['activityListF'])) { ?>
             <!--市级教练员-->
             <div class="tab_son box_table1">
                 <div class="table_box">
@@ -226,16 +245,21 @@
                             <th>参与人数</th>
                             <th>报名状态</th>
                         </tr>
-                        <?php foreach ($data['trainListF'] as $key => $val) :?>
+                        <?php foreach ($data['activityListF'] as $key => $val) :?>
                             <tr>
                                 <td><?= $key+1?></td>
-                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activityId' => $val['id']])?>"><?= $val['name']?></a></td>
+                                <td><a href="<?= \yii\helpers\Url::to(['/user-center/activity-view', 'activity_id' => $val['id']])?>"><?= $val['name']?></a></td>
                                 <td><?= \app\models\ActivityCategory::getNameById($val['category'])?></td>
                                 <td><?= $val['begin_time']?></td>
                                 <td><?= $val['address']?></td>
                                 <td><?= $val['lesson']?></td>
                                 <td><?= $val['score']?></td>
-
+                                <td>招<?= $val['recruit_count'] ?>人 ( <b>已录取 <?= $val->already_recruit_count ?> 人</b> )</td>
+                                <?php if ($val['status'] == \app\models\Activity::BEGIN_SIGN_UP) {?>
+                                    <td><b><a href="<?= \yii\helpers\Url::to(['/user-center/activity-apply', 'id' => $val['id']])?>" style="color:green;">申请报名</a></b></td>
+                                <?php } else {?>
+                                    <td><b><a href="javascript:;" style="color: <?php if ($val->status == \app\models\Activity::END_SIGN_UP) {?>gray<?php } elseif ($val->status == \app\models\Activity::END_SIGN_UP) { ?>red<?php } else {?>red<?php }?>;"><?= \app\models\Activity::$statusList[$val->status]?></a></b></td>
+                                <?php } ?>
                             </tr>
                         <?php endforeach;?>
                     </table>

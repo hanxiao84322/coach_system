@@ -26,7 +26,8 @@
     </tr>
 </table>
 <div class="tabs martop">
-    <h3 class="title_h42"><a href="javascript:;">我的成绩</a><a href="javascript:;">我的考勤</a><a href="javascript:;">我的评估</a><span class="pxke_Set">我的培训信息</span></h3>
+    <h3 class="title_h42"><a href="javascript:;">我的成绩</a><span class="pxke_Set">我的培训信息</span></h3>
+<!--    <h3 class="title_h42"><a href="javascript:;">我的成绩</a><a href="javascript:;">我的考勤</a><a href="javascript:;">我的评估</a><span class="pxke_Set">我的培训信息</span></h3>-->
     <!--我的成绩-->
     <div class="tab_son">
         <div class="sj_six">
@@ -129,8 +130,8 @@
                             <?php foreach ($data['usersModel'] as $key => $val) :?>
                                 <li>
                                     <div class="pic">
-                                        <a href="<?= \yii\helpers\Url::to(['users/view', 'id' => $val['user_id']])?>">
-                                            <span><img src="/upload/images/users/photo/<?= $val['photo']?>" width="71" height="99"/></span>
+                                        <a href="<?= \yii\helpers\Url::to(['user/view', 'id' => $val['user_id'],'train' => 1])?>">
+                                            <span><img src="/upload/images/users_info/photo/<?= $val['photo']?>" width="71" height="99"/></span>
                                             <p>
                                                 姓名：<?= $val['name']?><br /><br /><br />评分：<?= $val['img']?>
 

@@ -2,30 +2,35 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TeachersSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '讲师管理';
+$this->title = '讲师列表操作';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="teachers-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a('新建讲师', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
+    <?php $form = ActiveForm::begin(['action'=>\yii\helpers\Url::to('/Admin/teachers/del')]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'header' => Html::checkBox('selection_all', false, [
+                    'class' => 'select-on-check-all',
+                ]),
+            ],
             'name',
             [
                 'attribute' => 'sex',
@@ -55,5 +60,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
+    <input name="update_status" type="submit" value="删除">
+    <?php ActiveForm::end(); ?>
 </div>

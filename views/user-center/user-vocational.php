@@ -3,79 +3,6 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 
 ?>
-<script>
-    $(function () {
-        var ok1 = false;
-        var ok2 = false;
-        var ok3 = false;
-        var ok4 = false;
-
-        //验证地点
-        $('input[name="UsersVocational[address]"]').focus(function () {
-            $(this).next().text('填写地点').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok1 = true;
-            } else {
-                $(this).next().text('地点格式错误').removeClass('state1').addClass('state3');
-            }
-
-        });
-
-        //验证学校名称
-        $('input[name="UsersVocational[team]"]').focus(function () {
-            $(this).next().text('填写球队名称').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 40 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok2 = true;
-            } else {
-                $(this).next().text('球队名称错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证证明人
-        $('input[name="UsersVocational[witness]"]').focus(function () {
-            $(this).next().text('填写证明人').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val().length >= 2 && $(this).val().length <= 8 && $(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok3 = true;
-            } else {
-                $(this).next().text('证明人格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-        //验证描述
-        $('input[name="UsersVocational[description]"]').focus(function () {
-            $(this).next().text('填写描述').removeClass('state1').addClass('state2');
-        }).blur(function () {
-            if ($(this).val() != '') {
-                $(this).next().text('输入成功').removeClass('state1').addClass('state4');
-                ok4 = true;
-            } else {
-                $(this).next().text('描述格式错误').removeClass('state1').addClass('state3');
-            }
-
-        })
-
-
-        //提交按钮,所有验证通过方可提交
-
-        $('input[name="submit"]').click(function () {
-            if (ok1 && ok2 && ok3 && ok4) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-    });
-</script>
-
 <div class="content_user">
     <div class="max_width">
         <table cellpadding="0" cellspacing="0" width="100%">
@@ -105,7 +32,7 @@ use yii\jui\DatePicker;
                                                             <td><?= $key+1?></td>
                                                             <td><?= $val['team'] ?></td>
                                                             <td><?= date('Y-m-d',strtotime($val['begin_time']))?> - <?= date('Y-m-d',strtotime($val['end_time']))?></td>
-                                                            <td><?= ($val['post'] == 1) ? '市级' : '国家级'?></td>
+                                                            <td><?= $val['post']?></td>
                                                             <td><a href="<?= \yii\helpers\Url::to(['user/register-vocational', 'user_vocational_id' => $val['id']])?>">编辑</a> | <a href="<?= \yii\helpers\Url::to(['user-center/user-vocational', 'id' => $val['id']])?>">删除</a></td>
                                                         </tr>
                                                     <?php endforeach;?>
@@ -150,8 +77,13 @@ use yii\jui\DatePicker;
                                                 <tr>
                                                     <td align="right"><em>*</em>任职：</td>
                                                     <td><select class="w78" name="UsersVocational[post]">
-                                                            <option value="1">市级</option>
-                                                            <option value="2">国家级</option>
+                                                                <option value="无">无</option>
+                                                            <option value="主教练">主教练</option>
+                                                            <option value="助理教练">助理教练</option>
+                                                            <option value="技战术教练">技战术教练</option>
+                                                            <option value="守门员教练">守门员教练</option>
+                                                            <option value="力量体能教练">力量体能教练</option>
+                                                            <option value="其它">其它</option>
                                                         </select></td>
                                                 </tr>
                                                 <tr>

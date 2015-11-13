@@ -23,7 +23,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="javascript:;">首页</a><b>></b><a href="javascript:;">培训报名</a><b>></b>2015年01期市级班
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>" style="color:#008000;">首页</a><b>></b><a href="<?= \yii\helpers\Url::to('/train/index')?>">培训报名</a><b>></b><?= $data['trainModel']['name']?> 第<?= $data['trainModel']['period_num']?>期
     </div>
 </div>
 <!--注册人数-->
@@ -32,7 +32,7 @@
     <div class="con_set">
         <div class="news_con1">
             <div class="city_title">
-                2015年01期市级班
+                <?= $data['trainModel']['name']?> 第<?= $data['trainModel']['period_num']?>期
             </div>
             <div class="">
                 <table cellpadding="0" cellspacing="0" class="table_set">
@@ -55,7 +55,8 @@
                 </table>
             </div>
             <div class="tabs martop">
-                <h3 class="title_h42"><a href="javascript:;">讲师团队</a><a href="javascript:;">培训学员</a><a href="javascript:;">培训地点</a><span class="pxbxi_Set">培训班信息</span></h3>
+            	<h3 style="border-bottom:solid 2px #438E0F;margin-bottom:20px;position:inherit;" class="jjfc_set6">讲师团队</h3>
+               <!-- <h3 class="title_h42"><a href="javascript:;">讲师团队</a><a href="javascript:;">培训学员</a><a href="javascript:;">培训地点</a><span class="pxbxi_Set">培训班信息</span></h3>-->
                 <!--讲师团队-->
                 <div class="tab_son box_table">
                     <div class="adva">
@@ -90,8 +91,9 @@
                 </div>
                 <!--讲师团队-->
                 <!--培训学员-->
-                <div class="tab_son box_table1 ClearFix" style="float:left;width:100%;">
-                    <ul class="list_uls">
+                <h3 class="title_h42" style="margin-top:15px;"><span class="pxbxi_Set">培训学员</span></h3>
+                <div class="box_table1 ClearFix" style="float:left;width:100%;">
+                    <ul class="list_uls ClearFix">
                         <?php foreach ($data['trainUsers'] as $key => $val) :?>
                             <?php if (empty($val['userId'])) {?>
                                 <li><a href="javascript:;" class="red"><span><?= $key?></span><?= $val['status']?></a></li>
@@ -102,8 +104,10 @@
                     </ul>
                 </div>
                 <!--培训学员-->
+                <div style="clear:both;"></div>
                 <!--培训地点-->
-                <div class="tab_son box_table2 ClearFix">
+                <h3 class="jjfc_set2"><span class="fl">培训地点</span></h3>
+                <div class="box_table2 ClearFix">
                     <div class="map fl">
                         <div id="allmap" style="width: 552px; height: 300px;"></div>
                     </div>

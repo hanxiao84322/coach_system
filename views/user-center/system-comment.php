@@ -46,7 +46,7 @@ use yii\widgets\ActiveForm;
                                 <?php foreach ($data['model']['models'] as $key => $val) :?>
                                 <tr>
                                     <td valign="top" style="padding-top:30px;"><input type="checkbox" name="id_list[]" value="<?= $val['id']?>" />&nbsp;&nbsp;<?= $key+1?></td>
-                                    <td><span><img src="/images/user/mail.jpg" class="mail" /></span><span><img src="/images/user/logo1.jpg" /></span><span class="w700"><b>系统通知</b><?= $val['content']?><b class="time"><?= $val['create_time']?></b></span></td>
+                                    <td><span><img src="/images/user/mail.jpg" class="mail" /></span><span><img src="/images/user/logo1.jpg" /></span><span class="w700"><b></b><?= $val['content']?><b class="time"><?= $val['create_time']?></b></span></td>
                                 </tr>
                                     <?php endforeach?>
                                 <?php }?>

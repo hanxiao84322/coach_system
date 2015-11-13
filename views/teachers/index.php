@@ -5,7 +5,7 @@
 <!--注册人数-->
 <div class="register_number">
     <div class="nav_sets">
-        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>">首页</a><b>></b>讲师列表
+        您现在的位置：<a href="<?= \yii\helpers\Url::to('/home/index')?>" style="color:#008000;">首页</a><b>><a href="<?= \yii\helpers\Url::to(['/news/train','level_id' => 2])?>" style="color:#008000;">培训风采</a><b>></b>讲师列表
     </div>
 </div>
 <!--注册人数-->

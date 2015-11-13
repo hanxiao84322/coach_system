@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\LevelSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '等级管理';
+$this->title = '学员等级设置';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="level-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('创建级别', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('创建学员等级', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -26,11 +26,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'lesson',
             'credit',
             'score',
-            // 'login_duration',
-            // 'register_fee',
+             'login_duration',
+             'register_fee',
             // 'content',
             // 'create_time',
             // 'update_time',

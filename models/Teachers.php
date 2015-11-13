@@ -13,6 +13,8 @@ use Yii;
  * @property integer $age
  * @property string $photo
  * @property integer $level
+ * @property string $phone
+ * @property string $email
  * @property integer $status
  * @property integer $lesson
  * @property integer $score
@@ -72,7 +74,7 @@ class Teachers extends \yii\db\ActiveRecord
         return [
             [['sex', 'age', 'level','status'], 'integer'],
             [['create_time', 'update_time'], 'safe'],
-            [['name', 'photo', 'register_district', 'certificate_number', 'create_user', 'update_user'], 'string', 'max' => 45],
+            [['name', 'photo', 'register_district', 'certificate_number', 'create_user', 'update_user','phone', 'email'], 'string', 'max' => 45],
             [['content'], 'string', 'max' => 500]
         ];
     }
@@ -89,6 +91,8 @@ class Teachers extends \yii\db\ActiveRecord
             'age' => '年龄',
             'photo' => '照片',
             'level' => '级别',
+            'phone' => '联系电话',
+            'email' => 'Email',
             'status' => '状态',
             'lesson' => '已授课时',
             'score' => '积分',

@@ -2,25 +2,32 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\widgets\ActiveForm;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UsersSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '用户管理';
+$this->title = '培训报名审核';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php $form = ActiveForm::begin(['action'=>\yii\helpers\Url::to('/Admin/users/del')]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+            [
+                'class' => 'yii\grid\CheckboxColumn',
+                'header' => Html::checkBox('selection_all', false, [
+                    'class' => 'select-on-check-all',
+                ]),
+            ],
             'username',
             [
                 'attribute' => 'email_auth',
@@ -32,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'phone_auth',
                 'value' => function($searchModel){
                     return $searchModel->phone_auth ? '是' : '否';
+                }
+            ],
+            [
+                'attribute' => 'level_id',
+                'value' => function($searchModel){
+                    return app\models\Level::getOneLevelNameById($searchModel->level_id);
                 }
             ],
             [
@@ -61,6 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     $url = Html::a('晋升', ['Admin/users-level/', 'UsersLevelSearch[user_id]' => $searchModel->id]);
                     $url .= '&nbsp;'.Html::a('活动', ['Admin/ActivityUsers/', 'UserId' => $searchModel->id]);
                     $url .= '&nbsp;'.Html::a('培训课程', ['Admin/train-users/', 'TrainUsersSearch[user_id]' => $searchModel->id]);
+                    $url .= '&nbsp;'.Html::a('初始化密码', ['Admin/users/change-password', 'user_id' => $searchModel->id]);
                     return $url;
                 }
             ],
@@ -71,5 +85,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
+    <input name="update_status" type="submit" value="删除">
+    <?php ActiveForm::end(); ?>
 </div>

@@ -20,7 +20,7 @@ $config = [
             'class' => 'yii\web\User',
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
-            'loginUrl' => ['user/login'],
+            'loginUrl' => ['login/login'],
             'identityCookie' => ['name' => '__user_identity', 'httpOnly' => true],
             'idParam' => '__user'
         ],
@@ -43,7 +43,7 @@ $config = [
             'useFileTransport' => true,
         ],
         'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'traceLevel' => YII_DEBUG ? 4 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
@@ -58,9 +58,26 @@ $config = [
         'session'=> [
             'timeout'=>3600,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\DbManager'
+            'itemTable' => 'auth_item',
+            'assignmentTable' => 'auth_assignment',
+            'itemChildTable' => 'auth_item_child',
+        ],
+
         'db' => require(__DIR__ . '/db.php'),
 
     ],
+    'modules' => [
+        'redactor' => [
+            'class' => 'yii\redactor\RedactorModule',
+            'imageAllowExtensions'=>['jpg','png','gif']
+        ],
+        'markdown' => [
+            'class' => 'kartik\markdown\Module',
+        ]
+    ],
+
     'params' => $params,
 ];
 

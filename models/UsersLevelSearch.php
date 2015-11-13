@@ -69,7 +69,7 @@ class UsersLevelSearch extends UsersLevel
             ->andFilterWhere(['like', 'receive_address', $this->receive_address])
             ->andFilterWhere(['like', 'postcode', $this->postcode])
             ->andFilterWhere(['like', 'update_user', $this->update_user]);
-
+        $query->orderBy(' id desc ');
         return $dataProvider;
     }
 }

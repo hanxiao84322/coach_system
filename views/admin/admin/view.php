@@ -39,7 +39,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'ip_address',
             [
                 'attribute' => 'group_id',
-                'value' => app\models\AdminGroup::getOneAdminGroupNameById($model->group_id)
+                'format' => 'html',
+                'value' => \app\models\Admin::getGroup($model->group_id)
             ],
             'create_time',
             'create_user',

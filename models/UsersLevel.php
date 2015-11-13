@@ -10,8 +10,12 @@ use Yii;
  * @property integer $id
  * @property integer $user_id
  * @property integer $level_id
+ * @property integer $train_id
  * @property string $certificate_number
+ * @property string $credentials_number
  * @property string $district
+ * @property string $status
+ * @property string $end_date
  * @property string $receive_address
  * @property string $postcode
  * @property integer $is_pay
@@ -29,21 +33,29 @@ class UsersLevel extends \yii\db\ActiveRecord
 
     const NO_TRAIN = 0; //未培训
     const TRAIN = 1; //已培训
-    const REG = 2; //已注册
-    const PAY = 3; //已缴费
-    const SEND_CARD = 4; //已发证
+    const REG = 2; //验证
+    const PAY = 3; //待审核
+    const SEND_CARD = 4; //注册
     const LEVEL_UP = 5; //已晋升
+    const TRAIN_NO_PASS = 6;//培训未通过
 
     public static $statusList = [
         self::NO_TRAIN => '未培训',
         self::TRAIN => '已培训',
-        self::REG => '已注册',
-        self::PAY => '已缴费',
-        self::SEND_CARD => '已发证',
+        self::REG => '已验证',
+        self::PAY => '待审核',
+        self::SEND_CARD => '已注册',
         self::LEVEL_UP => '已晋升',
+        self::TRAIN_NO_PASS => '培训未通过',
     ];
 
+    const ONLINE = 2;
+    const UNLINE = 1;
 
+    public static  $payTypeList = [
+        self::ONLINE => '在线支付',
+        self::UNLINE => '线下支付',
+    ];
     /**
      * @inheritdoc
      */
@@ -59,13 +71,11 @@ class UsersLevel extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'level_id', 'is_pay', 'status'], 'integer'],
-            [['create_time', 'update_time'], 'safe'],
+            [['create_time','end_date', 'update_time'], 'safe'],
             [['certificate_number'], 'string', 'max' => 25],
             [['district', 'postcode'], 'string', 'max' => 10],
             [['receive_address'], 'string', 'max' => 100],
             [['update_user'], 'string', 'max' => 45],
-            [['photo', 'credentials_photo'], 'string', 'max' => 45]
-
         ];
     }
 
@@ -82,6 +92,7 @@ class UsersLevel extends \yii\db\ActiveRecord
             'certificate_number' => '证件号码',
             'district' => '所属区域',
             'receive_address' => '收货地址',
+            'end_date' => '到期时间',
             'postcode' => '邮编',
             'is_pay' => '是否支付',
             'status' => '状态',
@@ -117,7 +128,7 @@ class UsersLevel extends \yii\db\ActiveRecord
 
     public static function  getUserLevelAndScoreByUserIdLevelId($userId, $levelId)
     {
-        $sql = "SELECT ul.*,tu.practice_score,tu.theory_score,tu.rule_score,tu.score_appraise FROM  " . self::tableName() ."  ul LEFT JOIN " . TrainUsers::tableName() . " tu ON ul.train_id = tu.train_id WHERE ul.user_id=:user_id AND ul.level_id = :level_id AND tu.status=8";
+        $sql = "SELECT ul.*,tu.practice_score,tu.theory_score,tu.rule_score,tu.score_appraise,ui.photo,ui.account_location,ui.contact_address,ui.contact_postcode,ul.photo as user_level_photo FROM  " . self::tableName() ."  ul LEFT JOIN " . TrainUsers::tableName() . " tu ON ul.train_id = tu.train_id AND ul.user_id = tu.user_id  LEFT JOIN " . UsersInfo::tableName() . " ui ON ui.user_id = ul.user_id WHERE ul.user_id=:user_id AND ul.level_id = :level_id AND ul.status in (" . UsersLevel::REG . ",". UsersLevel::PAY .",". UsersLevel::SEND_CARD .",". UsersLevel::LEVEL_UP .") AND tu.status = " . TrainUsers::PASS;
         $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId, ':level_id' => $levelId])->queryOne();
         return $result;
     }
@@ -140,6 +151,46 @@ class UsersLevel extends \yii\db\ActiveRecord
         $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId, ':level_order' => $levelOrder])->queryOne();
         return $result;
 
+    }
+
+    public static function getStatusByUserIdAndLevelId($userId, $levelId)
+    {
+        $result = Yii::$app->db->createCommand('SELECT status FROM  ' . self::tableName() . ' WHERE user_id=:user_id AND level_id=:level_id', [':user_id' => $userId,':level_id' => $levelId])->queryScalar();
+        return self::$statusList[$result];
+    }
+
+    public static  function getStatusOrderByIdAsc($userId)
+    {
+        $sql = "SELECT status FROM " . self::tableName() . " WHERE user_id=:user_id  ORDER BY id asc LIMIT 0,1 ";
+        $result = Yii::$app->db->createCommand($sql, [':user_id' => $userId])->queryScalar();
+        return $result;
+    }
+
+    public static function getUserTrainInfo($id)
+    {
+        $sql = "SELECT t.begin_time,t.end_time,tl.address,ul.level_id,ul.certificate_number,tt.teachers_id,ul.user_id,t.content
+              FROM
+               users_level ul
+         LEFT JOIN
+    train t ON ul.train_id = t.id
+        LEFT JOIN
+    train_land tl ON tl.id = t.train_land_id
+        LEFT JOIN
+    train_teachers tt ON tt.train_id = t.id
+WHERE
+    ul.id = :id
+LIMIT 0 , 1";
+        $result = Yii::$app->db->createCommand($sql, [':id' => $id])->queryOne();
+        return $result;
+
+    }
+
+
+    public static function getAllByCount($count)
+    {
+        $sql = "SELECT * FROM " . self::tableName() . " WHERE status = " . self::SEND_CARD . " OR status = " . self::LEVEL_UP . " ORDER BY id desc LIMIT 0," . $count;
+        $result = Yii::$app->db->createCommand($sql)->queryAll();
+        return $result;
     }
 
     public function beforeSave($insert = '')

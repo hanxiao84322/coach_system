@@ -7,19 +7,19 @@ use yii\widgets\DetailView;
 /* @var $model app\models\ActivityUsers */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Activity Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => '评分管理', 'url' => ['index']];
+
 ?>
 <div class="activity-users-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>评分</h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('评分', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('删除', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => '确认删除吗?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -28,15 +28,30 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'activity_id',
-            'user_id',
-            'status',
+            [
+                'attribute' => 'activity_id',
+                'format' => 'html',
+                'value' => '<a href="/Admin/activity/index?ActivitySearch[id]='.$model->activity_id.'" target="_blank" style="width:300px">' . $model->activityName.'</a>'
+            ],
+            [
+                'attribute' => 'user_id',
+                'format' => 'html',
+                'value' => '<a href="/Admin/users/index?UsersSearch[id]='.$model->user_id.'" target="_blank" style="width:300px">' . $model->userName.'</a>'
+            ],
+            [
+                'attribute' => 'status',
+                'format' => 'html',
+                'value' => app\models\ActivityUsers::$statusList[$model->status]
+            ],
             'practice_score',
             'theory_score',
             'rule_score',
             'score_appraise',
-            'attendance_appraise',
+            [
+                'attribute' => 'attendance_appraise',
+                'format' => 'html',
+                'value' => '<a href="/Admin/attendance/index?AttendanceSearch[user_id]='.$model->user_id.'&AttendanceSearch[activity_id]='.$model->activity_id.'" target="_blank" style="width:300px">' . $model->attendance_appraise.'</a>'
+            ],
             'practice_comment',
             'theory_comment',
             'rule_comment',

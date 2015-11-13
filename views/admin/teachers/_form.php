@@ -22,6 +22,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status')->dropDownList(\app\models\Users::$statusList,['style'=>'width:100px']) ?>
 
+    <?= $form->field($model, 'phone')->textInput(['style'=>'width:300px']) ?>
+
+    <?= $form->field($model, 'email')->textInput(['style'=>'width:300px']) ?>
+
+
     <?php if (!$model->isNewRecord && !empty($model->photo)) {?>
         <a href="#"><img src="/upload/images/teachers/photo/<?= $model->photo ?>"></a>
         <?= $form->field($model, 'photo')->fileInput(['style'=>'width:500px']) ?>

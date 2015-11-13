@@ -54,21 +54,21 @@
             <ul>
                 <li>
                     <img src="/images/t4.jpg" />
-                    <span>教练员培训报名</span>
+                    <a href="<?=\yii\helpers\Url::to('/train/index')?>"><span>教练员培训报名</span></a>
                     <a href="<?=\yii\helpers\Url::to('/train/index')?>">各级别教练员</a>
                     <a href="<?=\yii\helpers\Url::to('/train/index')?>">培训报名</a>
                 </li>
                 <li>
                     <img src="/images/t2.jpg" />
-                    <span>教练员注册</span>
+                    <a href="<?=\yii\helpers\Url::to('/user/register-coach')?>"><span>教练员注册</span></a>
                     <a href="<?=\yii\helpers\Url::to('/user/register-coach')?>">在线注册</a>
                     <a href="<?=\yii\helpers\Url::to('/user/register-coach')?>">实时管理</a>
                 </li>
                 <li style="border-right:none;">
-                    <img src="images/t3.jpg" />
-                    <span>教练员证书查询</span>
-                    <a href="javascript:;">注册教练员证书</a>
-                    <a href="javascript:;">在线查询</a>
+                    <img src="/images/t3.jpg" />
+                    <a href="<?=\yii\helpers\Url::to('/top-search/index')?>"><span>教练员查询</span></a>
+                    <a href="<?=\yii\helpers\Url::to('/top-search/index')?>">注册教练员</a>
+                    <a href="<?=\yii\helpers\Url::to('/top-search/index')?>">实时查询</a>
                 </li>
             </ul>
         </div>

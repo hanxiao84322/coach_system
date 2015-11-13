@@ -25,7 +25,13 @@ return [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => $db,'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'itemTable' => 'web_auth_item',
+            'assignmentTable' => 'web_auth_assignment',
+            'itemChildTable' => 'web_auth_item_child',
+            'ruleTable'=>'web_auth_rule'
+        ],
     ],
     'params' => $params,
 ];

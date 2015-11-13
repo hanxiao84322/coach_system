@@ -36,6 +36,15 @@ class NewsController extends Controller
         ];
     }
 
+    public function actions()
+    {
+        return [
+            'Kupload' => [
+                'class' => 'pjkui\kindeditor\KindEditorAction',
+            ]
+        ];
+    }
+
     /**
      * Lists all News models.
      * @return mixed
@@ -72,18 +81,23 @@ class NewsController extends Controller
     {
         $model = new News();
         if (Yii::$app->request->isPost) {
-
             $model->thumb = UploadedFile::getInstance($model, 'thumb');
-            $fileName = time().  '.' .$model->thumb->extension;
-            $model->thumb->saveAs('upload/images/news/thumb/' . $fileName, true);
+            if (!empty($model->thumb)) {
+                $fileName = time().  '.' .$model->thumb->extension;
+                $model->thumb->saveAs('upload/images/news/thumb/' . $fileName, true);
 
-            if ($model->hasErrors('file')){
-                throw new ServerErrorHttpException($model->getErrors('file'));
+                if ($model->hasErrors('file')){
+                    throw new ServerErrorHttpException($model->getErrors('file'));
+                }
+            } else {
+                $fileName = '';
             }
-
             $newsInfo = Yii::$app->request->post();
             $newsInfo['News']['status'] = 1;
             $newsInfo['News']['thumb'] = $fileName;
+            if (!empty($fileName)) {
+                $newsInfo['News']['is_pic'] = 1;
+            }
             if ($model->load($newsInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -121,6 +135,12 @@ class NewsController extends Controller
                 } else {
                     $newsInfo['News']['thumb'] = $fileName;
                 }
+            } else {
+                $newsInfo['News']['thumb'] = Yii::$app->request->post('old_thumb');
+
+            }
+            if (!empty($newsInfo['News']['thumb'])) {
+                $newsInfo['News']['is_pic'] = 1;
             }
             if ($model->load($newsInfo) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -162,5 +182,16 @@ class NewsController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionDel()
+    {
+        $idList = Yii::$app->request->post('selection');
+        if (!empty($idList)) {
+            foreach($idList as $key => $val) {
+                $this->findModel($val)->delete();
+            }
+        }
+        return $this->redirect(['index']);
     }
 }
